@@ -1,0 +1,488 @@
+/* ============================================================
+   TUTEL SIGHTINGS — script.js
+   Loads appearances.json + colors.json, renders cards,
+   handles filtering, sorting, and all interactions.
+   ============================================================ */
+
+// ── State ────────────────────────────────────────────────────
+let allAppearances = [];
+let colors = {};
+let watchedIds = new Set(JSON.parse(localStorage.getItem('tutel-watched') || '[]'));
+
+const state = {
+  search: '',
+  sort: 'date',
+  watch: 'all',
+  filters: {
+    activities: new Set(),
+    games: new Set(),
+    collab_partners: new Set(),
+    appearance_weight: new Set(),
+  },
+};
+
+// ── Bootstrap ────────────────────────────────────────────────
+async function init() {
+  try {
+    const [appData, colorData] = await Promise.all([
+      fetch('data/appearances.json').then(r => r.json()),
+      fetch('data/colors.json').then(r => r.json()),
+    ]);
+    allAppearances = appData;
+    colors = colorData;
+  } catch (e) {
+    console.error('Failed to load data:', e);
+    document.getElementById('card-grid').innerHTML =
+      '<p style="color:var(--text-muted);padding:40px">Failed to load appearances data.</p>';
+    return;
+  }
+
+  buildFilterSidebar();
+  renderStats();
+  render();
+  bindEvents();
+}
+
+// ── Color helpers ─────────────────────────────────────────────
+function getColor(category, key) {
+  return (colors[category] && colors[category][key]) || colors.fallback || '#4B5563';
+}
+
+function chipStyle(category, key) {
+  const hex = getColor(category, key);
+  return `background:${hex}22; color:${hex}; border-color:${hex}44;`;
+}
+
+// ── Duration helpers ──────────────────────────────────────────
+function vodDuration(vod) {
+  if (vod.timestamp_seconds == null || vod.timestamp_end_seconds == null) return null;
+  return vod.timestamp_end_seconds - vod.timestamp_seconds;
+}
+
+function formatDuration(secs) {
+  if (secs == null || secs < 0) return null;
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+
+function entryDurationInfo(entry) {
+  // Returns { display: string|null, sortValue: number|null }
+  const durations = entry.vods.map(vodDuration).filter(d => d !== null);
+  if (!durations.length) return { display: null, sortValue: null };
+
+  if (entry.vods.length === 1 || entry.vod_type === 'parts') {
+    const total = durations.reduce((a, b) => a + b, 0);
+    return { display: formatDuration(total), sortValue: total };
+  }
+
+  // povs — range
+  const min = Math.min(...durations);
+  const max = Math.max(...durations);
+  const mid = (min + max) / 2;
+  if (min === max) return { display: formatDuration(min), sortValue: min };
+  return { display: `${formatDuration(min)} ~ ${formatDuration(max)}`, sortValue: mid };
+}
+
+// ── Sort helpers ──────────────────────────────────────────────
+function sortedAppearances(list) {
+  const copy = [...list];
+  if (state.sort === 'date') {
+    copy.sort((a, b) => {
+      if (!a.date && !b.date) return 0;
+      if (!a.date) return 1;
+      if (!b.date) return -1;
+      return b.date.localeCompare(a.date);
+    });
+  } else if (state.sort === 'duration') {
+    copy.sort((a, b) => {
+      const da = entryDurationInfo(a).sortValue;
+      const db = entryDurationInfo(b).sortValue;
+      if (da == null && db == null) return 0;
+      if (da == null) return 1;
+      if (db == null) return -1;
+      return db - da;
+    });
+  } else if (state.sort === 'partners') {
+    copy.sort((a, b) => b.collab_partners.length - a.collab_partners.length);
+  }
+  return copy;
+}
+
+// ── Filter logic ──────────────────────────────────────────────
+function passesFilter(entry) {
+  // Watch status
+  const isWatched = watchedIds.has(entry.id) || entry.watched;
+  if (state.watch === 'watched' && !isWatched) return false;
+  if (state.watch === 'unwatched' && isWatched) return false;
+
+  // Search
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    const title = (entry.title || entry.vods[0]?.vod_title || '').toLowerCase();
+    const partners = entry.collab_partners.map(p => p.toLowerCase()).join(' ');
+    const games = entry.games.map(g => g.toLowerCase()).join(' ');
+    if (!title.includes(q) && !partners.includes(q) && !games.includes(q)) return false;
+  }
+
+  // Active filters
+  for (const [cat, set] of Object.entries(state.filters)) {
+    if (!set.size) continue;
+    if (cat === 'activities') {
+      if (!entry.activities.some(a => set.has(a))) return false;
+    } else if (cat === 'games') {
+      if (!entry.games.some(g => set.has(g))) return false;
+    } else if (cat === 'collab_partners') {
+      if (!entry.collab_partners.some(p => set.has(p))) return false;
+    } else if (cat === 'appearance_weight') {
+      if (!set.has(entry.appearance_weight)) return false;
+    }
+  }
+  return true;
+}
+
+function filteredAndSorted() {
+  return sortedAppearances(allAppearances.filter(passesFilter));
+}
+
+function hasActiveFilters() {
+  return Object.values(state.filters).some(s => s.size > 0);
+}
+
+// ── Sidebar filter builder ────────────────────────────────────
+function buildFilterSidebar() {
+  const container = document.getElementById('filter-groups');
+
+  const allActivities = [...new Set(allAppearances.flatMap(e => e.activities))].sort();
+  const allGames      = [...new Set(allAppearances.flatMap(e => e.games))].filter(Boolean).sort();
+  const allPartners   = [...new Set(allAppearances.flatMap(e => e.collab_partners))].sort();
+  const allWeights    = ['full','partial','cameo'];
+
+  const sections = [
+    { label: 'Activity',          cat: 'activities',      items: allActivities },
+    { label: 'Game',              cat: 'games',           items: allGames      },
+    { label: 'Collab Partner',    cat: 'collab_partners', items: allPartners   },
+    { label: 'Appearance Weight', cat: 'appearance_weight', items: allWeights  },
+  ];
+
+  container.innerHTML = sections.map(({ label, cat, items }) => `
+    <div class="filter-group" data-cat="${cat}">
+      <div class="filter-group-label">${label}</div>
+      ${items.map(item => {
+        const count = allAppearances.filter(e => {
+          if (cat === 'activities') return e.activities.includes(item);
+          if (cat === 'games') return e.games.includes(item);
+          if (cat === 'collab_partners') return e.collab_partners.includes(item);
+          if (cat === 'appearance_weight') return e.appearance_weight === item;
+        }).length;
+        const color = getColor(cat, item);
+        return `
+          <button class="filter-chip" data-cat="${cat}" data-value="${item}">
+            <span class="filter-chip-dot" style="background:${color}"></span>
+            <span class="filter-chip-name">${item}</span>
+            <span class="filter-chip-count">${count}</span>
+          </button>`;
+      }).join('')}
+    </div>
+  `).join('');
+}
+
+function updateFilterChipStates() {
+  document.querySelectorAll('.filter-chip').forEach(btn => {
+    const { cat, value } = btn.dataset;
+    btn.classList.toggle('active', state.filters[cat]?.has(value) ?? false);
+  });
+
+  const clearBtn = document.getElementById('clear-filters');
+  clearBtn.style.display = hasActiveFilters() ? '' : 'none';
+}
+
+// ── Stats ─────────────────────────────────────────────────────
+function renderStats() {
+  const total = allAppearances.length;
+  const partners = new Set(allAppearances.flatMap(e => e.collab_partners)).size;
+  document.getElementById('header-stats').innerHTML = `
+    <div class="stat-item">
+      <div class="stat-value">${total}</div>
+      <div class="stat-label">Sightings</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">${partners}</div>
+      <div class="stat-label">Streamers</div>
+    </div>
+  `;
+}
+
+// ── Card rendering ────────────────────────────────────────────
+function getCardTitle(entry) {
+  if (entry.title) return entry.title;
+  if (entry.vods.length === 1 && entry.vods[0].vod_title) return entry.vods[0].vod_title;
+  return entry.id; // fallback
+}
+
+function getThumbUrl(entry) {
+  const first = entry.vods[0];
+  if (!first?.video_id) return null;
+  return `https://img.youtube.com/vi/${first.video_id}/maxresdefault.jpg`;
+}
+
+function getWatchUrl(vod) {
+  if (!vod.video_id) return '#';
+  let url = `https://youtu.be/${vod.video_id}`;
+  if (vod.timestamp_seconds) url += `?t=${vod.timestamp_seconds}`;
+  return url;
+}
+
+function getStreamerLabel(vod) {
+  if (vod.streamer) return `${vod.streamer}'s POV`;
+  if (vod.vod_part != null) return `Part ${vod.vod_part}`;
+  return 'Watch';
+}
+
+function renderChips(entry) {
+  const chips = [];
+
+  // Activities
+  entry.activities.forEach(act => {
+    chips.push(`<button class="chip" style="${chipStyle('activities', act)}" onclick="filterBy('activities','${act}')" title="${act}">
+      <span class="chip-dot"></span>${act}
+    </button>`);
+  });
+
+  // Games
+  entry.games.forEach(game => {
+    chips.push(`<button class="chip" style="${chipStyle('games', game)}" onclick="filterBy('games','${escAttr(game)}')" title="${game}">
+      <span class="chip-dot"></span>${escHtml(game)}
+    </button>`);
+  });
+
+  // Partners — max 2 visible
+  const partners = entry.collab_partners;
+  const visible = partners.slice(0, 2);
+  const overflow = partners.slice(2);
+
+  visible.forEach(p => {
+    chips.push(`<button class="chip" style="${chipStyle('collab_partners', p)}" onclick="filterBy('collab_partners','${escAttr(p)}')" title="${p}">
+      <span class="chip-dot"></span>${escHtml(p)}
+    </button>`);
+  });
+
+  if (overflow.length) {
+    const tooltipData = encodeURIComponent(JSON.stringify(overflow));
+    chips.push(`<span class="chip-overflow" data-overflow="${tooltipData}" onmouseenter="showPartnerTooltip(event,this)" onmouseleave="hidePartnerTooltip()">+${overflow.length} more</span>`);
+  }
+
+  return chips.join('');
+}
+
+function renderCard(entry) {
+  const isWatched = watchedIds.has(entry.id) || entry.watched;
+  const thumbUrl = getThumbUrl(entry);
+  const title = getCardTitle(entry);
+  const { display: duration } = entryDurationInfo(entry);
+  const isMulti = entry.vods.length > 1;
+  const singleUrl = !isMulti ? getWatchUrl(entry.vods[0]) : '#';
+  const thumbClick = isMulti
+    ? `onclick="openPovDropdown(event, '${entry.id}')" style="cursor:pointer"`
+    : `onclick="window.open('${singleUrl}','_blank')" style="cursor:pointer"`;
+  const titleClick = isMulti
+    ? `onclick="openPovDropdown(event, '${entry.id}')"`
+    : `onclick="window.open('${singleUrl}','_blank')"`;
+
+  return `
+    <article class="card" data-id="${entry.id}">
+      <div class="card-thumb-wrap" ${thumbClick}>
+        ${thumbUrl
+          ? `<img class="card-thumb" src="${thumbUrl}" alt="${escAttr(title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="card-thumb-placeholder" style="display:none">🐢</div>`
+          : `<div class="card-thumb-placeholder">🐢</div>`
+        }
+        <div class="card-thumb-overlay">
+          <div class="play-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        ${isMulti ? `<div class="multi-vod-badge">${entry.vods.length} POVs</div>` : ''}
+      </div>
+      <div class="card-body">
+        <div class="card-chips">${renderChips(entry)}</div>
+        <div class="card-title" ${titleClick}>${escHtml(title)}</div>
+        <div class="card-meta">
+          ${entry.date ? `<span>${entry.date}</span>` : '<span style="opacity:0.4">Date unknown</span>'}
+          ${duration ? `<span class="card-meta-sep">·</span><span class="card-duration">${duration}</span>` : ''}
+          ${isWatched ? '<span class="watched-dot" title="Watched"></span>' : ''}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+// ── Main render ───────────────────────────────────────────────
+function render() {
+  const results = filteredAndSorted();
+  const grid = document.getElementById('card-grid');
+  const empty = document.getElementById('empty-state');
+  const resultsBar = document.getElementById('results-bar');
+
+  if (results.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = '';
+  } else {
+    empty.style.display = 'none';
+    grid.innerHTML = results.map(renderCard).join('');
+  }
+
+  const total = allAppearances.length;
+  resultsBar.innerHTML = results.length === total
+    ? `<span class="results-count">${total}</span> sightings`
+    : `<span class="results-count">${results.length}</span> of ${total} sightings`;
+
+  updateFilterChipStates();
+}
+
+// ── POV dropdown ──────────────────────────────────────────────
+let dropdownEntry = null;
+
+function openPovDropdown(event, entryId) {
+  event.stopPropagation();
+  const entry = allAppearances.find(e => e.id === entryId);
+  if (!entry) return;
+
+  // Close if already open for same entry
+  const dropdown = document.getElementById('pov-dropdown');
+  if (dropdownEntry === entryId && dropdown.style.display !== 'none') {
+    closePovDropdown();
+    return;
+  }
+  dropdownEntry = entryId;
+
+  const inner = document.getElementById('pov-dropdown-inner');
+  inner.innerHTML = entry.vods.map(vod => {
+    const label = getStreamerLabel(vod);
+    const url = getWatchUrl(vod);
+    const color = vod.streamer ? getColor('collab_partners', vod.streamer) : colors.fallback;
+    return `
+      <a class="pov-option" href="${url}" target="_blank" rel="noopener">
+        <span class="pov-option-label">${escHtml(vod.vod_title || label)}</span>
+        <span class="pov-chip" style="background:${color}22;color:${color};border:1px solid ${color}44">${escHtml(label)}</span>
+      </a>`;
+  }).join('');
+
+  // Position near cursor
+  const x = event.clientX;
+  const y = event.clientY;
+  dropdown.style.display = '';
+  const rect = dropdown.getBoundingClientRect();
+  const left = Math.min(x, window.innerWidth - rect.width - 12);
+  const top  = Math.min(y + 8, window.innerHeight - rect.height - 12);
+  dropdown.style.left = left + 'px';
+  dropdown.style.top  = top  + 'px';
+}
+
+function closePovDropdown() {
+  document.getElementById('pov-dropdown').style.display = 'none';
+  dropdownEntry = null;
+}
+
+// ── Partner tooltip ───────────────────────────────────────────
+function showPartnerTooltip(event, el) {
+  const names = JSON.parse(decodeURIComponent(el.dataset.overflow));
+  const tooltip = document.getElementById('partner-tooltip');
+  const inner   = document.getElementById('partner-tooltip-inner');
+
+  inner.innerHTML = names.map(name => {
+    const color = getColor('collab_partners', name);
+    return `<div class="tooltip-partner">
+      <span class="tooltip-dot" style="background:${color}"></span>
+      <span>${escHtml(name)}</span>
+    </div>`;
+  }).join('');
+
+  tooltip.style.display = '';
+  const rect = el.getBoundingClientRect();
+  const tRect = tooltip.getBoundingClientRect();
+  tooltip.style.left = Math.min(rect.left, window.innerWidth - tRect.width - 12) + 'px';
+  tooltip.style.top  = (rect.bottom + 6) + 'px';
+}
+
+function hidePartnerTooltip() {
+  document.getElementById('partner-tooltip').style.display = 'none';
+}
+
+// ── Filter actions ────────────────────────────────────────────
+function filterBy(cat, value) {
+  const set = state.filters[cat];
+  if (set.has(value)) set.delete(value);
+  else set.add(value);
+  render();
+}
+
+function clearAllFilters() {
+  for (const set of Object.values(state.filters)) set.clear();
+  state.search = '';
+  document.getElementById('search-input').value = '';
+  render();
+}
+
+// ── Event bindings ────────────────────────────────────────────
+function bindEvents() {
+  // Search
+  document.getElementById('search-input').addEventListener('input', e => {
+    state.search = e.target.value.trim();
+    render();
+  });
+
+  // Sort
+  document.getElementById('sort-options').addEventListener('click', e => {
+    const btn = e.target.closest('.sort-btn');
+    if (!btn) return;
+    state.sort = btn.dataset.sort;
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  });
+
+  // Watch status
+  document.querySelector('.watch-toggle-wrap').addEventListener('click', e => {
+    const btn = e.target.closest('.watch-toggle-btn');
+    if (!btn) return;
+    state.watch = btn.dataset.watch;
+    document.querySelectorAll('.watch-toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  });
+
+  // Filter chips (sidebar)
+  document.getElementById('filter-groups').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-chip');
+    if (!btn) return;
+    filterBy(btn.dataset.cat, btn.dataset.value);
+  });
+
+  // Clear all filters button
+  document.getElementById('clear-filters').addEventListener('click', clearAllFilters);
+
+  // Close dropdown on outside click
+  document.addEventListener('click', e => {
+    if (!document.getElementById('pov-dropdown').contains(e.target)) {
+      closePovDropdown();
+    }
+  });
+
+  // Close dropdown on scroll
+  window.addEventListener('scroll', closePovDropdown, { passive: true });
+}
+
+// ── Escape helpers ────────────────────────────────────────────
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(str) {
+  if (!str) return '';
+  return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+// ── Go ────────────────────────────────────────────────────────
+init();

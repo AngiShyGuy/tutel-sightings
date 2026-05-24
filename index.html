@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutel Sightings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="header-logo">🐢</span>
+        <div>
+          <h1 class="header-title">Tutel Sightings</h1>
+          <p class="header-subtitle">Every stream Vedal987 has wandered into</p>
+        </div>
+      </div>
+      <div class="header-stats" id="header-stats"></div>
+    </div>
+  </header>
+
+  <main class="site-main">
+
+    <aside class="sidebar">
+
+      <div class="control-group">
+        <label class="control-label" for="search-input">Search</label>
+        <div class="search-wrap">
+          <input
+            id="search-input"
+            class="search-input"
+            type="text"
+            placeholder="Title, partner, game…"
+            autocomplete="off"
+          />
+          <span class="search-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Sort by</label>
+        <div class="sort-options" id="sort-options">
+          <button class="sort-btn active" data-sort="date">Date</button>
+          <button class="sort-btn" data-sort="duration">Duration</button>
+          <button class="sort-btn" data-sort="partners">Partners</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="filter-header">
+          <label class="control-label">Filters</label>
+          <button class="clear-filters-btn" id="clear-filters" style="display:none">Clear all</button>
+        </div>
+        <div id="filter-groups"></div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Watch status</label>
+        <div class="watch-toggle-wrap">
+          <button class="watch-toggle-btn active" data-watch="all">All</button>
+          <button class="watch-toggle-btn" data-watch="watched">Watched</button>
+          <button class="watch-toggle-btn" data-watch="unwatched">Unwatched</button>
+        </div>
+      </div>
+
+    </aside>
+
+    <section class="content-area">
+      <div class="results-bar" id="results-bar"></div>
+      <div class="card-grid" id="card-grid"></div>
+      <div class="empty-state" id="empty-state" style="display:none">
+        <span class="empty-icon">🐢</span>
+        <p>No sightings match your filters.</p>
+        <button class="empty-clear-btn" onclick="clearAllFilters()">Clear filters</button>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="pov-dropdown" id="pov-dropdown" style="display:none">
+    <div class="pov-dropdown-inner" id="pov-dropdown-inner"></div>
+  </div>
+
+  <div class="partner-tooltip" id="partner-tooltip" style="display:none">
+    <div class="partner-tooltip-inner" id="partner-tooltip-inner"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,673 @@
+[
+  {
+    "id": "prank-call-motherv3-sekiro-stream",
+    "title": null,
+    "date": "2023-03-29",
+    "activities": [
+      "prank-call",
+      "yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "MOTHERv3"
+    ],
+    "appearance_weight": "cameo",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "AI VTUBER ON SEKIRO?! NOWAY || ACTUALLY A FURRY || find the new emotes i added c:",
+        "streamer": "MOTHERv3",
+        "video_id": "HVWhPj-Mn50",
+        "timestamp_seconds": 15892,
+        "timestamp_end_seconds": 16187
+      }
+    ],
+    "notes": "MOTHERv3's March 29th Sekiro stream. MOTHERv3 prank calls Vedal at 4:24:35."
+  },
+  {
+    "id": "roblox-doors-camila-motherv3",
+    "title": "GLITCHMILA scuffed stream",
+    "date": "2023-03-30",
+    "activities": [
+      "gaming"
+    ],
+    "games": [
+      "Roblox DOORS"
+    ],
+    "collab_partners": [
+      "Camila",
+      "MOTHERv3"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "GLITCHMILA scuffed stream",
+        "streamer": "Camila",
+        "video_id": "il1q1jfENWU",
+        "timestamp_seconds": 3325,
+        "timestamp_end_seconds": 14165
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "yapping-motherv3-popcorn-reaction-stream",
+    "title": null,
+    "date": "2023-04-06",
+    "activities": [
+      "yapping",
+      "react"
+    ],
+    "games": [],
+    "collab_partners": [
+      "MOTHERv3"
+    ],
+    "appearance_weight": "cameo",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "LAST STREAM?! | AI REACT | I'M A MAN NOWAYING | AI HAS NEW MODEL?! | ACTUALLY A FURRY x2",
+        "streamer": "MOTHERv3",
+        "video_id": "ZFnILe_NayY",
+        "timestamp_seconds": 8213,
+        "timestamp_end_seconds": 8968
+      }
+    ],
+    "notes": "MOTHERv3's April 6th 2023 reaction stream. Vedal appears at 2:15:00 and they argue about popcorn."
+  },
+  {
+    "id": "interview-miyune-v2-debut",
+    "title": null,
+    "date": "2023-04-08",
+    "activities": [
+      "interview",
+      "event"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Miyune"
+    ],
+    "appearance_weight": "partial",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "NEW MIYU DEBUT Let me take you on a journey through time and space",
+        "streamer": "Miyune",
+        "video_id": "ZIsgmokQubA",
+        "timestamp_seconds": 13760,
+        "timestamp_end_seconds": 17695
+      }
+    ],
+    "notes": "Miyune's V2 debut stream. Vedal and Neuro are interviewed."
+  },
+  {
+    "id": "pico-park-human-fall-flat-big-collab",
+    "title": "Massive Pico Park & Human Fall Flat Collab",
+    "date": "2023-04-14",
+    "activities": [
+      "gaming"
+    ],
+    "games": [
+      "Pico Park",
+      "Human Fall Flat"
+    ],
+    "collab_partners": [
+      "Camila",
+      "Saiiren",
+      "Miwo",
+      "MOTHERv3",
+      "OkCode"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "18+ Nya Meow Meow | !patreon !discord !yt",
+        "streamer": "Miwo",
+        "video_id": "S2GGvh8uA2M",
+        "timestamp_seconds": 214,
+        "timestamp_end_seconds": 11258
+      },
+      {
+        "vod_title": "MASSIVE COLLAB TODAY || REACTING TO BAD DATES || NOWAYING SO HARD RIGHT NOW GET IN HERE",
+        "streamer": "MOTHERv3",
+        "video_id": "aQ5cqEkgT-8",
+        "timestamp_seconds": 4860,
+        "timestamp_end_seconds": 15899
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "yapping-camila-short-friyay",
+    "title": null,
+    "date": "2023-04-28",
+    "activities": [
+      "yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "cameo",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "RANDOM SHORT FRIYAY STRIM",
+        "streamer": "Camila",
+        "video_id": "N6X_dirKVdY",
+        "timestamp_seconds": null,
+        "timestamp_end_seconds": null
+      }
+    ],
+    "notes": "Short ~10 minute appearance. Camila's 'Random Short Friyay Stream'."
+  },
+  {
+    "id": "yapping-camila-24hr-stream",
+    "title": "🍥 24 HOUR STREAM UNTIL I GET UNBANNED FROM VEDAL987",
+    "date": "2023-04-29",
+    "activities": [
+      "yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "partial",
+    "vod_type": "parts",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "🍥 24 HOUR STREAM UNTIL I GET UNBANNED FROM VEDAL987",
+        "streamer": "Camila",
+        "vod_part": 1,
+        "video_id": "8Ileww9qkW4",
+        "timestamp_seconds": 14257,
+        "timestamp_end_seconds": 18351
+      }
+    ],
+    "notes": "Camila's 24-hour stream — Vedal appears for a segment."
+  },
+  {
+    "id": "demonologist-camila-saiiren-motherv3",
+    "title": null,
+    "date": "2023-05-01",
+    "activities": [
+      "gaming"
+    ],
+    "games": [
+      "Demonologist"
+    ],
+    "collab_partners": [
+      "Camila",
+      "Saiiren",
+      "MOTHERv3"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "New Vtuber plays w/ @camila @vedal987 @motherv3 LATER",
+        "streamer": "Saiiren",
+        "video_id": "U2dAi9my3uU",
+        "timestamp_seconds": 3850,
+        "timestamp_end_seconds": 11104
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "bread-and-fred-demo-escape-sim-saiiren",
+    "title": null,
+    "date": "2023-05-05",
+    "activities": [
+      "gaming"
+    ],
+    "games": [
+      "Bread & Fred",
+      "Escape Simulator"
+    ],
+    "collab_partners": [
+      "Saiiren"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Games w/ @vedal987",
+        "streamer": "Saiiren",
+        "video_id": "OQsO9yagQIc",
+        "timestamp_seconds": 7237,
+        "timestamp_end_seconds": 25160
+      }
+    ],
+    "notes": "Bread & Fred Demo, not the full game. Also played Escape Simulator in the same session."
+  },
+  {
+    "id": "bread-and-fred-saiiren",
+    "title": "Bread & Fred later w/ @vedal987",
+    "date": "2023-05-23",
+    "activities": [
+      "gaming"
+    ],
+    "games": [
+      "Bread & Fred"
+    ],
+    "collab_partners": [
+      "Saiiren"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Bread & Fred later w/ @vedal987 !throw",
+        "streamer": "Saiiren",
+        "video_id": "XPGuK7CW_hg",
+        "timestamp_seconds": 30690,
+        "timestamp_end_seconds": 40546
+      }
+    ],
+    "notes": "Full game, as opposed to the earlier demo session."
+  },
+  {
+    "id": "pummel-party-camila-big-collab",
+    "title": null,
+    "date": "2023-07-10",
+    "activities": [
+      "gaming"
+    ],
+    "games": [
+      "Pummel Party"
+    ],
+    "collab_partners": [
+      "Camila",
+      "MOTHERv3",
+      "Captain Hannah",
+      "PorcelainMaid",
+      "OkCode",
+      "Elly",
+      "Tectone"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "NAUGHTY IMP HUGE PUMMEL PARTY COLLAB WITH FRIENDS !!!",
+        "streamer": "Camila",
+        "video_id": "bRfQ9gncSLE",
+        "timestamp_seconds": 9022,
+        "timestamp_end_seconds": 18615
+      }
+    ],
+    "notes": "One collab partner is listed as [REDACTED] in original notes."
+  },
+  {
+    "id": "payday3-saiiren-subathon-d4",
+    "title": "UNCAPPED SUBATHON DAY 4 | GACHA VTUBER CAN YOU PULL ME? P.1",
+    "date": "2023-09-26",
+    "activities": [
+      "gaming",
+      "subathon"
+    ],
+    "games": [
+      "Payday 3"
+    ],
+    "collab_partners": [
+      "Saiiren"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "UNCAPPED SUBATHON DAY 4 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? | !subathon !rates P.1",
+        "streamer": "Saiiren",
+        "video_id": "phmfvSyNGKA",
+        "timestamp_seconds": 263,
+        "timestamp_end_seconds": 10663
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "payday3-saiiren-camila-subathon-d4",
+    "title": "UNCAPPED SUBATHON DAY 4 | GACHA VTUBER CAN YOU PULL ME? P.2 & P.3",
+    "date": "2023-09-26",
+    "activities": [
+      "gaming",
+      "subathon"
+    ],
+    "games": [
+      "Payday 3"
+    ],
+    "collab_partners": [
+      "Saiiren",
+      "Camila"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "parts",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "UNCAPPED SUBATHON DAY 4 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? | !subathon !rates P.2",
+        "streamer": "Saiiren",
+        "video_id": "Q1-vkW-oYVY",
+        "timestamp_seconds": 40620,
+        "timestamp_end_seconds": 43081
+      },
+      {
+        "vod_title": "UNCAPPED SUBATHON DAY 4 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? | !subathon !rates P.3",
+        "streamer": "Saiiren",
+        "video_id": "z53FJTJ7q-8",
+        "timestamp_seconds": 0,
+        "timestamp_end_seconds": 11415
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "payday3-saiiren-subathon-d12",
+    "title": "UNCAPPED DEBUT SUBATHON DAY 12 | GACHA VTUBER CAN YOU PULL ME? P.1",
+    "date": "2023-10-03",
+    "activities": [
+      "gaming",
+      "subathon"
+    ],
+    "games": [
+      "Payday 3"
+    ],
+    "collab_partners": [
+      "Saiiren",
+      "Camila",
+      "OkCode"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "UNCAPPED DEBUT SUBATHON DAY 12 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? | !subathon P.1",
+        "streamer": "Saiiren",
+        "video_id": "w4O1BdW7BD0",
+        "timestamp_seconds": 12786,
+        "timestamp_end_seconds": 22217
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "payday3-saiiren-subathon-d14",
+    "title": "UNCAPPED DEBUT SUBATHON DAY 14 | GACHA VTUBER CAN YOU PULL ME? P.1",
+    "date": "2023-10-05",
+    "activities": [
+      "gaming",
+      "subathon"
+    ],
+    "games": [
+      "Payday 3"
+    ],
+    "collab_partners": [
+      "Saiiren",
+      "Camila",
+      "OkCode"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "UNCAPPED DEBUT SUBATHON DAY 14 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? P.1",
+        "streamer": "Saiiren",
+        "video_id": "SefCvH3ojn4",
+        "timestamp_seconds": 11880,
+        "timestamp_end_seconds": 19929
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "for-the-king-saiiren-motherv3-okcode",
+    "title": "APEX COLLAB - CHAT VS STREAMER CHAT WINS @ LEVEL 70",
+    "date": "2023-11-06",
+    "activities": [
+      "gaming"
+    ],
+    "games": [
+      "For The King"
+    ],
+    "collab_partners": [
+      "Saiiren",
+      "MOTHERv3",
+      "OkCode"
+    ],
+    "appearance_weight": "partial",
+    "vod_type": "parts",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "APEX COLLAB - CHAT VS STREAMER CHAT WINS @ LEVEL 70 | !rates !pp !xp !bp P.1",
+        "streamer": "Saiiren",
+        "vod_part": 1,
+        "video_id": "dRvD3mhETGE",
+        "timestamp_seconds": 36695,
+        "timestamp_end_seconds": 43070
+      },
+      {
+        "vod_title": "APEX COLLAB - CHAT VS STREAMER CHAT WINS @ LEVEL 70 | !rates !pp !xp !bp P.2",
+        "streamer": "Saiiren",
+        "vod_part": 2,
+        "video_id": "T2mAgWjkl9k",
+        "timestamp_seconds": 0,
+        "timestamp_end_seconds": 2822
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "risk-of-rain-2-camila",
+    "title": null,
+    "date": "2023-11-07",
+    "activities": [
+      "gaming"
+    ],
+    "games": [
+      "Risk of Rain 2"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "imp cant eep ; ;",
+        "streamer": "Camila",
+        "video_id": "MqIsTin4Ng4",
+        "timestamp_seconds": 3276,
+        "timestamp_end_seconds": 19692
+      }
+    ],
+    "notes": "Streamed on Camila's alt account."
+  },
+  {
+    "id": "lethal-company-saiiren-vtubers",
+    "title": "LETHAL COMPANY LOBBY",
+    "date": "2023-11-29",
+    "activities": [
+      "gaming"
+    ],
+    "games": [
+      "Lethal Company"
+    ],
+    "collab_partners": [
+      "Saiiren",
+      "Apricot",
+      "ObKatieKat",
+      "Zentreya"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "LETHAL COMPANY LOBBY | !vote !rates !xp !bp",
+        "streamer": "Saiiren",
+        "video_id": "7tmwW7Uvbg8",
+        "timestamp_seconds": 2152,
+        "timestamp_end_seconds": 14219
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "lethal-company-camila-big-collab",
+    "title": null,
+    "date": "2023-12-20",
+    "activities": [
+      "gaming"
+    ],
+    "games": [
+      "Lethal Company"
+    ],
+    "collab_partners": [
+      "Camila",
+      "Layna",
+      "Koko",
+      "Nekrolina",
+      "Toma",
+      "Trippy",
+      "Spongey",
+      "Flynn",
+      "Kurumi",
+      "Decurionz"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "CLOWN ACADEMIA [SUBATHON] (Day 19)(Part 3)",
+        "streamer": "Camila",
+        "video_id": "mbi78NMxW24",
+        "timestamp_seconds": 326,
+        "timestamp_end_seconds": 5839
+      }
+    ],
+    "notes": "Currently at 30:30 — not finished yet."
+  },
+  {
+    "id": "yapping-saiiren-story-time",
+    "title": "Story time into games",
+    "date": "2024-02-01",
+    "activities": [
+      "yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Saiiren"
+    ],
+    "appearance_weight": "partial",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Story time into games | !rates !xp !bp",
+        "streamer": "Saiiren",
+        "video_id": "SUeBPnUxY6k",
+        "timestamp_seconds": 1153,
+        "timestamp_end_seconds": 6395
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "yapping-koko-monkey-gooning-monday",
+    "title": null,
+    "date": "2024-03-03",
+    "activities": [
+      "yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Koko"
+    ],
+    "appearance_weight": "partial",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "monkey gooning monday",
+        "streamer": "Koko",
+        "video_id": "rbMHF9Tm64k",
+        "timestamp_seconds": 501,
+        "timestamp_end_seconds": 1749
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "helldivers-2-saiiren-koko",
+    "title": "Diving with a friend today?",
+    "date": "2024-03-20",
+    "activities": [
+      "gaming"
+    ],
+    "games": [
+      "Helldivers 2"
+    ],
+    "collab_partners": [
+      "Saiiren",
+      "Koko"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Diving with a friend today? | !rates !xp !yt",
+        "streamer": "Saiiren",
+        "video_id": "YDhsW3CVmh0",
+        "timestamp_seconds": 3245,
+        "timestamp_end_seconds": 9010
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "torture-tuesday-koko",
+    "title": null,
+    "date": "2025-07-28",
+    "activities": [
+      "yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Koko"
+    ],
+    "appearance_weight": "full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "𝘁𝗼𝗿𝘁𝘂𝗿𝗲 𝘁𝘂𝗲𝘀𝗱𝗮𝘆",
+        "streamer": "Koko",
+        "video_id": "3lM77W1nsAg",
+        "timestamp_seconds": 2733,
+        "timestamp_end_seconds": 7956
+      }
+    ],
+    "notes": "Currently at 30:30 — not finished yet."
+  }
+]

@@ -1,0 +1,31 @@
+[
+    {
+    "fallback": "#4B5563",
+    "activities": {
+    "gaming":     "#4A9EFF",
+    "yapping":    "#C084FC",
+    "prank-call": "#F87171",
+    "interview":  "#34D399",
+    "react":      "#FBBF24",
+    "subathon":   "#A78BFA",
+    "event":      "#F472B6"
+  },
+  "games": {
+    "Payday 3":     "#E8341C",
+    "Helldivers 2": "#FFD700"
+  },
+  "collab_partners": {
+    "Saiiren":  "#A8D8A8",
+    "Camila":   "#FFB347",
+    "MOTHERv3": "#7EB8D4",
+    "OkCode":   "#B39DDB",
+    "Koko":     "#F9A8D4",
+    "Miwo":     "#86EFAC"
+  },
+  "appearance_weight": {
+    "full":    "#22C55E",
+    "partial": "#EAB308",
+    "cameo":   "#6B7280"
+  }
+}
+]
