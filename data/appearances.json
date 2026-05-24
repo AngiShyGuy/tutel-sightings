@@ -4,14 +4,14 @@
     "title": null,
     "date": "2023-03-29",
     "activities": [
-      "prank-call",
-      "yapping"
+      "Prank Call",
+      "Yapping"
     ],
     "games": [],
     "collab_partners": [
       "MOTHERv3"
     ],
-    "appearance_weight": "cameo",
+    "appearance_weight": "Cameo",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -30,7 +30,7 @@
     "title": "GLITCHMILA scuffed stream",
     "date": "2023-03-30",
     "activities": [
-      "gaming"
+      "Gaming"
     ],
     "games": [
       "Roblox DOORS"
@@ -39,7 +39,7 @@
       "Camila",
       "MOTHERv3"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -58,14 +58,13 @@
     "title": null,
     "date": "2023-04-06",
     "activities": [
-      "yapping",
-      "react"
+      "Yapping"
     ],
     "games": [],
     "collab_partners": [
       "MOTHERv3"
     ],
-    "appearance_weight": "cameo",
+    "appearance_weight": "Cameo",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -84,14 +83,14 @@
     "title": null,
     "date": "2023-04-08",
     "activities": [
-      "interview",
-      "event"
+      "Interview",
+      "Event"
     ],
     "games": [],
     "collab_partners": [
       "Miyune"
     ],
-    "appearance_weight": "partial",
+    "appearance_weight": "Partial",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -110,7 +109,7 @@
     "title": "Massive Pico Park & Human Fall Flat Collab",
     "date": "2023-04-14",
     "activities": [
-      "gaming"
+      "Gaming"
     ],
     "games": [
       "Pico Park",
@@ -123,7 +122,7 @@
       "MOTHERv3",
       "OkCode"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -145,17 +144,44 @@
     "notes": null
   },
   {
+    "id": "pubg-anny",
+    "title": null,
+    "date": "2023-04-27",
+    "activities": [
+      "Gaming"
+    ],
+    "games": [
+      "PUBG"
+    ],
+    "collab_partners": [
+      "Anny"
+    ],
+    "appearance_weight": "Partial",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Anny and Vedal play PUBG",
+        "streamer": "Anny",
+        "video_id": "qr3zSxU2E7I",
+        "timestamp_seconds": 7697,
+        "timestamp_end_seconds": 13859
+      }
+    ],
+    "notes": null
+  },
+  {
     "id": "yapping-camila-short-friyay",
     "title": null,
     "date": "2023-04-28",
     "activities": [
-      "yapping"
+      "Yapping"
     ],
     "games": [],
     "collab_partners": [
       "Camila"
     ],
-    "appearance_weight": "cameo",
+    "appearance_weight": "Cameo",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -163,24 +189,24 @@
         "vod_title": "RANDOM SHORT FRIYAY STRIM",
         "streamer": "Camila",
         "video_id": "N6X_dirKVdY",
-        "timestamp_seconds": null,
-        "timestamp_end_seconds": null
+        "timestamp_seconds": 6305,
+        "timestamp_end_seconds": 7177
       }
     ],
-    "notes": "Short ~10 minute appearance. Camila's 'Random Short Friyay Stream'."
+    "notes": "Short ~10 minute appearance."
   },
   {
     "id": "yapping-camila-24hr-stream",
     "title": "🍥 24 HOUR STREAM UNTIL I GET UNBANNED FROM VEDAL987",
     "date": "2023-04-29",
     "activities": [
-      "yapping"
+      "Yapping"
     ],
     "games": [],
     "collab_partners": [
       "Camila"
     ],
-    "appearance_weight": "partial",
+    "appearance_weight": "Partial",
     "vod_type": "parts",
     "watched": false,
     "vods": [
@@ -200,7 +226,7 @@
     "title": null,
     "date": "2023-05-01",
     "activities": [
-      "gaming"
+      "Gaming"
     ],
     "games": [
       "Demonologist"
@@ -210,7 +236,7 @@
       "Saiiren",
       "MOTHERv3"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -229,7 +255,7 @@
     "title": null,
     "date": "2023-05-05",
     "activities": [
-      "gaming"
+      "Gaming"
     ],
     "games": [
       "Bread & Fred",
@@ -238,7 +264,7 @@
     "collab_partners": [
       "Saiiren"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -257,7 +283,7 @@
     "title": "Bread & Fred later w/ @vedal987",
     "date": "2023-05-23",
     "activities": [
-      "gaming"
+      "Gaming"
     ],
     "games": [
       "Bread & Fred"
@@ -265,7 +291,7 @@
     "collab_partners": [
       "Saiiren"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -280,11 +306,65 @@
     "notes": "Full game, as opposed to the earlier demo session."
   },
   {
+    "id": "among-us-anny",
+    "title": null,
+    "date": "2023-06-10",
+    "activities": [
+      "Gaming"
+    ],
+    "games": [
+      "Among Us"
+    ],
+    "collab_partners": [
+      "Anny"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "BIRTHDAY SUBATHON DAY 5!! 🍊",
+        "streamer": "Anny",
+        "video_id": "HLZCjrs1i_s",
+        "timestamp_seconds": 44,
+        "timestamp_end_seconds": 11930
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "among-us-anny-2",
+    "title": null,
+    "date": "2023-06-15",
+    "activities": [
+      "Gaming"
+    ],
+    "games": [
+      "Among Us"
+    ],
+    "collab_partners": [
+      "Anny"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "DEBUT TIME!! 🍊BIRTHDAY SUBATHON DAY 12",
+        "streamer": "Anny",
+        "video_id": "UW0a7ekrMsU",
+        "timestamp_seconds": 15,
+        "timestamp_end_seconds": 12011
+      }
+    ],
+    "notes": null
+  },
+  {
     "id": "pummel-party-camila-big-collab",
     "title": null,
     "date": "2023-07-10",
     "activities": [
-      "gaming"
+      "Gaming"
     ],
     "games": [
       "Pummel Party"
@@ -298,7 +378,7 @@
       "Elly",
       "Tectone"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -310,15 +390,149 @@
         "timestamp_end_seconds": 18615
       }
     ],
-    "notes": "One collab partner is listed as [REDACTED] in original notes."
+    "notes": null
+  },
+  {
+    "id": "ktane-camila",
+    "title": null,
+    "date": "2023-07-23",
+    "activities": [
+      "Gaming"
+    ],
+    "games": [
+      "Keep Talking and Nobody Explodes"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "DWUNK IMP TRIES TO DEFUSE A BOMB AND SAVE MILLIONS WITH Vedal987",
+        "streamer": "Camila",
+        "video_id": "DRIpvmO_E_o",
+        "timestamp_seconds": 1568,
+        "timestamp_end_seconds": 13660
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "ktane-camila-2",
+    "title": null,
+    "date": "2023-07-30",
+    "activities": [
+      "Gaming"
+    ],
+    "games": [
+      "Keep Talking and Nobody Explodes"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "LEWD IMP PLAYS KEEP TALKING AND NOBODY EXPLODES WITH Vedal987",
+        "streamer": "Camila",
+        "video_id": "8uzGHcyyReI",
+        "timestamp_seconds": 636,
+        "timestamp_end_seconds": 12970
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "ktane-camila-vr",
+    "title": null,
+    "date": "2023-08-13",
+    "activities": [
+      "Gaming",
+      "VR"
+    ],
+    "games": [
+      "Keep Talking and Nobody Explodes"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "🔴 VR KEEP TALKING AND NOBODY EXPLODES WITH this guy",
+        "streamer": "Camila",
+        "video_id": "PESP7XkXbcI",
+        "timestamp_seconds": 443,
+        "timestamp_end_seconds": 13490
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "cod-camila",
+    "title": null,
+    "date": "2023-08-13",
+    "activities": [
+      "Gaming"
+    ],
+    "games": [
+      "Call of Duty: Black Ops III"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "🔴 COME AND SPEED DATE US ! ! ! ft @bao YIPPIEEEEEEE",
+        "streamer": "Camila",
+        "video_id": "bv810NExTMQ",
+        "timestamp_seconds": 8781,
+        "timestamp_end_seconds": 23400
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "yapping-short-saiiren",
+    "title": null,
+    "date": "2023-09-10",
+    "activities": [
+      "Yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Saiiren"
+    ],
+    "appearance_weight": "Partial",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "NEETS ASSEMBLE PERSONA TODAY",
+        "streamer": "Saiiren",
+        "video_id": "ITwV_TAHWzU",
+        "timestamp_seconds": 5548,
+        "timestamp_end_seconds": 13490
+      }
+    ],
+    "notes": null
   },
   {
     "id": "payday3-saiiren-subathon-d4",
     "title": "UNCAPPED SUBATHON DAY 4 | GACHA VTUBER CAN YOU PULL ME? P.1",
     "date": "2023-09-26",
     "activities": [
-      "gaming",
-      "subathon"
+      "Gaming",
+      "Subathon"
     ],
     "games": [
       "Payday 3"
@@ -326,7 +540,7 @@
     "collab_partners": [
       "Saiiren"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -345,8 +559,8 @@
     "title": "UNCAPPED SUBATHON DAY 4 | GACHA VTUBER CAN YOU PULL ME? P.2 & P.3",
     "date": "2023-09-26",
     "activities": [
-      "gaming",
-      "subathon"
+      "Gaming",
+      "Subathon"
     ],
     "games": [
       "Payday 3"
@@ -355,7 +569,7 @@
       "Saiiren",
       "Camila"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "parts",
     "watched": false,
     "vods": [
@@ -381,8 +595,8 @@
     "title": "UNCAPPED DEBUT SUBATHON DAY 12 | GACHA VTUBER CAN YOU PULL ME? P.1",
     "date": "2023-10-03",
     "activities": [
-      "gaming",
-      "subathon"
+      "Gaming",
+      "Subathon"
     ],
     "games": [
       "Payday 3"
@@ -392,7 +606,7 @@
       "Camila",
       "OkCode"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -411,8 +625,8 @@
     "title": "UNCAPPED DEBUT SUBATHON DAY 14 | GACHA VTUBER CAN YOU PULL ME? P.1",
     "date": "2023-10-05",
     "activities": [
-      "gaming",
-      "subathon"
+      "Gaming",
+      "Subathon"
     ],
     "games": [
       "Payday 3"
@@ -422,7 +636,7 @@
       "Camila",
       "OkCode"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -441,7 +655,7 @@
     "title": "APEX COLLAB - CHAT VS STREAMER CHAT WINS @ LEVEL 70",
     "date": "2023-11-06",
     "activities": [
-      "gaming"
+      "Gaming"
     ],
     "games": [
       "For The King"
@@ -451,7 +665,7 @@
       "MOTHERv3",
       "OkCode"
     ],
-    "appearance_weight": "partial",
+    "appearance_weight": "Partial",
     "vod_type": "parts",
     "watched": false,
     "vods": [
@@ -479,7 +693,7 @@
     "title": null,
     "date": "2023-11-07",
     "activities": [
-      "gaming"
+      "Gaming"
     ],
     "games": [
       "Risk of Rain 2"
@@ -487,7 +701,7 @@
     "collab_partners": [
       "Camila"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -502,11 +716,96 @@
     "notes": "Streamed on Camila's alt account."
   },
   {
+    "id": "mario-kart-camila",
+    "title": null,
+    "date": "2023-11-10",
+    "activities": [
+      "Gaming",
+      "Drinking"
+    ],
+    "games": [
+      "Mario Kart 8"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "🔴 DRUNK MARIO KART WITH @vedal987 SPIN THE WHEEL OF PUNISHMENTS YIPPE",
+        "streamer": "Camila",
+        "video_id": "JiHqg9s32sg",
+        "timestamp_seconds": 671,
+        "timestamp_end_seconds": 15718
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "yapping-layna-camila",
+    "title": null,
+    "date": "2023-11-15",
+    "activities": [
+      "Yapping",
+      "Drinking",
+      "Gaming"
+    ],
+    "games": [
+      "skribbl.io"
+    ],
+    "collab_partners": [
+      "Layna",
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Kickin it with @camila and @vedal987",
+        "streamer": "Layna",
+        "video_id": "_FO9Zm0wECc",
+        "timestamp_seconds": 498,
+        "timestamp_end_seconds": 16460
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "birthday-cake-baking-layna-camila",
+    "title": null,
+    "date": "2023-11-24",
+    "activities": [
+      "Yapping",
+      "Baking"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Layna",
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "BIRTHDAY PARTY STREAM w Camila and Vedal🎉BAKING BRAIN CAKE BLIND",
+        "streamer": "Layna",
+        "video_id": "Jzjhggi8X2Y",
+        "timestamp_seconds": 290,
+        "timestamp_end_seconds": 16570
+      }
+    ],
+    "notes": null
+  },
+  {
     "id": "lethal-company-saiiren-vtubers",
     "title": "LETHAL COMPANY LOBBY",
     "date": "2023-11-29",
     "activities": [
-      "gaming"
+      "Gaming"
     ],
     "games": [
       "Lethal Company"
@@ -517,7 +816,7 @@
       "ObKatieKat",
       "Zentreya"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -532,11 +831,92 @@
     "notes": null
   },
   {
+    "id": "clown-academia-subathon-d2",
+    "title": null,
+    "date": "2023-12-04",
+    "activities": [
+      "Gaming"
+    ],
+    "games": [
+      "Lethal Company"
+    ],
+    "collab_partners": [
+      "Camila",
+      "Koko",
+      "Tobs",
+      "AEBI",
+      "Toma"
+    ],
+    "appearance_weight": "Partial",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "CLOWN ACADEMIA [SUBATHON] (Day 2)(Part 4)",
+        "streamer": "Camila",
+        "video_id": "ZA1-V5veTSI",
+        "timestamp_seconds": 8898,
+        "timestamp_end_seconds": 14949
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "clown-academia-subathon-d5",
+    "title": null,
+    "date": "2023-12-07",
+    "activities": [
+      "Yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Partial",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "CLOWN ACADEMIA [SUBATHON] (Day 5)(Part 1)",
+        "streamer": "Camila",
+        "video_id": "MTQ63WIK2tg",
+        "timestamp_seconds": 2680,
+        "timestamp_end_seconds": 6378
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "clown-academia-subathon-d11",
+    "title": "CLOWN ACADEMIA [SUBATHON] (Day 11)(Part 2)",
+    "date": "2023-12-07",
+    "activities": [
+      "Yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Partial",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "🔴 Vedal and Camila after AImila collab",
+        "streamer": "Camila",
+        "video_id": "1yGSiUyrM-A",
+        "timestamp_seconds": 195,
+        "timestamp_end_seconds": 2525
+      }
+    ],
+    "notes": null
+  },
+  {
     "id": "lethal-company-camila-big-collab",
     "title": null,
     "date": "2023-12-20",
     "activities": [
-      "gaming"
+      "Gaming"
     ],
     "games": [
       "Lethal Company"
@@ -553,7 +933,7 @@
       "Kurumi",
       "Decurionz"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -572,13 +952,13 @@
     "title": "Story time into games",
     "date": "2024-02-01",
     "activities": [
-      "yapping"
+      "Yapping"
     ],
     "games": [],
     "collab_partners": [
       "Saiiren"
     ],
-    "appearance_weight": "partial",
+    "appearance_weight": "Partial",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -597,13 +977,13 @@
     "title": null,
     "date": "2024-03-03",
     "activities": [
-      "yapping"
+      "Yapping"
     ],
     "games": [],
     "collab_partners": [
       "Koko"
     ],
-    "appearance_weight": "partial",
+    "appearance_weight": "Partial",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -622,7 +1002,7 @@
     "title": "Diving with a friend today?",
     "date": "2024-03-20",
     "activities": [
-      "gaming"
+      "Gaming"
     ],
     "games": [
       "Helldivers 2"
@@ -631,7 +1011,7 @@
       "Saiiren",
       "Koko"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
@@ -650,13 +1030,13 @@
     "title": null,
     "date": "2025-07-28",
     "activities": [
-      "yapping"
+      "Yapping"
     ],
     "games": [],
     "collab_partners": [
       "Koko"
     ],
-    "appearance_weight": "full",
+    "appearance_weight": "Full",
     "vod_type": "povs",
     "watched": false,
     "vods": [
