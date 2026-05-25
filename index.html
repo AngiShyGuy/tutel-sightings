@@ -21,12 +21,21 @@
         </div>
       </div>
       <div class="header-stats" id="header-stats"></div>
+      <button class="hamburger-btn" id="hamburger-btn" aria-label="Open filters">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </header>
 
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
   <main class="site-main">
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
+      <button class="sidebar-close-btn" id="sidebar-close" aria-label="Close filters">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Filters
+      </button>
 
       <div class="control-group">
         <label class="control-label" for="search-input">Search</label>
@@ -73,6 +82,14 @@
     </aside>
 
     <section class="content-area">
+      <div class="mobile-search-wrap">
+        <div class="search-wrap">
+          <input id="mobile-search-input" class="search-input" type="text" placeholder="Title, partner, game…" autocomplete="off" />
+          <span class="search-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+        </div>
+      </div>
       <div class="results-bar" id="results-bar"></div>
       <div class="card-grid" id="card-grid"></div>
       <div class="empty-state" id="empty-state" style="display:none">

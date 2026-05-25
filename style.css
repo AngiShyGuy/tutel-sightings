@@ -358,10 +358,12 @@ input { font-family: inherit; }
   transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
   position: relative;
 }
-.card:hover {
-  border-color: var(--border-strong);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
 }
 
 /* Thumbnail */
@@ -379,9 +381,12 @@ input { font-family: inherit; }
   display: block;
   transition: transform 300ms ease, filter 300ms ease;
 }
-.card-thumb-wrap:hover .card-thumb {
-  transform: scale(1.03);
-  filter: brightness(0.85);
+@media (hover: hover) {
+  .card-thumb-wrap:hover .card-thumb {
+    transform: scale(1.03);
+    filter: brightness(0.85);
+  }
+  .card-thumb-wrap:hover .card-thumb-overlay { opacity: 1; }
 }
 .card-thumb-placeholder {
   width: 100%;
@@ -403,7 +408,6 @@ input { font-family: inherit; }
   transition: opacity var(--transition);
   background: rgba(0,0,0,0.3);
 }
-.card-thumb-wrap:hover .card-thumb-overlay { opacity: 1; }
 .play-icon {
   width: 44px;
   height: 44px;
@@ -497,7 +501,9 @@ input { font-family: inherit; }
   cursor: pointer;
   transition: color var(--transition);
 }
-.card-title:hover { color: var(--green); }
+@media (hover: hover) {
+  .card-title:hover { color: var(--green); }
+}
 
 /* Card meta row */
 .card-meta {
@@ -679,20 +685,132 @@ input { font-family: inherit; }
 }
 .empty-clear-btn:hover { background: var(--border-strong); color: var(--text-primary); }
 
+/* --- Hamburger button (mobile only) --- */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  padding: 8px;
+  transition: background var(--transition);
+  flex-shrink: 0;
+}
+.hamburger-btn:hover { background: var(--bg-raised); }
+.hamburger-btn span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--text-secondary);
+  border-radius: 2px;
+  transition: background var(--transition);
+}
+.hamburger-btn:hover span { background: var(--text-primary); }
+
+/* Sidebar close button (mobile only) */
+.sidebar-close-btn {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 8px 4px 16px;
+  width: 100%;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+/* Backdrop */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 149;
+  backdrop-filter: blur(2px);
+}
+.sidebar-backdrop.visible { display: block; }
+
+/* Mobile search (hidden on desktop) */
+.mobile-search-wrap {
+  display: none;
+  margin-bottom: 14px;
+}
+
 /* --- Responsive --- */
 @media (max-width: 900px) {
+  /* Layout */
   .site-main {
     grid-template-columns: 1fr;
     padding: 16px;
   }
-  .sidebar {
-    position: static;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  .control-group { flex: 1; min-width: 160px; }
+
+  /* Header */
   .header-stats { display: none; }
+  .hamburger-btn { display: flex; }
+
+  /* Mobile search bar */
+  .mobile-search-wrap { display: block; }
+
+  /* Hide desktop search in sidebar */
+  .sidebar .control-group:first-of-type { display: none; }
+
+  /* Sidebar becomes a fixed drawer */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 280px;
+    height: 100dvh;
+    max-height: 100dvh;
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border-strong);
+    z-index: 150;
+    padding: 16px;
+    gap: 8px;
+    transition: left 260ms cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 32px rgba(0,0,0,0.4);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  .sidebar.open {
+    left: 0;
+  }
+  .sidebar-close-btn { display: flex; }
+
+  /* Bigger tap targets inside sidebar */
+  .sidebar .sort-btn {
+    padding: 11px 10px;
+    font-size: 14px;
+  }
+  .sidebar .filter-chip {
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+  .sidebar .filter-chip-dot {
+    width: 10px;
+    height: 10px;
+  }
+  .sidebar .filter-group-header {
+    padding: 8px 4px;
+  }
+  .sidebar .filter-group-label {
+    font-size: 12px;
+  }
+  .sidebar .watch-toggle-btn {
+    padding: 8px 4px;
+    font-size: 12px;
+  }
+  .sidebar .control-label {
+    font-size: 12px;
+  }
 }
+
 @media (max-width: 540px) {
   .header-inner { padding: 12px 16px; }
   .card-grid { grid-template-columns: 1fr; }

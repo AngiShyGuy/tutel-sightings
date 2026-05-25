@@ -510,6 +510,20 @@ async function copyLink(url) {
   }
   closeCardMenu();
 }
+
+// ── Sidebar (mobile drawer) ───────────────────────────────────
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebar-backdrop').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-backdrop').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
 function filterBy(cat, value) {
   const set = state.filters[cat];
   if (set.has(value)) set.delete(value);
@@ -521,16 +535,34 @@ function clearAllFilters() {
   for (const set of Object.values(state.filters)) set.clear();
   state.search = '';
   document.getElementById('search-input').value = '';
+  document.getElementById('mobile-search-input').value = '';
   render();
 }
 
 // ── Event bindings ────────────────────────────────────────────
 function bindEvents() {
-  // Search
+  // Desktop search
   document.getElementById('search-input').addEventListener('input', e => {
     state.search = e.target.value.trim();
+    document.getElementById('mobile-search-input').value = state.search;
     render();
   });
+
+  // Mobile search
+  document.getElementById('mobile-search-input').addEventListener('input', e => {
+    state.search = e.target.value.trim();
+    document.getElementById('search-input').value = state.search;
+    render();
+  });
+
+  // Hamburger open
+  document.getElementById('hamburger-btn').addEventListener('click', openSidebar);
+
+  // Sidebar close button
+  document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
+
+  // Backdrop close
+  document.getElementById('sidebar-backdrop').addEventListener('click', closeSidebar);
 
   // Sort
   document.getElementById('sort-options').addEventListener('click', e => {
