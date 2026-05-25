@@ -109,6 +109,85 @@
     <div class="partner-tooltip-inner" id="partner-tooltip-inner"></div>
   </div>
 
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-credit">Made with ❤️ by AngiShyGuy</span>
+      <button class="footer-about-btn" onclick="openModal()">About</button>
+    </div>
+  </footer>
+
+  <!-- About modal -->
+  <div class="modal-backdrop" id="modal-backdrop" style="display:none" onclick="closeModal()"></div>
+  <div class="modal" id="modal" style="display:none" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div class="modal-tabs">
+        <button class="modal-tab active" data-tab="credits">Credits</button>
+        <button class="modal-tab" data-tab="contact">Contact</button>
+        <button class="modal-tab" data-tab="legal">Legal</button>
+        <button class="modal-tab" data-tab="privacy">Privacy</button>
+      </div>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-panel active" data-panel="credits">
+        <p class="modal-section-label">VOD sources</p>
+        <p class="modal-text">VODs are sourced from the following YouTube channels:</p>
+        <ul class="modal-link-list">
+          <li><a href="https://www.youtube.com/@camilavods" target="_blank" rel="noopener">Camila VODs</a></li>
+          <li><a href="https://www.youtube.com/@MinikoMewArchive" target="_blank" rel="noopener">Minikomew Archive</a></li>
+          <li><a href="https://www.youtube.com/@cottontailvavod" target="_blank" rel="noopener">CottontailVA VOD Channel</a></li>
+          <li><a href="https://www.youtube.com/@KokoNutsVODs" target="_blank" rel="noopener">KokoNuts VOD Archive</a></li>
+          <li><a href="https://www.youtube.com/@annyvods" target="_blank" rel="noopener">anny VODs</a></li>
+          <li><a href="https://www.youtube.com/@Neuro-Sama-Collab-Archive" target="_blank" rel="noopener">Neuro Sama Collab Archive</a></li>
+          <li><a href="https://www.youtube.com/@SaiirenTwitchVods" target="_blank" rel="noopener">Saiiren Twitch VODs</a></li>
+          <li><a href="https://www.youtube.com/@LaynaLazarVODs" target="_blank" rel="noopener">Layna VODs</a></li>
+          <li><a href="https://www.youtube.com/@mv3twitchvods" target="_blank" rel="noopener">MOTHERv3 Twitch VODs</a></li>
+        </ul>
+        <p class="modal-text" style="margin-top:14px">For VODs which have been lost to time, shortened clips are sourced from:</p>
+        <ul class="modal-link-list">
+          <li><a href="https://www.youtube.com/@stazishere" target="_blank" rel="noopener">Staz</a></li>
+        </ul>
+      </div>
+
+      <div class="modal-panel" data-panel="contact">
+        <p class="modal-section-label">Open source</p>
+        <p class="modal-text">This project is open source and available on <a href="https://github.com/AngiShyGuy/tutel-sightings" target="_blank" rel="noopener">GitHub</a>. Contributions, corrections, and new sightings are welcome!</p>
+      </div>
+
+      <div class="modal-panel" data-panel="legal">
+        <p class="modal-section-label">Terms of use</p>
+        <div class="modal-legal-block">
+          <p class="modal-legal-term">Non-affiliation</p>
+          <p class="modal-text">This site is a fan-made project and is not affiliated with Neuro-sama, Vedal, or any related entities.</p>
+        </div>
+        <div class="modal-legal-block">
+          <p class="modal-legal-term">Content and liability</p>
+          <p class="modal-text">All information on this site is provided "as is" without warranties of any kind. The site does not guarantee the accuracy, completeness, or reliability of any content and is not liable for any errors or omissions.</p>
+        </div>
+        <div class="modal-legal-block">
+          <p class="modal-legal-term">Third-party content</p>
+          <p class="modal-text">This site may contain third-party links and is not responsible for the policies or materials of those third parties.</p>
+        </div>
+      </div>
+
+      <div class="modal-panel" data-panel="privacy">
+        <p class="modal-section-label">Privacy policy</p>
+        <div class="modal-legal-block">
+          <p class="modal-legal-term">Data collection</p>
+          <p class="modal-text">This site collects no personal data and has no analytics, tracking, or cookies of any kind.</p>
+        </div>
+        <div class="modal-legal-block">
+          <p class="modal-legal-term">Local storage</p>
+          <p class="modal-text">Your watch history (which VODs you've marked as watched) is stored exclusively in your browser's localStorage. This data never leaves your device and is not accessible to anyone else.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>

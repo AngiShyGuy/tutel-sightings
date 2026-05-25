@@ -658,7 +658,11 @@ function bindEvents() {
   // Close dropdown on scroll
   window.addEventListener('scroll', closePovDropdown, { passive: true });
 
-  // Re-measure chip overflow on resize
+  // Modal tabs
+  document.getElementById('modal')?.addEventListener('click', e => {
+    const tab = e.target.closest('.modal-tab');
+    if (tab) switchModalTab(tab.dataset.tab);
+  });
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -674,6 +678,28 @@ function escHtml(str) {
 function escAttr(str) {
   if (!str) return '';
   return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+// ── Modal ─────────────────────────────────────────────────────
+function openModal() {
+  document.getElementById('modal').style.display = '';
+  document.getElementById('modal-backdrop').style.display = '';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+  document.getElementById('modal-backdrop').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+function switchModalTab(tab) {
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.modal-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tab));
 }
 
 // ── Go ────────────────────────────────────────────────────────
