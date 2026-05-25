@@ -12,6 +12,7 @@ let watchedIds = new Set(JSON.parse(localStorage.getItem('tutel-watched') || '[]
 const state = {
   search: '',
   sort: 'date',
+  sortDir: 'desc',
   watch: 'all',
   filters: {
     activities: new Set(),
@@ -89,12 +90,13 @@ function entryDurationInfo(entry) {
 // ── Sort helpers ──────────────────────────────────────────────
 function sortedAppearances(list) {
   const copy = [...list];
+  const dir = state.sortDir === 'asc' ? 1 : -1;
   if (state.sort === 'date') {
     copy.sort((a, b) => {
       if (!a.date && !b.date) return 0;
       if (!a.date) return 1;
       if (!b.date) return -1;
-      return b.date.localeCompare(a.date);
+      return dir * a.date.localeCompare(b.date);
     });
   } else if (state.sort === 'duration') {
     copy.sort((a, b) => {
@@ -103,10 +105,10 @@ function sortedAppearances(list) {
       if (da == null && db == null) return 0;
       if (da == null) return 1;
       if (db == null) return -1;
-      return db - da;
+      return dir * (da - db);
     });
   } else if (state.sort === 'partners') {
-    copy.sort((a, b) => b.collab_partners.length - a.collab_partners.length);
+    copy.sort((a, b) => dir * (a.collab_partners.length - b.collab_partners.length));
   }
   return copy;
 }
@@ -127,16 +129,17 @@ function passesFilter(entry) {
     if (!title.includes(q) && !partners.includes(q) && !games.includes(q)) return false;
   }
 
-  // Active filters
+  // Active filters — AND within each category
   for (const [cat, set] of Object.entries(state.filters)) {
     if (!set.size) continue;
     if (cat === 'activities') {
-      if (!entry.activities.some(a => set.has(a))) return false;
+      if (![...set].every(a => entry.activities.includes(a))) return false;
     } else if (cat === 'games') {
-      if (!entry.games.some(g => set.has(g))) return false;
+      if (![...set].every(g => entry.games.includes(g))) return false;
     } else if (cat === 'collab_partners') {
-      if (!entry.collab_partners.some(p => set.has(p))) return false;
+      if (![...set].every(p => entry.collab_partners.includes(p))) return false;
     } else if (cat === 'appearance_weight') {
+      // Weight is a single value so OR makes sense here
       if (!set.has(entry.appearance_weight)) return false;
     }
   }
@@ -167,26 +170,40 @@ function buildFilterSidebar() {
     { label: 'Appearance Weight', cat: 'appearance_weight', items: allWeights  },
   ];
 
+  const chevronSvg = `<svg class="filter-group-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
+
   container.innerHTML = sections.map(({ label, cat, items }) => `
     <div class="filter-group" data-cat="${cat}">
-      <div class="filter-group-label">${label}</div>
-      ${items.map(item => {
-        const count = allAppearances.filter(e => {
-          if (cat === 'activities') return e.activities.includes(item);
-          if (cat === 'games') return e.games.includes(item);
-          if (cat === 'collab_partners') return e.collab_partners.includes(item);
-          if (cat === 'appearance_weight') return e.appearance_weight === item;
-        }).length;
-        const color = getColor(cat, item);
-        return `
-          <button class="filter-chip" data-cat="${cat}" data-value="${item}">
-            <span class="filter-chip-dot" style="background:${color}"></span>
-            <span class="filter-chip-name">${item}</span>
-            <span class="filter-chip-count">${count}</span>
-          </button>`;
-      }).join('')}
+      <button class="filter-group-header" onclick="toggleFilterGroup(this)">
+        <span class="filter-group-label">${label}</span>
+        ${chevronSvg}
+      </button>
+      <div class="filter-group-content" style="display:none">
+        ${items.map(item => {
+          const count = allAppearances.filter(e => {
+            if (cat === 'activities') return e.activities.includes(item);
+            if (cat === 'games') return e.games.includes(item);
+            if (cat === 'collab_partners') return e.collab_partners.includes(item);
+            if (cat === 'appearance_weight') return e.appearance_weight === item;
+          }).length;
+          const color = getColor(cat, item);
+          return `
+            <button class="filter-chip" data-cat="${cat}" data-value="${item}">
+              <span class="filter-chip-dot" style="background:${color}"></span>
+              <span class="filter-chip-name">${item}</span>
+              <span class="filter-chip-count">${count}</span>
+            </button>`;
+        }).join('')}
+      </div>
     </div>
   `).join('');
+}
+
+function toggleFilterGroup(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = content.style.display !== 'none';
+  content.style.display = isOpen ? 'none' : '';
+  btn.classList.toggle('open', !isOpen);
 }
 
 function updateFilterChipStates() {
@@ -437,9 +454,22 @@ function bindEvents() {
   document.getElementById('sort-options').addEventListener('click', e => {
     const btn = e.target.closest('.sort-btn');
     if (!btn) return;
-    state.sort = btn.dataset.sort;
-    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    const newSort = btn.dataset.sort;
+    if (newSort === state.sort) {
+      state.sortDir = state.sortDir === 'desc' ? 'asc' : 'desc';
+    } else {
+      state.sort = newSort;
+      state.sortDir = 'desc';
+    }
+    document.querySelectorAll('.sort-btn').forEach(b => {
+      const isActive = b.dataset.sort === state.sort;
+      b.classList.toggle('active', isActive);
+      const arrow = b.querySelector('.sort-arrow');
+      if (arrow) {
+        arrow.style.display = isActive ? '' : 'none';
+        arrow.classList.toggle('asc', state.sortDir === 'asc');
+      }
+    });
     render();
   });
 
