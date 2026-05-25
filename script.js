@@ -158,7 +158,7 @@ function buildFilterSidebar() {
   const allActivities = [...new Set(allAppearances.flatMap(e => e.activities))].sort();
   const allGames      = [...new Set(allAppearances.flatMap(e => e.games))].filter(Boolean).sort();
   const allPartners   = [...new Set(allAppearances.flatMap(e => e.collab_partners))].sort();
-  const allWeights    = ['full','partial','cameo'];
+  const allWeights    = ['Full','Partial','Cameo'];
 
   const sections = [
     { label: 'Activity',          cat: 'activities',      items: allActivities },
