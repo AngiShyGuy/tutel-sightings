@@ -310,7 +310,8 @@
     "title": null,
     "date": "2023-06-9",
     "activities": [
-      "Gaming"
+      "Gaming",
+      "Subathon"
     ],
     "games": [
       "Among Us"
@@ -337,7 +338,8 @@
     "title": null,
     "date": "2023-06-10",
     "activities": [
-      "Gaming"
+      "Gaming",
+      "Subathon"
     ],
     "games": [
       "Among Us"
@@ -364,7 +366,8 @@
     "title": null,
     "date": "2023-06-16",
     "activities": [
-      "Gaming"
+      "Gaming",
+      "Subathon"
     ],
     "games": [
       "Among Us"
@@ -864,7 +867,8 @@
     "title": "CLOWN ACADEMIA / TOMA PARTNER ANNIVERSARY",
     "date": "2023-12-04",
     "activities": [
-      "Gaming"
+      "Gaming",
+      "Subathon"
     ],
     "games": [
       "Lethal Company"
@@ -902,7 +906,8 @@
     "title": null,
     "date": "2023-12-07",
     "activities": [
-      "Yapping"
+      "Yapping",
+      "Subathon"
     ],
     "games": [],
     "collab_partners": [
@@ -927,7 +932,8 @@
     "title": "CLOWN ACADEMIA [SUBATHON] (Day 11)(Part 2)",
     "date": "2023-12-13",
     "activities": [
-      "Yapping"
+      "Yapping",
+      "Subathon"
     ],
     "games": [],
     "collab_partners": [
@@ -953,7 +959,8 @@
     "date": "2023-12-31",
     "activities": [
       "Gaming",
-      "VR"
+      "VR",
+      "Subathon"
     ],
     "games": [
       "VRChat"
@@ -980,7 +987,8 @@
     "title": null,
     "date": "2023-12-20",
     "activities": [
-      "Gaming"
+      "Gaming",
+      "Subathon"
     ],
     "games": [
       "Lethal Company"
@@ -1017,7 +1025,8 @@
     "date": "2024-01-07",
     "activities": [
       "Yapping",
-      "Subathon Timer Fixing"
+      "Subathon Timer Fixing",
+      "Subathon"
     ],
     "games": [],
     "collab_partners": [
@@ -1042,7 +1051,8 @@
     "title": null,
     "date": "2024-01-18?",
     "activities": [
-      "Yapping"
+      "Yapping",
+      "Subathon"
     ],
     "games": [],
     "collab_partners": [
@@ -1251,6 +1261,33 @@
         "video_id": "A63eshk5FO4",
         "timestamp_seconds": 526,
         "timestamp_end_seconds": 8163
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "helldivers-cerber",
+    "title": "Cerber's Helldivers Stream",
+    "date": "2024-04-27",
+    "activities": [
+      "Gaming"
+    ],
+    "games": [
+      "HELLDIVERS 2"
+    ],
+    "collab_partners": [
+      "Cerber"
+    ],
+    "appearance_weight": "Partial",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Unknown VOD Title",
+        "streamer": "Cerber",
+        "video_id": "-l5M4x5OI2U",
+        "timestamp_seconds": 16,
+        "timestamp_end_seconds": 1965
       }
     ],
     "notes": null
@@ -1574,6 +1611,33 @@
     "notes": null
   },
   {
+    "id": "subathon-cerber-call-in",
+    "title": null,
+    "date": "2025-06-11",
+    "activities": [
+      "Yapping",
+      "Subathon",
+      "Subathon Timer Fixing"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Cerber"
+    ],
+    "appearance_weight": "Cameo",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "CERBATHON DAY 1 ⭐ AAAAAAAAAA ૮ ・ﻌ・ა 💜🦴",
+        "streamer": "Cerber",
+        "video_id": "m_O9UubbnKg",
+        "timestamp_seconds": 1879,
+        "timestamp_end_seconds": 4151
+      }
+    ],
+    "notes": null
+  },
+  {
     "id": "raid-call-in-camila",
     "title": null,
     "date": "2025-06-13",
@@ -1594,6 +1658,33 @@
         "video_id": "bBx7z48bfto",
         "timestamp_seconds": 2401,
         "timestamp_end_seconds": 2780
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "subathon-mega-call-in",
+    "title": "Mega's Birthday Subathon!",
+    "date": "2025-07-27",
+    "activities": [
+      "Yapping",
+      "Subathon",
+      "Subathon Timer Fixing"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Megalodon"
+    ],
+    "appearance_weight": "Cameo",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Unknown VOD Title",
+        "streamer": "Megalodon",
+        "video_id": "LffWMcvRZZU",
+        "timestamp_seconds": 110,
+        "timestamp_end_seconds": 1473
       }
     ],
     "notes": null
