@@ -124,9 +124,14 @@ input { font-family: inherit; }
 .sidebar {
   position: sticky;
   top: 74px;
+  max-height: calc(100vh - 102px);
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+  padding-right: 2px;
 }
 .control-group {
   background: var(--bg-surface);
@@ -138,11 +143,11 @@ input { font-family: inherit; }
   gap: 10px;
 }
 .control-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
   font-family: var(--font-mono);
 }
 .filter-header {
@@ -196,6 +201,8 @@ input { font-family: inherit; }
   border-radius: var(--radius-sm);
   transition: background var(--transition), color var(--transition);
   font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
 }
 .sort-btn:hover { background: var(--bg-raised); color: var(--text-primary); }
 .sort-btn.active {
@@ -203,6 +210,14 @@ input { font-family: inherit; }
   color: var(--green);
   font-weight: 500;
 }
+.sort-arrow {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  opacity: 0.7;
+  transition: transform 200ms ease;
+}
+.sort-arrow.asc { transform: rotate(180deg); }
 
 /* Watch toggle */
 .watch-toggle-wrap {
@@ -233,14 +248,42 @@ input { font-family: inherit; }
   flex-direction: column;
   gap: 4px;
 }
+/* Filter group collapsible header */
+.filter-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 4px 2px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition);
+  cursor: pointer;
+  text-align: left;
+  gap: 6px;
+}
+.filter-group-header:hover { background: var(--bg-raised); }
 .filter-group-label {
-  font-size: 10px;
-  color: var(--text-muted);
+  font-size: 11px;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  margin-top: 6px;
-  margin-bottom: 2px;
   font-family: var(--font-mono);
+  font-weight: 500;
+}
+.filter-group-chevron {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+.filter-group-header.open .filter-group-chevron {
+  transform: rotate(180deg);
+}
+.filter-group-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  overflow: hidden;
 }
 .filter-chip {
   display: flex;
@@ -463,7 +506,7 @@ input { font-family: inherit; }
   gap: 8px;
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   flex-wrap: wrap;
 }
 .card-meta-sep { opacity: 0.4; }
