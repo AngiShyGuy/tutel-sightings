@@ -30,7 +30,8 @@ async function init() {
       fetch('data/colors.json').then(r => r.json()),
     ]);
     allAppearances = appData;
-    colors = colorData;
+    // Handle colors.json being accidentally wrapped in an array
+    colors = Array.isArray(colorData) ? colorData[0] : colorData;
   } catch (e) {
     console.error('Failed to load data:', e);
     document.getElementById('card-grid').innerHTML =
@@ -253,8 +254,8 @@ function getWatchUrl(vod) {
 }
 
 function getStreamerLabel(vod) {
-  if (vod.streamer) return `${vod.streamer}'s POV`;
   if (vod.vod_part != null) return `Part ${vod.vod_part}`;
+  if (vod.streamer) return `${vod.streamer}'s POV`;
   return 'Watch';
 }
 
@@ -320,7 +321,7 @@ function renderCard(entry) {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
         </div>
-        ${isMulti ? `<div class="multi-vod-badge">${entry.vods.length} POVs</div>` : ''}
+        ${isMulti ? `<div class="multi-vod-badge">${entry.vods.length} ${entry.vod_type === 'parts' ? 'Parts' : 'POVs'}</div>` : ''}
       </div>
       <div class="card-body">
         <div class="card-chips">${renderChips(entry)}</div>
