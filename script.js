@@ -330,6 +330,9 @@ function renderCard(entry) {
           ${entry.date ? `<span>${entry.date}</span>` : '<span style="opacity:0.4">Date unknown</span>'}
           ${duration ? `<span class="card-meta-sep">·</span><span class="card-duration">${duration}</span>` : ''}
           ${isWatched ? '<span class="watched-dot" title="Watched"></span>' : ''}
+          <span class="card-menu-wrap">
+            <button class="card-menu-btn" onclick="openCardMenu(event,'${entry.id}')" title="More options">···</button>
+          </span>
         </div>
       </div>
     </article>
@@ -404,31 +407,109 @@ function closePovDropdown() {
 }
 
 // ── Partner tooltip ───────────────────────────────────────────
+let tooltipHideTimer = null;
+
 function showPartnerTooltip(event, el) {
+  clearTimeout(tooltipHideTimer);
   const names = JSON.parse(decodeURIComponent(el.dataset.overflow));
   const tooltip = document.getElementById('partner-tooltip');
   const inner   = document.getElementById('partner-tooltip-inner');
 
   inner.innerHTML = names.map(name => {
-    const color = getColor('collab_partners', name);
-    return `<div class="tooltip-partner">
-      <span class="tooltip-dot" style="background:${color}"></span>
-      <span>${escHtml(name)}</span>
-    </div>`;
+    const hex = getColor('collab_partners', name);
+    return `<button class="chip" style="background:${hex}22;color:${hex};border-color:${hex}44;"
+      onclick="filterBy('collab_partners','${escAttr(name)}');hidePartnerTooltip()">
+      <span class="chip-dot"></span>${escHtml(name)}
+    </button>`;
   }).join('');
 
   tooltip.style.display = '';
-  const rect = el.getBoundingClientRect();
+  const rect  = el.getBoundingClientRect();
   const tRect = tooltip.getBoundingClientRect();
-  tooltip.style.left = Math.min(rect.left, window.innerWidth - tRect.width - 12) + 'px';
-  tooltip.style.top  = (rect.bottom + 6) + 'px';
+  tooltip.style.left = Math.min(rect.left, window.innerWidth  - tRect.width  - 12) + 'px';
+  tooltip.style.top  = Math.min(rect.bottom + 6, window.innerHeight - tRect.height - 12) + 'px';
 }
 
 function hidePartnerTooltip() {
-  document.getElementById('partner-tooltip').style.display = 'none';
+  tooltipHideTimer = setTimeout(() => {
+    document.getElementById('partner-tooltip').style.display = 'none';
+  }, 120);
 }
 
-// ── Filter actions ────────────────────────────────────────────
+function keepPartnerTooltip() {
+  clearTimeout(tooltipHideTimer);
+}
+
+// ── Card menu (···) ───────────────────────────────────────────
+let activeCardMenu = null;
+
+function openCardMenu(event, entryId) {
+  event.stopPropagation();
+  // Close if same menu already open
+  if (activeCardMenu === entryId) { closeCardMenu(); return; }
+  closeCardMenu();
+
+  const entry = allAppearances.find(e => e.id === entryId);
+  if (!entry) return;
+  activeCardMenu = entryId;
+
+  const copyIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+
+  let items;
+  if (entry.vods.length === 1) {
+    const url = getWatchUrl(entry.vods[0]);
+    items = `<button class="card-menu-item" onclick="copyLink('${escAttr(url)}')">
+      ${copyIcon} Copy link
+    </button>`;
+  } else {
+    items = entry.vods.map(vod => {
+      const url = getWatchUrl(vod);
+      const label = getStreamerLabel(vod);
+      return `<button class="card-menu-item" onclick="copyLink('${escAttr(url)}')">
+        ${copyIcon}
+        <span><span>Copy link</span><span class="card-menu-label-sub">${escHtml(label)}</span></span>
+      </button>`;
+    }).join('');
+  }
+
+  const menu = document.createElement('div');
+  menu.className = 'card-menu-dropdown';
+  menu.id = 'card-menu-dropdown';
+  menu.innerHTML = items;
+  document.body.appendChild(menu);
+
+  // Position near the button
+  const btn = event.currentTarget;
+  const rect = btn.getBoundingClientRect();
+  const mw = 190;
+  const left = Math.min(rect.right - mw, window.innerWidth - mw - 8);
+  const top  = Math.min(rect.bottom + 4, window.innerHeight - menu.offsetHeight - 8);
+  menu.style.left = Math.max(8, left) + 'px';
+  menu.style.top  = top + 'px';
+}
+
+function closeCardMenu() {
+  const existing = document.getElementById('card-menu-dropdown');
+  if (existing) existing.remove();
+  activeCardMenu = null;
+}
+
+async function copyLink(url) {
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch {
+    // Fallback for browsers without clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+  }
+  closeCardMenu();
+}
 function filterBy(cat, value) {
   const set = state.filters[cat];
   if (set.has(value)) set.delete(value);
@@ -494,10 +575,13 @@ function bindEvents() {
   // Clear all filters button
   document.getElementById('clear-filters').addEventListener('click', clearAllFilters);
 
-  // Close dropdown on outside click
+  // Close dropdown and card menu on outside click
   document.addEventListener('click', e => {
     if (!document.getElementById('pov-dropdown').contains(e.target)) {
       closePovDropdown();
+    }
+    if (activeCardMenu && !e.target.closest('#card-menu-dropdown') && !e.target.closest('.card-menu-btn')) {
+      closeCardMenu();
     }
   });
 
