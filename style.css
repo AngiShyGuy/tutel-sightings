@@ -508,6 +508,8 @@ input { font-family: inherit; }
   font-size: 11px;
   color: var(--text-secondary);
   flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 6px;
 }
 .card-meta-sep { opacity: 0.4; }
 .card-duration { color: var(--text-secondary); }
