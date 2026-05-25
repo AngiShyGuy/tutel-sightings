@@ -243,11 +243,11 @@ The `"[streamer]'s POV"` chips (detailed below) are colored by taking the stream
 
 ### Filter & Sort Controls
 
-- [ ] Filter by: activity, game, collab partner, appearance weight
-- [ ] Sort by: date, collab duration, total on-screen collab duration, collab partner count
-- [ ] Search bar (matches title, partner names, game names)
+- [x] Filter by: activity, game, collab partner, appearance weight
+- [x] Sort by: date, collab duration, collab partner count
+- [x] Search bar (matches title, partner names, game names)
 - [ ] Personal watch status toggle (stored in browser localStorage — your eyes only)
-- [ ] Mobile responsive layout
+- [x] Mobile responsive layout
 
 ---
 
@@ -293,20 +293,6 @@ tutel-sightings/
 - `vod_type` only matters for multi-VOD entries; leave it as `"povs"` unless the VODs are sequential parts of one session
 - POV chip colors are derived automatically from the partner name — no extra setup needed
 - The thumbnail is fetched automatically from YouTube using the `video_id`
-
----
-
-## 📋 Backlog Migration Status
-
-Original data source: a personal Markdown checklist (`vedal_niche_content.md`).
-
-- [x] Migrate all existing entries to `appearances.json`
-- [x] Fill in real VOD titles (`vod_title`) from YouTube
-- [x] Add missing dates (check YouTube upload dates)
-- [x] Add missing video IDs for Saiiren's Subathon Day 4 & 12 & 14 entries
-- [x] Verify/convert all timestamps to seconds
-- [x] Fill in `timestamp_end_seconds` per VOD where known
-- [ ] Decide colors for all existing VTubers and games in `colors.json`
 
 ---
 
