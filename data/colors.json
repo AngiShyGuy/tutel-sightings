@@ -1,14 +1,13 @@
-[
-    {
-    "fallback": "#4B5563",
-    "activities": {
-    "gaming":     "#4A9EFF",
-    "yapping":    "#C084FC",
-    "prank-call": "#F87171",
-    "interview":  "#34D399",
-    "react":      "#FBBF24",
-    "subathon":   "#A78BFA",
-    "event":      "#F472B6"
+{
+  "fallback": "#6B7280",
+  "activities": {
+    "Gaming":     "#4A9EFF",
+    "Yapping":    "#C084FC",
+    "Prank-call": "#F87171",
+    "Interview":  "#34D399",
+    "React":      "#FBBF24",
+    "Subathon":   "#A78BFA",
+    "Event":      "#F472B6"
   },
   "games": {
     "Payday 3":     "#E8341C",
@@ -23,9 +22,8 @@
     "Miwo":     "#86EFAC"
   },
   "appearance_weight": {
-    "full":    "#22C55E",
-    "partial": "#EAB308",
-    "cameo":   "#6B7280"
+    "Full":    "#22C55E",
+    "Partial": "#EAB308",
+    "Cameo":   "#6B7280"
   }
 }
-]
