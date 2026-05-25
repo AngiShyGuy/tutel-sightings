@@ -1,17 +1,18 @@
 {
   "fallback": "#838c9e",
   "activities": {
-    "Baking":          "#ffabab",
-    "Development":     "#eeeeee",
-    "Drinking":        "#ff4056",
-    "Event":           "#F472B6",
-    "Fan Submissions": "#FBBF24",
-    "Gaming":          "#4A9EFF",
-    "Interview":       "#34D399",
-    "Prank Call":      "#F87171",
-    "Subathon":        "#A78BFA",
-    "VR":              "#FBBF24",
-    "Yapping":         "#C084FC"
+    "Baking":                 "#ffabab",
+    "Development":            "#eeeeee",
+    "Drinking":               "#ff4056",
+    "Event":                  "#F472B6",
+    "Fan Submissions":        "#FBBF24",
+    "Gaming":                 "#4A9EFF",
+    "Interview":              "#34D399",
+    "Prank Call":             "#F87171",
+    "Subathon":               "#A78BFA",
+    "Subathon Timer Fixing":  "#afa0db",
+    "VR":                     "#FBBF24",
+    "Yapping":                "#C084FC"
   },
   "games": {
     "Among Us":                         "#ea1515",
@@ -51,6 +52,7 @@
     "Bao":            "#7fbdea",
     "Camila":         "#f55a92",
     "Captain Hannah": "#7b649b",
+    "Cerber":         "#f4d8b2",
     "Cottontail":     "#cba3f0",
     "Decurionz":      "#7c67c9",
     "Elly":           "#de2027",
