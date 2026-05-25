@@ -576,6 +576,7 @@
       {
         "vod_title": "UNCAPPED SUBATHON DAY 4 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? | !subathon !rates P.2",
         "streamer": "Saiiren",
+        "vod_part": 1,
         "video_id": "Q1-vkW-oYVY",
         "timestamp_seconds": 40620,
         "timestamp_end_seconds": 43081
@@ -583,6 +584,7 @@
       {
         "vod_title": "UNCAPPED SUBATHON DAY 4 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? | !subathon !rates P.3",
         "streamer": "Saiiren",
+        "vod_part": 2,
         "video_id": "z53FJTJ7q-8",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 11415
