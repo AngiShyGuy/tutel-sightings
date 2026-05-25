@@ -1009,7 +1009,7 @@
         "timestamp_end_seconds": 5839
       }
     ],
-    "notes": "Currently at 30:30 — not finished yet."
+    "notes": null
   },
   {
     "id": "toma-3.0-debut",
@@ -1386,6 +1386,58 @@
     "notes": null
   },
   {
+    "id": "call-in-ipn-camila",
+    "title": null,
+    "date": "2024-08-13",
+    "activities": [
+      "Yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila",
+      "iPN"
+    ],
+    "appearance_weight": "Cameo",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "REACTING TO CHAT SUBMITTED MEMES (#18) | (LIFE UPDATE)",
+        "streamer": "Camila",
+        "video_id": "B4zP59YLbhQ",
+        "timestamp_seconds": 4284,
+        "timestamp_end_seconds": 5597
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "interview-layna-postraid",
+    "title": "Layna Interviews Vedal After a Raid",
+    "date": "2024-09-16",
+    "activities": [
+      "Yapping",
+      "Interview"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Layna"
+    ],
+    "appearance_weight": "Cameo",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Unknown VOD Title",
+        "streamer": "Layna",
+        "video_id": "boe0citX0g0",
+        "timestamp_seconds": 69,
+        "timestamp_end_seconds": 1375
+      }
+    ],
+    "notes": null
+  },
+  {
     "id": "cod-camila-2",
     "title": null,
     "date": "2024-11-09",
@@ -1443,6 +1495,110 @@
     "notes": null
   },
   {
+    "id": "interview-layna-charity",
+    "title": "The Vedal Interview 💜 Layna's 2 Day Charity Event 💜",
+    "date": "2025-02-13",
+    "activities": [
+      "Yapping",
+      "Interview"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Layna"
+    ],
+    "appearance_weight": "Cameo",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Unknown VOD Title",
+        "streamer": "Layna",
+        "video_id": "YImW8jCDYOw",
+        "timestamp_seconds": 7,
+        "timestamp_end_seconds": 1338
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "yapping-megalodon",
+    "title": null,
+    "date": "2025-05-06",
+    "activities": [
+      "Yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Megalodon"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "𓂁♡ Drinking and driving (in ATS) xdx damn it feels good to be back＜3♡𓂁",
+        "streamer": "Megalodon",
+        "video_id": "C-YizUNAeHE",
+        "timestamp_seconds": 17810,
+        "timestamp_end_seconds": 23532
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "carry-the-glass-camila",
+    "title": null,
+    "date": "2025-05-08",
+    "activities": [
+      "Gaming",
+      "Drinking"
+    ],
+    "games": [
+      "Carry The Glass"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "drunk carry the glass with green boy idk (COLLAB w/ Vedal987)",
+        "streamer": "Camila",
+        "video_id": "th0uUDwnhsQ",
+        "timestamp_seconds": 619,
+        "timestamp_end_seconds": 19935
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "raid-call-in-camila",
+    "title": null,
+    "date": "2025-06-13",
+    "activities": [
+      "Yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Cameo",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "IMP REACTS TO CHATS SUBMITTED MEMES (#32)",
+        "streamer": "Camila",
+        "video_id": "bBx7z48bfto",
+        "timestamp_seconds": 2401,
+        "timestamp_end_seconds": 2780
+      }
+    ],
+    "notes": null
+  },
+  {
     "id": "torture-tuesday-koko",
     "title": null,
     "date": "2025-07-28",
@@ -1463,6 +1619,141 @@
         "video_id": "3lM77W1nsAg",
         "timestamp_seconds": 2733,
         "timestamp_end_seconds": 7956
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "peak-camila",
+    "title": null,
+    "date": "2025-08-05",
+    "activities": [
+      "Gaming",
+      "Drinking"
+    ],
+    "games": [
+      "PEAK",
+      "Buckshot Roulette"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Drunk Peak With Vedal987",
+        "streamer": "Camila",
+        "video_id": "NlMD-aFXdPE",
+        "timestamp_seconds": 1694,
+        "timestamp_end_seconds": 19448
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "fashion-review-cottontail",
+    "title": null,
+    "date": "2025-08-12",
+    "activities": [
+      "Fan Submissions",
+      "Yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Cottontail"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Reviewing Chat's Fashion with the Top 3 Fashionista Vedal987",
+        "streamer": "Cottontail",
+        "video_id": "vbusB6IqM_s",
+        "timestamp_seconds": 2853,
+        "timestamp_end_seconds": 13552
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "prank-call-pokemon-camila",
+    "title": null,
+    "date": "2025-08-29",
+    "activities": [
+      "Yapping",
+      "Prank Call"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Cameo",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "REACTING TO CHAT SUBMITTED MEMES (#39)",
+        "streamer": "Camila",
+        "video_id": "zNlqjcxDcdA",
+        "timestamp_seconds": 2821,
+        "timestamp_end_seconds": 3414
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "call-in-camila-2",
+    "title": null,
+    "date": "2025-09-02",
+    "activities": [
+      "Yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Cameo",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "Reviewing Chat's Fashion with the Top 3 Fashionista Vedal987",
+        "streamer": "Camila",
+        "video_id": "ewi4khi6sTU",
+        "timestamp_seconds": 6231,
+        "timestamp_end_seconds": 6397
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "minecraft-vr-camila",
+    "title": null,
+    "date": "2025-11-06",
+    "activities": [
+      "Gaming",
+      "Drinking",
+      "VR"
+    ],
+    "games": [
+      "Minecraft"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "vod_type": "povs",
+    "watched": false,
+    "vods": [
+      {
+        "vod_title": "DRUNK VR MINECRAFT WITH VEDAL987",
+        "streamer": "Camila",
+        "video_id": "p189v2qRflc",
+        "timestamp_seconds": 42,
+        "timestamp_end_seconds": 14584
       }
     ],
     "notes": null
