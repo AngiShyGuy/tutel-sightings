@@ -262,37 +262,74 @@ function getStreamerLabel(vod) {
 function renderChips(entry) {
   const chips = [];
 
-  // Activities
   entry.activities.forEach(act => {
-    chips.push(`<button class="chip" style="${chipStyle('activities', act)}" onclick="filterBy('activities','${act}')" title="${act}">
-      <span class="chip-dot"></span>${act}
-    </button>`);
+    chips.push(`<button class="chip" data-cat="activities" data-value="${escAttr(act)}" style="${chipStyle('activities', act)}" onclick="filterBy('activities','${escAttr(act)}')">${escHtml(act)}</button>`);
   });
 
-  // Games
   entry.games.forEach(game => {
-    chips.push(`<button class="chip" style="${chipStyle('games', game)}" onclick="filterBy('games','${escAttr(game)}')" title="${game}">
-      <span class="chip-dot"></span>${escHtml(game)}
-    </button>`);
+    chips.push(`<button class="chip" data-cat="games" data-value="${escAttr(game)}" style="${chipStyle('games', game)}" onclick="filterBy('games','${escAttr(game)}')">${escHtml(game)}</button>`);
   });
 
-  // Partners — max 2 visible
-  const partners = entry.collab_partners;
-  const visible = partners.slice(0, 2);
-  const overflow = partners.slice(2);
-
-  visible.forEach(p => {
-    chips.push(`<button class="chip" style="${chipStyle('collab_partners', p)}" onclick="filterBy('collab_partners','${escAttr(p)}')" title="${p}">
-      <span class="chip-dot"></span>${escHtml(p)}
-    </button>`);
+  entry.collab_partners.forEach(p => {
+    chips.push(`<button class="chip" data-cat="collab_partners" data-value="${escAttr(p)}" style="${chipStyle('collab_partners', p)}" onclick="filterBy('collab_partners','${escAttr(p)}')">${escHtml(p)}</button>`);
   });
-
-  if (overflow.length) {
-    const tooltipData = encodeURIComponent(JSON.stringify(overflow));
-    chips.push(`<span class="chip-overflow" data-overflow="${tooltipData}" onmouseenter="showPartnerTooltip(event,this)" onmouseleave="hidePartnerTooltip()">+${overflow.length} more</span>`);
-  }
 
   return chips.join('');
+}
+
+// Called after render — measures each chip row and collapses overflow into +N more
+function applyChipOverflow() {
+  document.querySelectorAll('.card-chips').forEach(container => {
+    const chips = [...container.querySelectorAll('.chip')];
+    if (!chips.length) return;
+
+    // Reset any previous overflow pass
+    chips.forEach(c => c.style.display = '');
+    const existing = container.querySelector('.chip-overflow');
+    if (existing) existing.remove();
+
+    // Measure line height from first chip
+    const firstRect = chips[0].getBoundingClientRect();
+    const lineHeight = firstRect.height;
+    const maxBottom = firstRect.top + lineHeight * 2 + 8; // 2 lines from where chips actually start
+
+    // Find the first chip that overflows 2 lines
+    let overflowFrom = -1;
+    for (let i = 0; i < chips.length; i++) {
+      if (chips[i].getBoundingClientRect().bottom > maxBottom) {
+        overflowFrom = i;
+        break;
+      }
+    }
+    if (overflowFrom === -1) return; // Everything fits
+
+    // Build overflow data from hidden chips
+    const hiddenChips = chips.slice(overflowFrom);
+    hiddenChips.forEach(c => c.style.display = 'none');
+
+    const overflowData = hiddenChips.map(c => ({
+      cat: c.dataset.cat,
+      value: c.dataset.value
+    }));
+
+    const badge = document.createElement('span');
+    badge.className = 'chip-overflow';
+    badge.textContent = `+${overflowData.length} more`;
+    badge.dataset.overflow = encodeURIComponent(JSON.stringify(overflowData));
+    badge.addEventListener('mouseenter', e => showOverflowTooltip(e, badge));
+    badge.addEventListener('mouseleave', hidePartnerTooltip);
+    container.appendChild(badge);
+
+    // If the badge itself overflowed into a 3rd line, pull one more chip in
+    let safety = chips.length;
+    while (badge.getBoundingClientRect().bottom > maxBottom && overflowFrom > 0 && safety-- > 0) {
+      overflowFrom--;
+      chips[overflowFrom].style.display = 'none';
+      overflowData.unshift({ cat: chips[overflowFrom].dataset.cat, value: chips[overflowFrom].dataset.value });
+      badge.textContent = `+${overflowData.length} more`;
+      badge.dataset.overflow = encodeURIComponent(JSON.stringify(overflowData));
+    }
+  });
 }
 
 function renderCard(entry) {
@@ -352,6 +389,7 @@ function render() {
   } else {
     empty.style.display = 'none';
     grid.innerHTML = results.map(renderCard).join('');
+    requestAnimationFrame(applyChipOverflow);
   }
 
   const total = allAppearances.length;
@@ -409,17 +447,17 @@ function closePovDropdown() {
 // ── Partner tooltip ───────────────────────────────────────────
 let tooltipHideTimer = null;
 
-function showPartnerTooltip(event, el) {
+function showOverflowTooltip(event, el) {
   clearTimeout(tooltipHideTimer);
-  const names = JSON.parse(decodeURIComponent(el.dataset.overflow));
+  const items = JSON.parse(decodeURIComponent(el.dataset.overflow));
   const tooltip = document.getElementById('partner-tooltip');
   const inner   = document.getElementById('partner-tooltip-inner');
 
-  inner.innerHTML = names.map(name => {
-    const hex = getColor('collab_partners', name);
+  inner.innerHTML = items.map(({ cat, value }) => {
+    const hex = getColor(cat, value);
     return `<button class="chip" style="background:${hex}22;color:${hex};border-color:${hex}44;"
-      onclick="filterBy('collab_partners','${escAttr(name)}');hidePartnerTooltip()">
-      <span class="chip-dot"></span>${escHtml(name)}
+      onclick="filterBy('${escAttr(cat)}','${escAttr(value)}');hidePartnerTooltip()">
+      <span class="chip-dot"></span>${escHtml(value)}
     </button>`;
   }).join('');
 
@@ -619,6 +657,13 @@ function bindEvents() {
 
   // Close dropdown on scroll
   window.addEventListener('scroll', closePovDropdown, { passive: true });
+
+  // Re-measure chip overflow on resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(applyChipOverflow, 150);
+  }, { passive: true });
 }
 
 // ── Escape helpers ────────────────────────────────────────────
