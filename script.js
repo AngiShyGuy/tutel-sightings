@@ -365,6 +365,32 @@ function renderCard(entry) {
     ? `onclick="openPovDropdown(event, '${entry.id}')"`
     : `onclick="window.open('${singleUrl}','_blank')"`;
 
+  // ── Calculate User Progress Overlay ──
+  let progressHtml = '';
+  let progressBadgeHtml = '';
+
+  if (userProgress[entry.id]) {
+    const p = userProgress[entry.id];
+    const vod = entry.vods.find(v => v.video_id === p.videoId);
+    
+    // Only render progress UI if we know the total duration of this specific VOD
+    if (vod && vod.timestamp_end_seconds) {
+      const start = vod.timestamp_seconds || 0;
+      const totalCollabDuration = vod.timestamp_end_seconds - start;
+      const userEffectiveProgress = p.seconds - start;
+      
+      // Calculate, floor, and clamp the percentage between 0 and 100
+      let percent = Math.floor((userEffectiveProgress / totalCollabDuration) * 100);
+      percent = Math.max(0, Math.min(100, percent));
+
+      progressBadgeHtml = `<div class="progress-badge">${percent}% Watched</div>`;
+      progressHtml = `
+        <div class="card-progress-bar">
+          <div class="card-progress-fill" style="width: ${percent}%"></div>
+        </div>`;
+    }
+  }
+
   return `
     <article class="card" data-id="${entry.id}">
       <div class="card-thumb-wrap" ${thumbClick}>
@@ -378,6 +404,8 @@ function renderCard(entry) {
           </div>
         </div>
         ${isMulti ? `<div class="multi-vod-badge">${entry.vods.length} ${entry.vod_type === 'parts' ? 'Parts' : 'POVs'}</div>` : ''}
+        ${progressBadgeHtml}
+        ${progressHtml}
       </div>
       <div class="card-body">
         <div class="card-chips">${renderChips(entry)}</div>
@@ -437,13 +465,24 @@ function openPovDropdown(event, entryId) {
 
   const inner = document.getElementById('pov-dropdown-inner');
   inner.innerHTML = entry.vods.map(vod => {
-    const label = getStreamerLabel(vod);
-    const url = getWatchUrl(vod, entryId);;
+    let label = getStreamerLabel(vod);
+    
+    // Check if this specific VOD is the one the user has active progress on
+    const isActiveProgress = userProgress[entryId] && userProgress[entryId].videoId === vod.video_id;
+    if (isActiveProgress) {
+      label += ' (Watching)';
+    }
+
+    const url = getWatchUrl(vod, entryId);
     const color = vod.streamer ? getColor('collab_partners', vod.streamer) : colors.fallback;
+    
+    // If it is the active progress, give it a solid border instead of a translucent one (color vs color+'44')
+    const borderHex = isActiveProgress ? color : color + '44';
+
     return `
       <a class="pov-option" href="${url}" target="_blank" rel="noopener">
-        <span class="pov-option-label">${escHtml(vod.vod_title || label)}</span>
-        <span class="pov-chip" style="background:${color}22;color:${color};border:1px solid ${color}44">${escHtml(label)}</span>
+        <span class="pov-option-label">${escHtml(vod.vod_title || getStreamerLabel(vod))}</span>
+        <span class="pov-chip" style="background:${color}22;color:${color};border:1px solid ${borderHex}">${escHtml(label)}</span>
       </a>`;
   }).join('');
 

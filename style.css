@@ -434,6 +434,41 @@ input { font-family: inherit; }
   font-family: var(--font-mono);
   font-size: 13px;
   color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Progress Percentage Badge (Top-Left) */
+.progress-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0,0,0,0.75);
+  border: 1px solid rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
+  border-radius: var(--radius-sm);
+  padding: 3px 7px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  z-index: 5;
+}
+
+/* Progress Bar (Bottom Edge) */
+.card-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 5;
+}
+
+.card-progress-fill {
+  height: 100%;
+  background: var(--green); /* Uses your native theme color */
+  transition: width 0.3s ease;
 }
 
 /* Card body */
