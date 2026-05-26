@@ -123,16 +123,25 @@ input { font-family: inherit; }
 /* --- Sidebar --- */
 .sidebar {
   position: sticky;
-  top: 74px;
-  max-height: calc(100vh - 102px);
+  top: 110px; /* somehow this random magic number fixes the sidebar moving up when the page scrolls down idk why (Old Comment: Matches the exact header (61px) + main padding (28px) so it never moves) */
+  height: calc(100vh - 117px); /* Fills exactly to the bottom padding (89px top + 28px bottom) */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 6px;
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;
-  padding-right: 2px;
+  padding-right: 6px; /* Added breathing room so the scrollbar doesn't visually cut into the rounded corners */
 }
+
+/* Force browsers to render extra scroll space past the final flex item */
+.sidebar::after {
+  content: '';
+  display: block;
+  height: 12px;
+  flex-shrink: 0;
+}
+
 .control-group {
   background: var(--bg-surface);
   border: 1px solid var(--border);
