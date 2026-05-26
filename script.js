@@ -8,6 +8,11 @@
 let allAppearances = [];
 let colors = {};
 let watchedIds = new Set(JSON.parse(localStorage.getItem('tutel-watched') || '[]'));
+let userProgress = JSON.parse(localStorage.getItem('tutel-progress') || '{}');
+
+function saveUserProgress() {
+  localStorage.setItem('tutel-progress', JSON.stringify(userProgress));
+}
 
 const state = {
   search: '',
@@ -246,10 +251,17 @@ function getThumbUrl(entry) {
   return `https://img.youtube.com/vi/${first.video_id}/maxresdefault.jpg`;
 }
 
-function getWatchUrl(vod) {
+function getWatchUrl(vod, entryId) {
   if (!vod.video_id) return '#';
   let url = `https://youtu.be/${vod.video_id}`;
-  if (vod.timestamp_seconds) url += `?t=${vod.timestamp_seconds}`;
+  let t = vod.timestamp_seconds;
+
+  // Override with user progress if it exists for this specific VOD
+  if (entryId && userProgress[entryId] && userProgress[entryId].videoId === vod.video_id) {
+    t = userProgress[entryId].seconds;
+  }
+
+  if (t) url += `?t=${t}`;
   return url;
 }
 
@@ -345,7 +357,7 @@ function renderCard(entry) {
   const title = getCardTitle(entry);
   const { display: duration } = entryDurationInfo(entry);
   const isMulti = entry.vods.length > 1;
-  const singleUrl = !isMulti ? getWatchUrl(entry.vods[0]) : '#';
+  const singleUrl = !isMulti ? getWatchUrl(entry.vods[0], entry.id) : '#';
   const thumbClick = isMulti
     ? `onclick="openPovDropdown(event, '${entry.id}')" style="cursor:pointer"`
     : `onclick="window.open('${singleUrl}','_blank')" style="cursor:pointer"`;
@@ -426,7 +438,7 @@ function openPovDropdown(event, entryId) {
   const inner = document.getElementById('pov-dropdown-inner');
   inner.innerHTML = entry.vods.map(vod => {
     const label = getStreamerLabel(vod);
-    const url = getWatchUrl(vod);
+    const url = getWatchUrl(vod, entryId);;
     const color = vod.streamer ? getColor('collab_partners', vod.streamer) : colors.fallback;
     return `
       <a class="pov-option" href="${url}" target="_blank" rel="noopener">
@@ -499,6 +511,11 @@ function toggleWatched(entryId) {
     watchedIds.delete(entryId);
   } else {
     watchedIds.add(entryId);
+    // Delete progress when marked watched
+    if (userProgress[entryId]) {
+      delete userProgress[entryId];
+      saveUserProgress();
+    }
   }
   saveWatched();
   closeCardMenu();
@@ -537,13 +554,22 @@ function toggleWatched(entryId) {
   }
 }
 
+// ── Watched & Progress Data Management ────────────────────────
+
 function exportWatchData() {
-  const data = JSON.stringify([...watchedIds], null, 2);
+  // Bundle both states into a single object
+  const exportObject = {
+    watched: [...watchedIds],
+    progress: userProgress
+  };
+  
+  const data = JSON.stringify(exportObject, null, 2);
   const blob = new Blob([data], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'tutel-sightings-watched.json';
+  // Changed the filename slightly to reflect it holds all data
+  a.download = 'tutel-sightings-data.json'; 
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -553,13 +579,23 @@ function importWatchData(file) {
   const reader = new FileReader();
   reader.onload = e => {
     try {
-      const ids = JSON.parse(e.target.result);
-      if (!Array.isArray(ids)) throw new Error();
-      watchedIds = new Set(ids);
+      const parsed = JSON.parse(e.target.result);
+      
+      // Basic validation to ensure it's an object
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error();
+      }
+
+      // Extract the data, falling back to empty states if something is missing
+      watchedIds = new Set(Array.isArray(parsed.watched) ? parsed.watched : []);
+      userProgress = (parsed.progress && typeof parsed.progress === 'object') ? parsed.progress : {};
+
+      // Save both to localStorage and re-render the UI
       saveWatched();
+      saveUserProgress();
       render();
     } catch {
-      alert('Invalid watch data file.');
+      alert('Invalid data file. Make sure you are using a valid Tutel Sightings backup.');
     }
   };
   reader.readAsText(file);
@@ -568,9 +604,15 @@ function importWatchData(file) {
 function clearWatchData() {
   const btn = document.getElementById('footer-clear-btn');
   if (btn.dataset.confirming === 'true') {
+    // Wipe both states
     watchedIds = new Set();
+    userProgress = {}; 
+    
+    // Save the empty states to localStorage
     saveWatched();
+    saveUserProgress();
     render();
+    
     btn.textContent = 'Clear data';
     btn.dataset.confirming = 'false';
     btn.classList.remove('confirming');
@@ -604,6 +646,8 @@ function openCardMenu(event, entryId) {
   const copyIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
   const eyeIcon  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
   const eyeOffIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+  const progressIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+  const progressItem = `<button class="card-menu-item" onclick="openProgressPopup('${escAttr(entry.id)}')">${progressIcon} Set Progress</button>`;
 
   const watched = isWatched(entry);
   const watchItem = `<button class="card-menu-item" onclick="toggleWatched('${entry.id}')">
@@ -634,7 +678,7 @@ function openCardMenu(event, entryId) {
     }).join('');
   }
 
-  const items = watchItem + divider + summaryItem + copyItems;
+  const items = watchItem + divider + progressItem + divider + summaryItem + copyItems;
 
   const menu = document.createElement('div');
   menu.className = 'card-menu-dropdown';
@@ -842,12 +886,154 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeModal();
     closeSummary();
+    if (typeof closeProgress === 'function') closeProgress();
   }
 });
 
 function switchModalTab(tab) {
   document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
   document.querySelectorAll('.modal-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tab));
+}
+
+// ── Progress popup ─────────────────────────────────────────────
+let currentProgressEntry = null;
+let pendingProgressSeconds = 0;
+let pendingProgressVideoId = null;
+
+function openProgressPopup(entryId) {
+  closeCardMenu();
+  const entry = allAppearances.find(e => e.id === entryId);
+  if (!entry) return;
+  currentProgressEntry = entry;
+
+  document.getElementById('progress-title').textContent = entry.title || entry.vods[0]?.vod_title || 'Set Progress';
+
+  // Reset UI state
+  document.getElementById('prog-hh').value = '';
+  document.getElementById('prog-mm').value = '';
+  document.getElementById('prog-ss').value = '';
+  document.getElementById('progress-watched-prompt').style.display = 'none';
+  document.getElementById('progress-actions').style.display = 'flex';
+
+  // Populate Dropdown
+  const select = document.getElementById('progress-vod-select');
+  if (entry.vods.length > 1) {
+    select.style.display = '';
+    select.innerHTML = entry.vods.map(v => `<option value="${v.video_id}">${escHtml(getStreamerLabel(v))}</option>`).join('');
+  } else {
+    select.style.display = 'none';
+    select.innerHTML = `<option value="${entry.vods[0].video_id}">Single</option>`;
+  }
+
+  // Pre-fill existing progress if present
+  if (userProgress[entryId]) {
+    const p = userProgress[entryId];
+    select.value = p.videoId;
+    const h = Math.floor(p.seconds / 3600);
+    const m = Math.floor((p.seconds % 3600) / 60);
+    const s = p.seconds % 60;
+    
+    if (h > 0) document.getElementById('prog-hh').value = String(h).padStart(2, '0');
+    if (m > 0 || h > 0) document.getElementById('prog-mm').value = String(m).padStart(2, '0');
+    document.getElementById('prog-ss').value = String(s).padStart(2, '0');
+  }
+
+  document.getElementById('progress-popup').style.display = '';
+  document.getElementById('modal-backdrop').style.display = '';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProgress() {
+  document.getElementById('progress-popup').style.display = 'none';
+  document.getElementById('modal-backdrop').style.display = 'none';
+  document.body.style.overflow = '';
+  currentProgressEntry = null;
+}
+
+// Auto-advance inputs
+function handleProgressInput(el, nextId) {
+  el.value = el.value.replace(/\D/g, ''); // Strip non-digits
+  if (el.value.length === 2 && nextId) {
+    document.getElementById(nextId).focus();
+  }
+}
+
+// Backspace jump to previous input
+function handleProgressBackspace(e, prevId) {
+  if (e.key === 'Backspace' && e.target.value === '' && prevId) {
+    document.getElementById(prevId).focus();
+  }
+}
+
+function saveProgressFromPopup() {
+  if (!currentProgressEntry) return;
+
+  const hh = parseInt(document.getElementById('prog-hh').value || '0', 10);
+  const mm = parseInt(document.getElementById('prog-mm').value || '0', 10);
+  const ss = parseInt(document.getElementById('prog-ss').value || '0', 10);
+  const totalSec = (hh * 3600) + (mm * 60) + ss;
+  const videoId = document.getElementById('progress-vod-select').value;
+
+  // Don't save 00:00:00
+  if (totalSec === 0) {
+    clearProgressFromPopup();
+    return;
+  }
+
+  // Check if timestamp is past the end of the VOD
+  const vod = currentProgressEntry.vods.find(v => v.video_id === videoId);
+  if (vod && vod.timestamp_end_seconds && totalSec >= vod.timestamp_end_seconds) {
+    pendingProgressSeconds = totalSec;
+    pendingProgressVideoId = videoId;
+    document.getElementById('progress-watched-prompt').style.display = 'block';
+    document.getElementById('progress-actions').style.display = 'none';
+    return;
+  }
+
+  _finalizeProgressSave(totalSec, videoId);
+}
+
+function confirmProgressWatched(isWatchedChoice) {
+  if (isWatchedChoice) {
+    if (!watchedIds.has(currentProgressEntry.id)) {
+      watchedIds.add(currentProgressEntry.id);
+      saveWatched();
+    }
+    if (userProgress[currentProgressEntry.id]) {
+      delete userProgress[currentProgressEntry.id];
+      saveUserProgress();
+    }
+    render();
+    closeProgress();
+  } else {
+    _finalizeProgressSave(pendingProgressSeconds, pendingProgressVideoId);
+  }
+}
+
+function cancelProgressPrompt() {
+  document.getElementById('progress-watched-prompt').style.display = 'none';
+  const actionsEl = document.getElementById('progress-actions');
+  if (actionsEl) actionsEl.style.display = 'flex';
+  
+  // Also clear the temporary pending cache variables
+  pendingProgressSeconds = null;
+  pendingProgressVideoId = null;
+}
+
+function _finalizeProgressSave(seconds, videoId) {
+  userProgress[currentProgressEntry.id] = { videoId, seconds };
+  saveUserProgress();
+  render(); // Re-render to update single-click URLs
+  closeProgress();
+}
+
+function clearProgressFromPopup() {
+  if (currentProgressEntry && userProgress[currentProgressEntry.id]) {
+    delete userProgress[currentProgressEntry.id];
+    saveUserProgress();
+    render();
+  }
+  closeProgress();
 }
 
 // ── Go ────────────────────────────────────────────────────────

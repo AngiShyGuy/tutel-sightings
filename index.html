@@ -127,7 +127,7 @@
   </footer>
 
   <!-- About modal -->
-  <div class="modal-backdrop" id="modal-backdrop" style="display:none" onclick="closeModal();closeSummary()"></div>
+  <div class="modal-backdrop" id="modal-backdrop" style="display:none" onclick="closeModal();closeSummary();closeProgress()"></div>
   <div class="modal" id="modal" style="display:none" role="dialog" aria-modal="true">
     <div class="modal-header">
       <div class="modal-tabs">
@@ -160,6 +160,8 @@
         <ul class="modal-link-list">
           <li><a href="https://www.youtube.com/@stazishere" target="_blank" rel="noopener">Staz</a></li>
         </ul>
+        <p class="modal-section-label">Miscellaneous</p>
+        <p class="modal-text">This project was inspired by emzee's <a href="https://libraryofladev.com/" target="_blank" rel="noopener">Library of Ladev</a>.</p>
       </div>
 
       <div class="modal-panel" data-panel="contact">
@@ -210,6 +212,48 @@
       </button>
     </div>
     <p class="summary-popup-text" id="summary-text"></p>
+  </div>
+
+  <div class="summary-popup" id="progress-popup" style="display:none" role="dialog" aria-modal="true">
+    <div class="summary-popup-header">
+      <div>
+        <div class="summary-popup-label">Set Progress</div>
+        <div class="summary-popup-title" id="progress-title"></div>
+      </div>
+      <button class="modal-close" onclick="closeProgress()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    
+    <div class="progress-body">
+      <p class="summary-popup-text" style="margin-bottom: 12px;">At what timestamp in the VOD did you leave off?</p>
+      <div class="progress-controls">
+        <div class="progress-inputs">
+          <input type="text" id="prog-hh" maxlength="2" placeholder="00" oninput="handleProgressInput(this, 'prog-mm')">
+          <span>:</span>
+          <input type="text" id="prog-mm" maxlength="2" placeholder="00" oninput="handleProgressInput(this, 'prog-ss')" onkeydown="handleProgressBackspace(event, 'prog-hh')">
+          <span>:</span>
+          <input type="text" id="prog-ss" maxlength="2" placeholder="00" onkeydown="handleProgressBackspace(event, 'prog-mm')">
+        </div>
+        <select id="progress-vod-select" style="display:none"></select>
+      </div>
+    </div>
+
+    <div id="progress-watched-prompt" style="display:none; margin-top: 16px; padding: 12px; background: var(--bg-base); border: 1px solid rgba(248, 113, 113, 0.2); border-radius: var(--radius-md);">
+      <p class="summary-popup-text" style="font-size: 13px; color: #f87171; margin-bottom: 12px; font-weight: 500;">
+        This timestamp is past the collab's end time. Set as watched instead?
+      </p>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="prog-btn-confirm-watched" onclick="confirmProgressWatched(true)">Yes, Watched</button>
+        <button class="prog-btn-confirm-keep" onclick="confirmProgressWatched(false)">No, Keep Progress</button>
+        <button class="prog-btn-confirm-cancel" onclick="cancelProgressPrompt()">Cancel</button>
+      </div>
+    </div>
+
+    <div class="progress-actions" id="progress-actions" style="display: flex; gap: 8px; margin-top: 16px;">
+      <button class="footer-about-btn" onclick="saveProgressFromPopup()">Confirm Progress</button>
+      <button class="footer-data-btn danger" onclick="clearProgressFromPopup()">Reset Progress</button>
+    </div>
   </div>
 </body>
 </html>

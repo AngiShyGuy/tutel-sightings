@@ -432,7 +432,7 @@ input { font-family: inherit; }
   border-radius: var(--radius-sm);
   padding: 3px 7px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 13px;
   color: var(--text-secondary);
 }
 
@@ -655,7 +655,7 @@ input { font-family: inherit; }
 }
 .card-menu-item svg { flex-shrink: 0; opacity: 0.7; }
 .card-menu-label-sub {
-  font-size: 10px;
+  font-size: 13px;
   color: var(--text-muted);
   font-family: var(--font-mono);
   display: block;
@@ -799,7 +799,7 @@ input { font-family: inherit; }
 }
 .footer-about-btn {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   padding: 5px 12px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-strong);
@@ -860,6 +860,106 @@ input { font-family: inherit; }
   font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.7;
+}
+
+/* --- Progress popup --- */
+.progress-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.progress-inputs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.progress-inputs:focus-within {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-glow);
+}
+.progress-inputs input {
+  width: 22px;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  text-align: center;
+  outline: none;
+}
+.progress-inputs input::placeholder { color: var(--text-muted); }
+.progress-inputs span {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-weight: bold;
+}
+#progress-vod-select {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+#progress-vod-select:focus {
+  border-color: var(--green);
+}
+
+/* High-Contrast Prompt Buttons for Timestamp Exceeded Warning */
+.prog-btn-confirm-watched,
+.prog-btn-confirm-keep,
+.prog-btn-confirm-cancel {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: none;
+  transition: background var(--transition), transform 100ms;
+}
+.prog-btn-confirm-watched:active,
+.prog-btn-confirm-keep:active,
+.prog-btn-confirm-cancel:active {
+  transform: scale(0.97);
+}
+
+/* Vivid Red/Orange text for setting as fully watched */
+.prog-btn-confirm-watched {
+  background: #ef4444;
+  color: #ffffff;
+}
+.prog-btn-confirm-watched:hover {
+  background: #dc2626;
+}
+
+/* Crisp high contrast secondary layout for keeping custom layout */
+.prog-btn-confirm-keep {
+  background: var(--bg-raised);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+}
+.prog-btn-confirm-keep:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Subtle standard muted button style for the undo path */
+.prog-btn-confirm-cancel {
+  background: transparent;
+  color: var(--text-secondary);
+}
+.prog-btn-confirm-cancel:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 /* --- Modal --- */
