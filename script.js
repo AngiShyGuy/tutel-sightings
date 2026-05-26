@@ -612,6 +612,11 @@ function openCardMenu(event, entryId) {
   </button>`;
   const divider = `<div class="card-menu-divider"></div>`;
 
+  const summaryIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>`;
+  const summaryItem = entry.summary
+    ? `<button class="card-menu-item" onclick="openSummary('${escAttr(entry.id)}')">${summaryIcon} Summary</button>${divider}`
+    : '';
+
   let copyItems;
   if (entry.vods.length === 1) {
     const url = getWatchUrl(entry.vods[0]);
@@ -629,7 +634,7 @@ function openCardMenu(event, entryId) {
     }).join('');
   }
 
-  const items = watchItem + divider + copyItems;
+  const items = watchItem + divider + summaryItem + copyItems;
 
   const menu = document.createElement('div');
   menu.className = 'card-menu-dropdown';
@@ -801,6 +806,25 @@ function escAttr(str) {
   return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
+// ── Summary popup ─────────────────────────────────────────────
+function openSummary(entryId) {
+  closeCardMenu();
+  const entry = allAppearances.find(e => e.id === entryId);
+  if (!entry?.summary) return;
+
+  document.getElementById('summary-title').textContent = entry.title || entry.vods[0]?.vod_title || 'Collab Summary';
+  document.getElementById('summary-text').textContent = entry.summary;
+  document.getElementById('summary-popup').style.display = '';
+  document.getElementById('modal-backdrop').style.display = '';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSummary() {
+  document.getElementById('summary-popup').style.display = 'none';
+  document.getElementById('modal-backdrop').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
 // ── Modal ─────────────────────────────────────────────────────
 function openModal() {
   document.getElementById('modal').style.display = '';
@@ -815,7 +839,10 @@ function closeModal() {
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') {
+    closeModal();
+    closeSummary();
+  }
 });
 
 function switchModalTab(tab) {

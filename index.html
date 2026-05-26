@@ -127,7 +127,7 @@
   </footer>
 
   <!-- About modal -->
-  <div class="modal-backdrop" id="modal-backdrop" style="display:none" onclick="closeModal()"></div>
+  <div class="modal-backdrop" id="modal-backdrop" style="display:none" onclick="closeModal();closeSummary()"></div>
   <div class="modal" id="modal" style="display:none" role="dialog" aria-modal="true">
     <div class="modal-header">
       <div class="modal-tabs">
@@ -198,6 +198,21 @@
     </div>
   </div>
 
+  <!-- Summary popup -->
+  <div class="summary-popup" id="summary-popup" style="display:none" role="dialog" aria-modal="true">
+    <div class="summary-popup-header">
+      <div>
+        <div class="summary-popup-label">Collab Summary</div>
+        <div class="summary-popup-title" id="summary-title"></div>
+      </div>
+      <button class="modal-close" onclick="closeSummary()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <p class="summary-popup-text" id="summary-text"></p>
+  </div>
+</body>
+</html>
   <script src="script.js"></script>
 </body>
 </html>
