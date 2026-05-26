@@ -415,7 +415,7 @@ function renderCard(entry) {
         <div class="card-meta">
           ${entry.date ? `<span>${entry.date}</span>` : '<span style="opacity:0.4">Date unknown</span>'}
           ${duration ? `<span class="card-meta-sep">·</span><span class="card-duration">${duration}</span>` : ''}
-          ${isWatchedEntry ? '<span class="watched-dot" title="Watched"></span>' : ''}
+          ${isWatchedEntry ? '<span title="Watched" style="display:flex"><svg class="watched-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>' : ''}
           <span class="card-menu-wrap">
             <button class="card-menu-btn" onclick="openCardMenu(event,'${entry.id}')" title="More options">···</button>
           </span>

@@ -556,13 +556,10 @@ input { font-family: inherit; }
 .card-duration { color: var(--text-secondary); }
 
 /* Watched indicator */
-.watched-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--green);
+.watched-icon {
   flex-shrink: 0;
-  opacity: 0.7;
+  opacity: 0.90;
+  display: block;
 }
 
 /* --- POV Dropdown --- */
