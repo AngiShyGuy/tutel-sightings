@@ -164,9 +164,11 @@ function hasActiveFilters() {
 function buildFilterSidebar() {
   const container = document.getElementById('filter-groups');
 
-  const allActivities = [...new Set(allAppearances.flatMap(e => e.activities))].sort();
-  const allGames      = [...new Set(allAppearances.flatMap(e => e.games))].filter(Boolean).sort();
-  const allPartners   = [...new Set(allAppearances.flatMap(e => e.collab_partners))].sort();
+  const sortIgnoreCase = (a, b) => a.toLowerCase().localeCompare(b.toLowerCase());
+
+  const allActivities = [...new Set(allAppearances.flatMap(e => e.activities))].sort(sortIgnoreCase);
+  const allGames      = [...new Set(allAppearances.flatMap(e => e.games))].filter(Boolean).sort(sortIgnoreCase);
+  const allPartners   = [...new Set(allAppearances.flatMap(e => e.collab_partners))].sort(sortIgnoreCase);
   const allWeights    = ['Full','Partial','Cameo'];
 
   const sections = [
