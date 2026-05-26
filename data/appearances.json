@@ -308,7 +308,7 @@
   {
     "id": "among-us-anny",
     "title": null,
-    "date": "2023-06-9",
+    "date": "2023-06-08",
     "activities": [
       "Gaming",
       "Subathon"
@@ -336,7 +336,7 @@
   {
     "id": "subathon-yapping-anny",
     "title": null,
-    "date": "2023-06-10",
+    "date": "2023-06-11",
     "activities": [
       "Gaming",
       "Subathon"
@@ -364,7 +364,7 @@
   {
     "id": "among-us-anny-2",
     "title": null,
-    "date": "2023-06-16",
+    "date": "2023-06-15",
     "activities": [
       "Gaming",
       "Subathon"
@@ -505,9 +505,34 @@
     "notes": null
   },
   {
+    "id": "yapping-short-saiiren",
+    "title": null,
+    "date": "2023-09-01",
+    "activities": [
+      "Yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Saiiren"
+    ],
+    "appearance_weight": "Partial",
+    "summary": null,
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "NEETS ASSEMBLE PERSONA TODAY",
+        "streamer": "Saiiren",
+        "video_id": "ITwV_TAHWzU",
+        "timestamp_seconds": 5548,
+        "timestamp_end_seconds": 13490
+      }
+    ],
+    "notes": null
+  },
+  {
     "id": "cod-camila",
     "title": null,
-    "date": "2023-08-13",
+    "date": "2023-09-10",
     "activities": [
       "Gaming"
     ],
@@ -527,31 +552,6 @@
         "video_id": "bv810NExTMQ",
         "timestamp_seconds": 8781,
         "timestamp_end_seconds": 23400
-      }
-    ],
-    "notes": null
-  },
-  {
-    "id": "yapping-short-saiiren",
-    "title": null,
-    "date": "2023-09-10",
-    "activities": [
-      "Yapping"
-    ],
-    "games": [],
-    "collab_partners": [
-      "Saiiren"
-    ],
-    "appearance_weight": "Partial",
-    "summary": null,
-    "vod_type": "povs",
-    "vods": [
-      {
-        "vod_title": "NEETS ASSEMBLE PERSONA TODAY",
-        "streamer": "Saiiren",
-        "video_id": "ITwV_TAHWzU",
-        "timestamp_seconds": 5548,
-        "timestamp_end_seconds": 13490
       }
     ],
     "notes": null
