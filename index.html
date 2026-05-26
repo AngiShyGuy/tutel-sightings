@@ -112,7 +112,17 @@
   <footer class="site-footer">
     <div class="footer-inner">
       <span class="footer-credit">Made with ❤️ by AngiShyGuy</span>
-      <button class="footer-about-btn" onclick="openModal()">About</button>
+      <div class="footer-actions">
+        <div class="footer-data-btns">
+          <button class="footer-data-btn" onclick="exportWatchData()" title="Export your watch history as a JSON file">Export data</button>
+          <label class="footer-data-btn" title="Import a previously exported watch history file">
+            Import data
+            <input type="file" accept=".json" style="display:none" onchange="importWatchData(this.files[0]);this.value=''">
+          </label>
+          <button class="footer-data-btn danger" id="footer-clear-btn" data-confirming="false" onclick="clearWatchData()">Clear data</button>
+        </div>
+        <button class="footer-about-btn" onclick="openModal()">About</button>
+      </div>
     </div>
   </footer>
 

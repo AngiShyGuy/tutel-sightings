@@ -278,8 +278,16 @@ function renderChips(entry) {
 }
 
 // Called after render — measures each chip row and collapses overflow into +N more
+function applyChipOverflowForCard(card) {
+  const container = card.querySelector('.card-chips');
+  if (container) applyChipOverflowContainer(container);
+}
+
 function applyChipOverflow() {
-  document.querySelectorAll('.card-chips').forEach(container => {
+  document.querySelectorAll('.card-chips').forEach(applyChipOverflowContainer);
+}
+
+function applyChipOverflowContainer(container) {
     const chips = [...container.querySelectorAll('.chip')];
     if (!chips.length) return;
 
@@ -329,11 +337,10 @@ function applyChipOverflow() {
       badge.textContent = `+${overflowData.length} more`;
       badge.dataset.overflow = encodeURIComponent(JSON.stringify(overflowData));
     }
-  });
 }
 
 function renderCard(entry) {
-  const isWatched = watchedIds.has(entry.id) || entry.watched;
+  const isWatchedEntry = isWatched(entry);
   const thumbUrl = getThumbUrl(entry);
   const title = getCardTitle(entry);
   const { display: duration } = entryDurationInfo(entry);
@@ -366,7 +373,7 @@ function renderCard(entry) {
         <div class="card-meta">
           ${entry.date ? `<span>${entry.date}</span>` : '<span style="opacity:0.4">Date unknown</span>'}
           ${duration ? `<span class="card-meta-sep">·</span><span class="card-duration">${duration}</span>` : ''}
-          ${isWatched ? '<span class="watched-dot" title="Watched"></span>' : ''}
+          ${isWatchedEntry ? '<span class="watched-dot" title="Watched"></span>' : ''}
           <span class="card-menu-wrap">
             <button class="card-menu-btn" onclick="openCardMenu(event,'${entry.id}')" title="More options">···</button>
           </span>
@@ -478,6 +485,109 @@ function keepPartnerTooltip() {
   clearTimeout(tooltipHideTimer);
 }
 
+// ── Watched management ────────────────────────────────────────
+function isWatched(entry) {
+  return watchedIds.has(entry.id);
+}
+
+function saveWatched() {
+  localStorage.setItem('tutel-watched', JSON.stringify([...watchedIds]));
+}
+
+function toggleWatched(entryId) {
+  if (watchedIds.has(entryId)) {
+    watchedIds.delete(entryId);
+  } else {
+    watchedIds.add(entryId);
+  }
+  saveWatched();
+  closeCardMenu();
+
+  const entry = allAppearances.find(e => e.id === entryId);
+  if (!entry) return;
+
+  const card = document.querySelector(`.card[data-id="${entryId}"]`);
+  if (!card) return;
+
+  if (passesFilter(entry)) {
+    // Still visible — re-render in place
+    card.outerHTML = renderCard(entry);
+    requestAnimationFrame(() => {
+      const newCard = document.querySelector(`.card[data-id="${entryId}"]`);
+      if (newCard) applyChipOverflowForCard(newCard);
+    });
+  } else {
+    // Should no longer be visible — animate out then remove
+    card.style.transition = 'opacity 250ms ease, transform 250ms ease';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.96)';
+    setTimeout(() => {
+      card.remove();
+      // Update results bar count without full re-render
+      const visible = document.querySelectorAll('.card').length;
+      const total = allAppearances.length;
+      const resultsBar = document.getElementById('results-bar');
+      resultsBar.innerHTML = visible === total
+        ? `<span class="results-count">${total}</span> sightings`
+        : `<span class="results-count">${visible}</span> of ${total} sightings`;
+      // Show empty state if nothing left
+      const empty = document.getElementById('empty-state');
+      empty.style.display = visible === 0 ? '' : 'none';
+    }, 260);
+  }
+}
+
+function exportWatchData() {
+  const data = JSON.stringify([...watchedIds], null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'tutel-sightings-watched.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importWatchData(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const ids = JSON.parse(e.target.result);
+      if (!Array.isArray(ids)) throw new Error();
+      watchedIds = new Set(ids);
+      saveWatched();
+      render();
+    } catch {
+      alert('Invalid watch data file.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function clearWatchData() {
+  const btn = document.getElementById('footer-clear-btn');
+  if (btn.dataset.confirming === 'true') {
+    watchedIds = new Set();
+    saveWatched();
+    render();
+    btn.textContent = 'Clear data';
+    btn.dataset.confirming = 'false';
+    btn.classList.remove('confirming');
+  } else {
+    btn.textContent = 'Are you sure?';
+    btn.dataset.confirming = 'true';
+    btn.classList.add('confirming');
+    setTimeout(() => {
+      if (btn.dataset.confirming === 'true') {
+        btn.textContent = 'Clear data';
+        btn.dataset.confirming = 'false';
+        btn.classList.remove('confirming');
+      }
+    }, 3000);
+  }
+}
+
 // ── Card menu (···) ───────────────────────────────────────────
 let activeCardMenu = null;
 
@@ -492,15 +602,24 @@ function openCardMenu(event, entryId) {
   activeCardMenu = entryId;
 
   const copyIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+  const eyeIcon  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  const eyeOffIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
 
-  let items;
+  const watched = isWatched(entry);
+  const watchItem = `<button class="card-menu-item" onclick="toggleWatched('${entry.id}')">
+    ${watched ? eyeOffIcon : eyeIcon}
+    ${watched ? 'Mark as unwatched' : 'Mark as watched'}
+  </button>`;
+  const divider = `<div class="card-menu-divider"></div>`;
+
+  let copyItems;
   if (entry.vods.length === 1) {
     const url = getWatchUrl(entry.vods[0]);
-    items = `<button class="card-menu-item" onclick="copyLink('${escAttr(url)}')">
+    copyItems = `<button class="card-menu-item" onclick="copyLink('${escAttr(url)}')">
       ${copyIcon} Copy link
     </button>`;
   } else {
-    items = entry.vods.map(vod => {
+    copyItems = entry.vods.map(vod => {
       const url = getWatchUrl(vod);
       const label = getStreamerLabel(vod);
       return `<button class="card-menu-item" onclick="copyLink('${escAttr(url)}')">
@@ -509,6 +628,8 @@ function openCardMenu(event, entryId) {
       </button>`;
     }).join('');
   }
+
+  const items = watchItem + divider + copyItems;
 
   const menu = document.createElement('div');
   menu.className = 'card-menu-dropdown';
