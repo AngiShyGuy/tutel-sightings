@@ -12,10 +12,10 @@ Hosted on **[GitHub Pages](https://angishyguy.github.io/tutel-sightings)**.
 
 - **Searching and filtering** based on the title, activities played, collab partners, or games played.
 - **Total collab duration** computed from per-VOD timestamps.
-- **Multiple VOD support** for each stream, allowing for multi-parters or for several streamers' perspectives.
-- **Watch history** by marking entries as watched/unwatched via the `···` menu.
-- **Watch progress** by writing down your current timestamp via the `···` menu.
-- **Export / Import progress data** to back up your watch history as a JSON file and restore it on another browser or device
+- **Multiple VOD support** for each stream, allowing for multi-parters or for different streamers' perspectives of the same event.
+- **Collab summaries** for some streams in case you forgot what that one call-in was about again.
+- **Watch progress** by marking streams as watched and writing down your current timestamp via the `···` menu.
+- **Export / Import progress data** to back up your watch data as a JSON file and restore it on another browser or device
 
 ---
 
@@ -35,7 +35,7 @@ All appearance data lives in `data/appearances.json` as an array of entry object
 | `collab_partners` | string[] | All other VTubers present |
 | `appearance_weight` | string | See **Appearance Weight** below |
 | `summary` | string | Summary of the events and discussions in the collab |
-| `vod_type` | string | `"povs"` or `"parts"` — see **Collab Duration** below. Defaults to `"povs"`. Only relevant for multi-VOD entries |
+| `vod_type` | string | `"povs"` (Default) or `"parts"` — Dictates whether the VODs associated with the stream are sequential parts or different perspectives. Only relevant for multi-VOD entries |
 | `vods` | object[] | One or more VOD objects — see below |
 | `notes` | string \| null | Optional freeform notes, not displayed publicly |
 
