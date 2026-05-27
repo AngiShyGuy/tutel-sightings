@@ -113,7 +113,8 @@ input { font-family: inherit; }
 .site-main {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 28px;
+  /* Top: 28px | Right: 28px | Bottom: 0px | Left: 28px */
+  padding: 28px 28px 0 28px; 
   display: grid;
   grid-template-columns: 220px 1fr;
   gap: 28px;
@@ -785,7 +786,7 @@ input { font-family: inherit; }
 /* --- Footer --- */
 .site-footer {
   border-top: 1px solid var(--border);
-  margin-top: 48px;
+  margin-top: 24px; /* Shrunk from 48px */
   padding: 20px 28px;
 }
 .footer-inner {
