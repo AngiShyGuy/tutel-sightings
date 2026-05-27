@@ -922,7 +922,10 @@ function bindEvents() {
     }
   });
 
-  window.addEventListener('scroll', closePovDropdown, { passive: true });
+  window.addEventListener('scroll', () => {
+    closePovDropdown();
+    closeCardMenu();
+  }, { passive: true });
 
   // Modal tab switching
   document.getElementById('modal')?.addEventListener('click', e => {
