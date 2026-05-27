@@ -1556,6 +1556,33 @@
     "notes": null
   },
   {
+    "id": "drinking-anny",
+    "title": null,
+    "date": "2024-10-12",
+    "activities": [
+      "Just Chatting",
+      "Drinking"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Anny",
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "summary": null,
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "drinking the pain away yippee",
+        "streamer": "Anny",
+        "video_id": "NnFoe5A3HFI",
+        "timestamp_seconds": 1996,
+        "timestamp_end_seconds": 17807
+      }
+    ],
+    "notes": null
+  },
+  {
     "id": "cod-camila-2",
     "title": null,
     "date": "2024-11-09",
