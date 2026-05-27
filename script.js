@@ -685,6 +685,8 @@ function filterBy(cat, value) {
   const set = state.filters[cat];
   if (set.has(value)) set.delete(value);
   else set.add(value);
+
+  window.scrollTo({ top: 0, behavior: 'instant' });
   render();
 }
 
@@ -693,6 +695,7 @@ function clearAllFilters() {
   state.search = '';
   document.getElementById('search-input').value        = '';
   document.getElementById('mobile-search-input').value = '';
+  window.scrollTo({ top: 0, behavior: 'instant' });
   render();
 }
 
@@ -856,11 +859,13 @@ function bindEvents() {
   document.getElementById('search-input').addEventListener('input', e => {
     state.search = e.target.value.trim();
     document.getElementById('mobile-search-input').value = state.search;
+    window.scrollTo({ top: 0, behavior: 'instant' });
     render();
   });
   document.getElementById('mobile-search-input').addEventListener('input', e => {
     state.search = e.target.value.trim();
     document.getElementById('search-input').value = state.search;
+    window.scrollTo({ top: 0, behavior: 'instant' });
     render();
   });
 
