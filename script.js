@@ -7,22 +7,21 @@
 // ── State ────────────────────────────────────────────────────
 let allAppearances = [];
 let colors = {};
-let watchedIds = new Set(JSON.parse(localStorage.getItem('tutel-watched') || '[]'));
-let userProgress = JSON.parse(localStorage.getItem('tutel-progress') || '{}');
+let watchedIds  = new Set(JSON.parse(localStorage.getItem('tutel-watched')   || '[]'));
+let userProgress =        JSON.parse(localStorage.getItem('tutel-progress')  || '{}');
 
-function saveUserProgress() {
-  localStorage.setItem('tutel-progress', JSON.stringify(userProgress));
-}
+function saveWatched()      { localStorage.setItem('tutel-watched',  JSON.stringify([...watchedIds])); }
+function saveUserProgress() { localStorage.setItem('tutel-progress', JSON.stringify(userProgress));    }
 
 const state = {
-  search: '',
-  sort: 'date',
+  search:  '',
+  sort:    'date',
   sortDir: 'desc',
-  watch: 'all',
+  watch:   'all',
   filters: {
-    activities: new Set(),
-    games: new Set(),
-    collab_partners: new Set(),
+    activities:        new Set(),
+    games:             new Set(),
+    collab_partners:   new Set(),
     appearance_weight: new Set(),
   },
 };
@@ -35,7 +34,7 @@ async function init() {
       fetch('data/colors.json').then(r => r.json()),
     ]);
     allAppearances = appData;
-    // Handle colors.json being accidentally wrapped in an array
+    // Guard against colors.json being accidentally wrapped in an outer array
     colors = Array.isArray(colorData) ? colorData[0] : colorData;
   } catch (e) {
     console.error('Failed to load data:', e);
@@ -55,12 +54,15 @@ function getColor(category, key) {
   return (colors[category] && colors[category][key]) || colors.fallback || '#4B5563';
 }
 
+// Returns an inline style string for a colored chip
 function chipStyle(category, key) {
   const hex = getColor(category, key);
   return `background:${hex}22; color:${hex}; border-color:${hex}44;`;
 }
 
 // ── Duration helpers ──────────────────────────────────────────
+// Returns the duration of Vedal's appearance in a single VOD, in seconds.
+// Returns null if either timestamp is missing.
 function vodDuration(vod) {
   if (vod.timestamp_seconds == null || vod.timestamp_end_seconds == null) return null;
   return vod.timestamp_end_seconds - vod.timestamp_seconds;
@@ -75,8 +77,9 @@ function formatDuration(secs) {
   return `${m}:${String(s).padStart(2,'0')}`;
 }
 
+// Returns { display, sortValue } for an entry's collab duration.
+// "povs" entries show a min~max range; "parts" entries sum their durations.
 function entryDurationInfo(entry) {
-  // Returns { display: string|null, sortValue: number|null }
   const durations = entry.vods.map(vodDuration).filter(d => d !== null);
   if (!durations.length) return { display: null, sortValue: null };
 
@@ -85,22 +88,22 @@ function entryDurationInfo(entry) {
     return { display: formatDuration(total), sortValue: total };
   }
 
-  // povs — range
+  // Multiple POVs — show range, sort by midpoint
   const min = Math.min(...durations);
   const max = Math.max(...durations);
-  const mid = (min + max) / 2;
   if (min === max) return { display: formatDuration(min), sortValue: min };
-  return { display: `${formatDuration(min)} ~ ${formatDuration(max)}`, sortValue: mid };
+  return { display: `${formatDuration(min)} ~ ${formatDuration(max)}`, sortValue: (min + max) / 2 };
 }
 
-// ── Sort helpers ──────────────────────────────────────────────
+// ── Sort ──────────────────────────────────────────────────────
 function sortedAppearances(list) {
   const copy = [...list];
-  const dir = state.sortDir === 'asc' ? 1 : -1;
+  const dir  = state.sortDir === 'asc' ? 1 : -1;
+
   if (state.sort === 'date') {
     copy.sort((a, b) => {
       if (!a.date && !b.date) return 0;
-      if (!a.date) return 1;
+      if (!a.date) return 1;   // unknown dates sink to bottom
       if (!b.date) return -1;
       return dir * a.date.localeCompare(b.date);
     });
@@ -109,7 +112,7 @@ function sortedAppearances(list) {
       const da = entryDurationInfo(a).sortValue;
       const db = entryDurationInfo(b).sortValue;
       if (da == null && db == null) return 0;
-      if (da == null) return 1;
+      if (da == null) return 1;  // no-duration entries sink to bottom
       if (db == null) return -1;
       return dir * (da - db);
     });
@@ -119,35 +122,30 @@ function sortedAppearances(list) {
   return copy;
 }
 
-// ── Filter logic ──────────────────────────────────────────────
+// ── Filter ────────────────────────────────────────────────────
 function passesFilter(entry) {
-  // Watch status
-  const isWatched = watchedIds.has(entry.id) || entry.watched;
-  if (state.watch === 'watched' && !isWatched) return false;
-  if (state.watch === 'unwatched' && isWatched) return false;
+  // Watch status filter
+  const watched = watchedIds.has(entry.id);
+  if (state.watch === 'watched'   && !watched) return false;
+  if (state.watch === 'unwatched' &&  watched) return false;
 
-  // Search
+  // Text search — matches title, partners, and games
   if (state.search) {
-    const q = state.search.toLowerCase();
-    const title = (entry.title || entry.vods[0]?.vod_title || '').toLowerCase();
+    const q        = state.search.toLowerCase();
+    const title    = (entry.title || entry.vods[0]?.vod_title || '').toLowerCase();
     const partners = entry.collab_partners.map(p => p.toLowerCase()).join(' ');
-    const games = entry.games.map(g => g.toLowerCase()).join(' ');
+    const games    = entry.games.map(g => g.toLowerCase()).join(' ');
     if (!title.includes(q) && !partners.includes(q) && !games.includes(q)) return false;
   }
 
-  // Active filters — AND within each category
+  // Tag filters — AND logic within each category (all selected tags must be present).
+  // Exception: appearance_weight is a single value per entry, so multiple selections are OR'd.
   for (const [cat, set] of Object.entries(state.filters)) {
     if (!set.size) continue;
-    if (cat === 'activities') {
-      if (![...set].every(a => entry.activities.includes(a))) return false;
-    } else if (cat === 'games') {
-      if (![...set].every(g => entry.games.includes(g))) return false;
-    } else if (cat === 'collab_partners') {
-      if (![...set].every(p => entry.collab_partners.includes(p))) return false;
-    } else if (cat === 'appearance_weight') {
-      // Weight is a single value so OR makes sense here
-      if (!set.has(entry.appearance_weight)) return false;
-    }
+    if (cat === 'activities')        { if (![...set].every(v => entry.activities.includes(v)))        return false; }
+    else if (cat === 'games')        { if (![...set].every(v => entry.games.includes(v)))             return false; }
+    else if (cat === 'collab_partners') { if (![...set].every(v => entry.collab_partners.includes(v))) return false; }
+    else if (cat === 'appearance_weight') { if (!set.has(entry.appearance_weight))                    return false; }
   }
   return true;
 }
@@ -163,19 +161,18 @@ function hasActiveFilters() {
 // ── Sidebar filter builder ────────────────────────────────────
 function buildFilterSidebar() {
   const container = document.getElementById('filter-groups');
-
   const sortIgnoreCase = (a, b) => a.toLowerCase().localeCompare(b.toLowerCase());
 
   const allActivities = [...new Set(allAppearances.flatMap(e => e.activities))].sort(sortIgnoreCase);
   const allGames      = [...new Set(allAppearances.flatMap(e => e.games))].filter(Boolean).sort(sortIgnoreCase);
   const allPartners   = [...new Set(allAppearances.flatMap(e => e.collab_partners))].sort(sortIgnoreCase);
-  const allWeights    = ['Full','Partial','Cameo'];
+  const allWeights    = ['Full', 'Partial', 'Cameo'];
 
   const sections = [
-    { label: 'Activity',          cat: 'activities',      items: allActivities },
-    { label: 'Game',              cat: 'games',           items: allGames      },
-    { label: 'Collab Partner',    cat: 'collab_partners', items: allPartners   },
-    { label: 'Appearance Weight', cat: 'appearance_weight', items: allWeights  },
+    { label: 'Activity',          cat: 'activities',        items: allActivities },
+    { label: 'Game',              cat: 'games',             items: allGames      },
+    { label: 'Collab Partner',    cat: 'collab_partners',   items: allPartners   },
+    { label: 'Appearance Weight', cat: 'appearance_weight', items: allWeights    },
   ];
 
   const chevronSvg = `<svg class="filter-group-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
@@ -189,9 +186,9 @@ function buildFilterSidebar() {
       <div class="filter-group-content" style="display:none">
         ${items.map(item => {
           const count = allAppearances.filter(e => {
-            if (cat === 'activities') return e.activities.includes(item);
-            if (cat === 'games') return e.games.includes(item);
-            if (cat === 'collab_partners') return e.collab_partners.includes(item);
+            if (cat === 'activities')        return e.activities.includes(item);
+            if (cat === 'games')             return e.games.includes(item);
+            if (cat === 'collab_partners')   return e.collab_partners.includes(item);
             if (cat === 'appearance_weight') return e.appearance_weight === item;
           }).length;
           const color = getColor(cat, item);
@@ -209,7 +206,7 @@ function buildFilterSidebar() {
 
 function toggleFilterGroup(btn) {
   const content = btn.nextElementSibling;
-  const isOpen = content.style.display !== 'none';
+  const isOpen  = content.style.display !== 'none';
   content.style.display = isOpen ? 'none' : '';
   btn.classList.toggle('open', !isOpen);
 }
@@ -219,14 +216,12 @@ function updateFilterChipStates() {
     const { cat, value } = btn.dataset;
     btn.classList.toggle('active', state.filters[cat]?.has(value) ?? false);
   });
-
-  const clearBtn = document.getElementById('clear-filters');
-  clearBtn.style.display = hasActiveFilters() ? '' : 'none';
+  document.getElementById('clear-filters').style.display = hasActiveFilters() ? '' : 'none';
 }
 
 // ── Stats ─────────────────────────────────────────────────────
 function renderStats() {
-  const total = allAppearances.length;
+  const total    = allAppearances.length;
   const partners = new Set(allAppearances.flatMap(e => e.collab_partners)).size;
   document.getElementById('header-stats').innerHTML = `
     <div class="stat-item">
@@ -244,7 +239,7 @@ function renderStats() {
 function getCardTitle(entry) {
   if (entry.title) return entry.title;
   if (entry.vods.length === 1 && entry.vods[0].vod_title) return entry.vods[0].vod_title;
-  return entry.id; // fallback
+  return entry.id;
 }
 
 function getThumbUrl(entry) {
@@ -253,143 +248,122 @@ function getThumbUrl(entry) {
   return `https://img.youtube.com/vi/${first.video_id}/maxresdefault.jpg`;
 }
 
-function getWatchUrl(vod, entryId) {
+// Builds a YouTube watch URL for a VOD.
+function getWatchUrl(vod, entryId, withProgress = true) { 
   if (!vod.video_id) return '#';
-  let url = `https://youtu.be/${vod.video_id}`;
   let t = vod.timestamp_seconds;
 
-  // Override with user progress if it exists for this specific VOD
-  if (entryId && userProgress[entryId] && userProgress[entryId].videoId === vod.video_id) {
-    t = userProgress[entryId].seconds;
+  if (withProgress && entryId && userProgress?.[entryId]?.videoId === vod.video_id) {
+      t = userProgress?.[entryId]?.seconds;
   }
 
-  if (t) url += `?t=${t}`;
-  return url;
+  return t ? `https://youtu.be/${vod.video_id}?t=${t}` : `https://youtu.be/${vod.video_id}`;
 }
 
 function getStreamerLabel(vod) {
   if (vod.vod_part != null) return `Part ${vod.vod_part}`;
-  if (vod.streamer) return `${vod.streamer}'s POV`;
+  if (vod.streamer)         return `${vod.streamer}'s POV`;
   return 'Watch';
 }
 
 function renderChips(entry) {
   const chips = [];
+  const addChip = (cat, value) =>
+    chips.push(`<button class="chip" data-cat="${escAttr(cat)}" data-value="${escAttr(value)}" style="${chipStyle(cat, value)}" onclick="filterBy('${escAttr(cat)}','${escAttr(value)}')">${escHtml(value)}</button>`);
 
-  entry.activities.forEach(act => {
-    chips.push(`<button class="chip" data-cat="activities" data-value="${escAttr(act)}" style="${chipStyle('activities', act)}" onclick="filterBy('activities','${escAttr(act)}')">${escHtml(act)}</button>`);
-  });
-
-  entry.games.forEach(game => {
-    chips.push(`<button class="chip" data-cat="games" data-value="${escAttr(game)}" style="${chipStyle('games', game)}" onclick="filterBy('games','${escAttr(game)}')">${escHtml(game)}</button>`);
-  });
-
-  entry.collab_partners.forEach(p => {
-    chips.push(`<button class="chip" data-cat="collab_partners" data-value="${escAttr(p)}" style="${chipStyle('collab_partners', p)}" onclick="filterBy('collab_partners','${escAttr(p)}')">${escHtml(p)}</button>`);
-  });
-
+  entry.activities.forEach(a     => addChip('activities',      a));
+  entry.games.forEach(g          => addChip('games',           g));
+  entry.collab_partners.forEach(p => addChip('collab_partners', p));
   return chips.join('');
 }
 
-// Called after render — measures each chip row and collapses overflow into +N more
-function applyChipOverflowForCard(card) {
-  const container = card.querySelector('.card-chips');
-  if (container) applyChipOverflowContainer(container);
-}
+// ── Chip overflow ─────────────────────────────────────────────
+// After rendering, we measure the chip rows and collapse anything that spills
+// past 2 lines into a "+N more" badge. This runs post-paint (requestAnimationFrame)
+// so that getBoundingClientRect() returns real layout values.
 
 function applyChipOverflow() {
   document.querySelectorAll('.card-chips').forEach(applyChipOverflowContainer);
 }
 
+function applyChipOverflowForCard(card) {
+  const container = card.querySelector('.card-chips');
+  if (container) applyChipOverflowContainer(container);
+}
+
 function applyChipOverflowContainer(container) {
-    const chips = [...container.querySelectorAll('.chip')];
-    if (!chips.length) return;
+  const chips = [...container.querySelectorAll('.chip')];
+  if (!chips.length) return;
 
-    // Reset any previous overflow pass
-    chips.forEach(c => c.style.display = '');
-    const existing = container.querySelector('.chip-overflow');
-    if (existing) existing.remove();
+  // Reset any previous overflow pass so we measure from a clean state
+  chips.forEach(c => c.style.display = '');
+  container.querySelector('.chip-overflow')?.remove();
 
-    // Measure line height from first chip
-    const firstRect = chips[0].getBoundingClientRect();
-    const lineHeight = firstRect.height;
-    const maxBottom = firstRect.top + lineHeight * 2 + 8; // 2 lines from where chips actually start
+  // The allowed vertical space is exactly 2 chip heights, measured from the
+  // top of the first chip (not the container, which has padding above it).
+  const firstRect  = chips[0].getBoundingClientRect();
+  const maxBottom  = firstRect.top + firstRect.height * 2 + 8;
 
-    // Find the first chip that overflows 2 lines
-    let overflowFrom = -1;
-    for (let i = 0; i < chips.length; i++) {
-      if (chips[i].getBoundingClientRect().bottom > maxBottom) {
-        overflowFrom = i;
-        break;
-      }
-    }
-    if (overflowFrom === -1) return; // Everything fits
+  // Find the first chip that pushes past the 2-line boundary
+  let overflowFrom = chips.findIndex(c => c.getBoundingClientRect().bottom > maxBottom);
+  if (overflowFrom === -1) return; // Everything fits
 
-    // Build overflow data from hidden chips
-    const hiddenChips = chips.slice(overflowFrom);
-    hiddenChips.forEach(c => c.style.display = 'none');
+  // Hide overflowing chips and collect their data for the tooltip
+  const overflowData = chips.slice(overflowFrom).map(c => {
+    c.style.display = 'none';
+    return { cat: c.dataset.cat, value: c.dataset.value };
+  });
 
-    const overflowData = hiddenChips.map(c => ({
-      cat: c.dataset.cat,
-      value: c.dataset.value
-    }));
+  // Build the "+N more" badge and attach tooltip listeners
+  const badge = document.createElement('span');
+  badge.className = 'chip-overflow';
+  badge.dataset.overflow = encodeURIComponent(JSON.stringify(overflowData));
+  badge.addEventListener('mouseenter', e => showOverflowTooltip(e, badge));
+  badge.addEventListener('mouseleave', hidePartnerTooltip);
+  container.appendChild(badge);
+  badge.textContent = `+${overflowData.length} more`;
 
-    const badge = document.createElement('span');
-    badge.className = 'chip-overflow';
+  // If the badge itself overflows into a 3rd line, pull one more chip into it
+  // and repeat until it fits. Safety counter prevents an infinite loop.
+  let safety = chips.length;
+  while (badge.getBoundingClientRect().bottom > maxBottom && overflowFrom > 0 && safety-- > 0) {
+    overflowFrom--;
+    chips[overflowFrom].style.display = 'none';
+    overflowData.unshift({ cat: chips[overflowFrom].dataset.cat, value: chips[overflowFrom].dataset.value });
     badge.textContent = `+${overflowData.length} more`;
     badge.dataset.overflow = encodeURIComponent(JSON.stringify(overflowData));
-    badge.addEventListener('mouseenter', e => showOverflowTooltip(e, badge));
-    badge.addEventListener('mouseleave', hidePartnerTooltip);
-    container.appendChild(badge);
-
-    // If the badge itself overflowed into a 3rd line, pull one more chip in
-    let safety = chips.length;
-    while (badge.getBoundingClientRect().bottom > maxBottom && overflowFrom > 0 && safety-- > 0) {
-      overflowFrom--;
-      chips[overflowFrom].style.display = 'none';
-      overflowData.unshift({ cat: chips[overflowFrom].dataset.cat, value: chips[overflowFrom].dataset.value });
-      badge.textContent = `+${overflowData.length} more`;
-      badge.dataset.overflow = encodeURIComponent(JSON.stringify(overflowData));
-    }
+  }
 }
 
 function renderCard(entry) {
-  const isWatchedEntry = isWatched(entry);
+  const watched  = isWatched(entry);
   const thumbUrl = getThumbUrl(entry);
-  const title = getCardTitle(entry);
+  const title    = getCardTitle(entry);
   const { display: duration } = entryDurationInfo(entry);
-  const isMulti = entry.vods.length > 1;
+  const isMulti  = entry.vods.length > 1;
   const singleUrl = !isMulti ? getWatchUrl(entry.vods[0], entry.id) : '#';
+
   const thumbClick = isMulti
-    ? `onclick="openPovDropdown(event, '${entry.id}')" style="cursor:pointer"`
+    ? `onclick="openPovDropdown(event,'${entry.id}')" style="cursor:pointer"`
     : `onclick="window.open('${singleUrl}','_blank')" style="cursor:pointer"`;
   const titleClick = isMulti
-    ? `onclick="openPovDropdown(event, '${entry.id}')"`
+    ? `onclick="openPovDropdown(event,'${entry.id}')"`
     : `onclick="window.open('${singleUrl}','_blank')"`;
 
-  // ── Calculate User Progress Overlay ──
+  // Progress bar and badge — only shown when we have both user progress
+  // AND the VOD has a known end timestamp to calculate a percentage against.
   let progressHtml = '';
   let progressBadgeHtml = '';
-
   if (userProgress[entry.id]) {
-    const p = userProgress[entry.id];
+    const p   = userProgress[entry.id];
     const vod = entry.vods.find(v => v.video_id === p.videoId);
-    
-    // Only render progress UI if we know the total duration of this specific VOD
-    if (vod && vod.timestamp_end_seconds) {
-      const start = vod.timestamp_seconds || 0;
-      const totalCollabDuration = vod.timestamp_end_seconds - start;
-      const userEffectiveProgress = p.seconds - start;
-      
-      // Calculate, floor, and clamp the percentage between 0 and 100
-      let percent = Math.floor((userEffectiveProgress / totalCollabDuration) * 100);
-      percent = Math.max(0, Math.min(100, percent));
-
+    if (vod?.timestamp_end_seconds) {
+      const start   = vod.timestamp_seconds || 0;
+      const percent = Math.max(0, Math.min(100,
+        Math.floor(((p.seconds - start) / (vod.timestamp_end_seconds - start)) * 100)
+      ));
       progressBadgeHtml = `<div class="progress-badge">${percent}% Watched</div>`;
-      progressHtml = `
-        <div class="card-progress-bar">
-          <div class="card-progress-fill" style="width: ${percent}%"></div>
-        </div>`;
+      progressHtml      = `<div class="card-progress-bar"><div class="card-progress-fill" style="width:${percent}%"></div></div>`;
     }
   }
 
@@ -397,7 +371,9 @@ function renderCard(entry) {
     <article class="card" data-id="${entry.id}">
       <div class="card-thumb-wrap" ${thumbClick}>
         ${thumbUrl
-          ? `<img class="card-thumb" src="${thumbUrl}" alt="${escAttr(title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="card-thumb-placeholder" style="display:none">🐢</div>`
+          ? `<img class="card-thumb" src="${thumbUrl}" alt="${escAttr(title)}" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+             <div class="card-thumb-placeholder" style="display:none">🐢</div>`
           : `<div class="card-thumb-placeholder">🐢</div>`
         }
         <div class="card-thumb-overlay">
@@ -415,7 +391,7 @@ function renderCard(entry) {
         <div class="card-meta">
           ${entry.date ? `<span>${entry.date}</span>` : '<span style="opacity:0.4">Date unknown</span>'}
           ${duration ? `<span class="card-meta-sep">·</span><span class="card-duration">${duration}</span>` : ''}
-          ${isWatchedEntry ? '<span title="Watched" style="display:flex"><svg class="watched-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>' : ''}
+          ${watched ? `<span title="Watched" style="display:flex"><svg class="watched-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>` : ''}
           <span class="card-menu-wrap">
             <button class="card-menu-btn" onclick="openCardMenu(event,'${entry.id}')" title="More options">···</button>
           </span>
@@ -427,17 +403,17 @@ function renderCard(entry) {
 
 // ── Main render ───────────────────────────────────────────────
 function render() {
-  const results = filteredAndSorted();
-  const grid = document.getElementById('card-grid');
-  const empty = document.getElementById('empty-state');
+  const results    = filteredAndSorted();
+  const grid       = document.getElementById('card-grid');
+  const empty      = document.getElementById('empty-state');
   const resultsBar = document.getElementById('results-bar');
 
   if (results.length === 0) {
     grid.innerHTML = '';
     empty.style.display = '';
   } else {
-    empty.style.display = 'none';
-    grid.innerHTML = results.map(renderCard).join('');
+    empty.style.display  = 'none';
+    grid.innerHTML       = results.map(renderCard).join('');
     requestAnimationFrame(applyChipOverflow);
   }
 
@@ -454,49 +430,37 @@ let dropdownEntry = null;
 
 function openPovDropdown(event, entryId) {
   event.stopPropagation();
-  const entry = allAppearances.find(e => e.id === entryId);
+  const entry    = allAppearances.find(e => e.id === entryId);
+  const dropdown = document.getElementById('pov-dropdown');
   if (!entry) return;
 
-  // Close if already open for same entry
-  const dropdown = document.getElementById('pov-dropdown');
+  // Toggle closed if already open for this entry
   if (dropdownEntry === entryId && dropdown.style.display !== 'none') {
     closePovDropdown();
     return;
   }
   dropdownEntry = entryId;
 
-  const inner = document.getElementById('pov-dropdown-inner');
-  inner.innerHTML = entry.vods.map(vod => {
-    let label = getStreamerLabel(vod);
-    
-    // Check if this specific VOD is the one the user has active progress on
-    const isActiveProgress = userProgress[entryId] && userProgress[entryId].videoId === vod.video_id;
-    if (isActiveProgress) {
-      label += ' (Watching)';
-    }
-
-    const url = getWatchUrl(vod, entryId);
-    const color = vod.streamer ? getColor('collab_partners', vod.streamer) : colors.fallback;
-    
-    // If it is the active progress, give it a solid border instead of a translucent one (color vs color+'44')
-    const borderHex = isActiveProgress ? color : color + '44';
-
+  document.getElementById('pov-dropdown-inner').innerHTML = entry.vods.map(vod => {
+    const baseLabel      = getStreamerLabel(vod);
+    const hasProgress    = userProgress[entryId]?.videoId === vod.video_id;
+    const label          = hasProgress ? `${baseLabel} (Watching)` : baseLabel;
+    const url            = getWatchUrl(vod, entryId);
+    const color          = vod.streamer ? getColor('collab_partners', vod.streamer) : colors.fallback;
+    // Active-progress VOD gets a solid border; others get a translucent one
+    const borderHex      = hasProgress ? color : `${color}44`;
     return `
       <a class="pov-option" href="${url}" target="_blank" rel="noopener">
-        <span class="pov-option-label">${escHtml(vod.vod_title || getStreamerLabel(vod))}</span>
+        <span class="pov-option-label">${escHtml(vod.vod_title || baseLabel)}</span>
         <span class="pov-chip" style="background:${color}22;color:${color};border:1px solid ${borderHex}">${escHtml(label)}</span>
       </a>`;
   }).join('');
 
-  // Position near cursor
-  const x = event.clientX;
-  const y = event.clientY;
+  // Position near the click, nudged inward from screen edges
   dropdown.style.display = '';
   const rect = dropdown.getBoundingClientRect();
-  const left = Math.min(x, window.innerWidth - rect.width - 12);
-  const top  = Math.min(y + 8, window.innerHeight - rect.height - 12);
-  dropdown.style.left = left + 'px';
-  dropdown.style.top  = top  + 'px';
+  dropdown.style.left = Math.min(event.clientX, window.innerWidth  - rect.width  - 12) + 'px';
+  dropdown.style.top  = Math.min(event.clientY + 8, window.innerHeight - rect.height - 12) + 'px';
 }
 
 function closePovDropdown() {
@@ -504,16 +468,17 @@ function closePovDropdown() {
   dropdownEntry = null;
 }
 
-// ── Partner tooltip ───────────────────────────────────────────
+// ── Overflow tooltip ──────────────────────────────────────────
+// Uses a hide delay so the cursor can move from the "+N more" chip onto the
+// tooltip without it disappearing. Both elements cancel the timer on mouseenter.
 let tooltipHideTimer = null;
 
 function showOverflowTooltip(event, el) {
   clearTimeout(tooltipHideTimer);
-  const items = JSON.parse(decodeURIComponent(el.dataset.overflow));
+  const items   = JSON.parse(decodeURIComponent(el.dataset.overflow));
   const tooltip = document.getElementById('partner-tooltip');
-  const inner   = document.getElementById('partner-tooltip-inner');
 
-  inner.innerHTML = items.map(({ cat, value }) => {
+  document.getElementById('partner-tooltip-inner').innerHTML = items.map(({ cat, value }) => {
     const hex = getColor(cat, value);
     return `<button class="chip" style="background:${hex}22;color:${hex};border-color:${hex}44;"
       onclick="filterBy('${escAttr(cat)}','${escAttr(value)}');hidePartnerTooltip()">
@@ -524,7 +489,7 @@ function showOverflowTooltip(event, el) {
   tooltip.style.display = '';
   const rect  = el.getBoundingClientRect();
   const tRect = tooltip.getBoundingClientRect();
-  tooltip.style.left = Math.min(rect.left, window.innerWidth  - tRect.width  - 12) + 'px';
+  tooltip.style.left = Math.min(rect.left,   window.innerWidth  - tRect.width  - 12) + 'px';
   tooltip.style.top  = Math.min(rect.bottom + 6, window.innerHeight - tRect.height - 12) + 'px';
 }
 
@@ -534,25 +499,17 @@ function hidePartnerTooltip() {
   }, 120);
 }
 
-function keepPartnerTooltip() {
-  clearTimeout(tooltipHideTimer);
-}
+function keepPartnerTooltip() { clearTimeout(tooltipHideTimer); }
 
 // ── Watched management ────────────────────────────────────────
-function isWatched(entry) {
-  return watchedIds.has(entry.id);
-}
-
-function saveWatched() {
-  localStorage.setItem('tutel-watched', JSON.stringify([...watchedIds]));
-}
+function isWatched(entry) { return watchedIds.has(entry.id); }
 
 function toggleWatched(entryId) {
   if (watchedIds.has(entryId)) {
     watchedIds.delete(entryId);
   } else {
     watchedIds.add(entryId);
-    // Delete progress when marked watched
+    // Marking as watched clears any saved progress — it's no longer needed
     if (userProgress[entryId]) {
       delete userProgress[entryId];
       saveUserProgress();
@@ -562,55 +519,38 @@ function toggleWatched(entryId) {
   closeCardMenu();
 
   const entry = allAppearances.find(e => e.id === entryId);
-  if (!entry) return;
-
-  const card = document.querySelector(`.card[data-id="${entryId}"]`);
-  if (!card) return;
+  const card  = document.querySelector(`.card[data-id="${entryId}"]`);
+  if (!entry || !card) return;
 
   if (passesFilter(entry)) {
-    // Still visible — re-render in place
+    // Card still belongs in the current view — re-render it in place
     card.outerHTML = renderCard(entry);
     requestAnimationFrame(() => {
-      const newCard = document.querySelector(`.card[data-id="${entryId}"]`);
-      if (newCard) applyChipOverflowForCard(newCard);
+      applyChipOverflowForCard(document.querySelector(`.card[data-id="${entryId}"]`));
     });
   } else {
-    // Should no longer be visible — animate out then remove
+    // Card no longer passes the filter — animate it out and remove it
     card.style.transition = 'opacity 250ms ease, transform 250ms ease';
-    card.style.opacity = '0';
-    card.style.transform = 'scale(0.96)';
+    card.style.opacity    = '0';
+    card.style.transform  = 'scale(0.96)';
     setTimeout(() => {
       card.remove();
-      // Update results bar count without full re-render
-      const visible = document.querySelectorAll('.card').length;
-      const total = allAppearances.length;
+      const visible    = document.querySelectorAll('.card').length;
+      const total      = allAppearances.length;
       const resultsBar = document.getElementById('results-bar');
       resultsBar.innerHTML = visible === total
         ? `<span class="results-count">${total}</span> sightings`
         : `<span class="results-count">${visible}</span> of ${total} sightings`;
-      // Show empty state if nothing left
-      const empty = document.getElementById('empty-state');
-      empty.style.display = visible === 0 ? '' : 'none';
+      document.getElementById('empty-state').style.display = visible === 0 ? '' : 'none';
     }, 260);
   }
 }
 
-// ── Watched & Progress Data Management ────────────────────────
-
+// ── Data management (export / import / clear) ─────────────────
 function exportWatchData() {
-  // Bundle both states into a single object
-  const exportObject = {
-    watched: [...watchedIds],
-    progress: userProgress
-  };
-  
-  const data = JSON.stringify(exportObject, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  // Changed the filename slightly to reflect it holds all data
-  a.download = 'tutel-sightings-data.json'; 
+  const data = JSON.stringify({ watched: [...watchedIds], progress: userProgress }, null, 2);
+  const url  = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+  const a    = Object.assign(document.createElement('a'), { href: url, download: 'tutel-sightings-data.json' });
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -621,17 +561,9 @@ function importWatchData(file) {
   reader.onload = e => {
     try {
       const parsed = JSON.parse(e.target.result);
-      
-      // Basic validation to ensure it's an object
-      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-        throw new Error();
-      }
-
-      // Extract the data, falling back to empty states if something is missing
-      watchedIds = new Set(Array.isArray(parsed.watched) ? parsed.watched : []);
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error();
+      watchedIds   = new Set(Array.isArray(parsed.watched) ? parsed.watched : []);
       userProgress = (parsed.progress && typeof parsed.progress === 'object') ? parsed.progress : {};
-
-      // Save both to localStorage and re-render the UI
       saveWatched();
       saveUserProgress();
       render();
@@ -645,25 +577,22 @@ function importWatchData(file) {
 function clearWatchData() {
   const btn = document.getElementById('footer-clear-btn');
   if (btn.dataset.confirming === 'true') {
-    // Wipe both states
-    watchedIds = new Set();
-    userProgress = {}; 
-    
-    // Save the empty states to localStorage
+    watchedIds   = new Set();
+    userProgress = {};
     saveWatched();
     saveUserProgress();
     render();
-    
-    btn.textContent = 'Clear data';
+    btn.textContent        = 'Clear data';
     btn.dataset.confirming = 'false';
     btn.classList.remove('confirming');
   } else {
-    btn.textContent = 'Are you sure?';
+    btn.textContent        = 'Are you sure?';
     btn.dataset.confirming = 'true';
     btn.classList.add('confirming');
+    // Auto-reset after 3 seconds if not confirmed
     setTimeout(() => {
       if (btn.dataset.confirming === 'true') {
-        btn.textContent = 'Clear data';
+        btn.textContent        = 'Clear data';
         btn.dataset.confirming = 'false';
         btn.classList.remove('confirming');
       }
@@ -676,7 +605,6 @@ let activeCardMenu = null;
 
 function openCardMenu(event, entryId) {
   event.stopPropagation();
-  // Close if same menu already open
   if (activeCardMenu === entryId) { closeCardMenu(); return; }
   closeCardMenu();
 
@@ -684,62 +612,42 @@ function openCardMenu(event, entryId) {
   if (!entry) return;
   activeCardMenu = entryId;
 
-  const copyIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
-  const eyeIcon  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
-  const eyeOffIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+  // SVG icon strings
+  const copyIcon     = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+  const eyeIcon      = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  const eyeOffIcon   = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
   const progressIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
-  const progressItem = `<button class="card-menu-item" onclick="openProgressPopup('${escAttr(entry.id)}')">${progressIcon} Set Progress</button>`;
+  const summaryIcon  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>`;
 
-  const watched = isWatched(entry);
-  const watchItem = `<button class="card-menu-item" onclick="toggleWatched('${entry.id}')">
-    ${watched ? eyeOffIcon : eyeIcon}
-    ${watched ? 'Mark as unwatched' : 'Mark as watched'}
-  </button>`;
-  const divider = `<div class="card-menu-divider"></div>`;
+  const watched    = isWatched(entry);
+  const divider    = `<div class="card-menu-divider"></div>`;
+  const watchItem  = `<button class="card-menu-item" onclick="toggleWatched('${entry.id}')">${watched ? eyeOffIcon : eyeIcon} ${watched ? 'Mark as unwatched' : 'Mark as watched'}</button>`;
+  const progItem   = `<button class="card-menu-item" onclick="openProgressPopup('${escAttr(entry.id)}')">${progressIcon} Set Progress</button>`;
+  const summItem   = entry.summary ? `<button class="card-menu-item" onclick="openSummary('${escAttr(entry.id)}')">${summaryIcon} Summary</button>${divider}` : '';
 
-  const summaryIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>`;
-  const summaryItem = entry.summary
-    ? `<button class="card-menu-item" onclick="openSummary('${escAttr(entry.id)}')">${summaryIcon} Summary</button>${divider}`
-    : '';
-
-  let copyItems;
-  if (entry.vods.length === 1) {
-    const url = getWatchUrl(entry.vods[0]);
-    copyItems = `<button class="card-menu-item" onclick="copyLink('${escAttr(url)}')">
-      ${copyIcon} Copy link
-    </button>`;
-  } else {
-    copyItems = entry.vods.map(vod => {
-      const url = getWatchUrl(vod);
-      const label = getStreamerLabel(vod);
-      return `<button class="card-menu-item" onclick="copyLink('${escAttr(url)}')">
-        ${copyIcon}
-        <span><span>Copy link</span><span class="card-menu-label-sub">${escHtml(label)}</span></span>
-      </button>`;
-    }).join('');
-  }
-
-  const items = watchItem + divider + progressItem + divider + summaryItem + copyItems;
+  // Copy link — one button for single VOD, one per VOD for multi
+  const copyItems = entry.vods.length === 1
+    ? `<button class="card-menu-item" onclick="copyLink('${escAttr(getWatchUrl(entry.vods[0], entry.id, false))}')">${copyIcon} Copy link</button>`
+    : entry.vods.map(vod => `
+        <button class="card-menu-item" onclick="copyLink('${escAttr(getWatchUrl(vod, entry.id))}')">
+          ${copyIcon}<span>Copy link<span class="card-menu-label-sub">${escHtml(getStreamerLabel(vod))}</span></span>
+        </button>`).join('');
 
   const menu = document.createElement('div');
   menu.className = 'card-menu-dropdown';
-  menu.id = 'card-menu-dropdown';
-  menu.innerHTML = items;
+  menu.id        = 'card-menu-dropdown';
+  menu.innerHTML = watchItem + divider + progItem + divider + summItem + copyItems;
   document.body.appendChild(menu);
 
-  // Position near the button
-  const btn = event.currentTarget;
-  const rect = btn.getBoundingClientRect();
-  const mw = 190;
-  const left = Math.min(rect.right - mw, window.innerWidth - mw - 8);
-  const top  = Math.min(rect.bottom + 4, window.innerHeight - menu.offsetHeight - 8);
-  menu.style.left = Math.max(8, left) + 'px';
-  menu.style.top  = top + 'px';
+  // Align the menu's right edge to the button's right edge, shifted up from screen edge if needed
+  const rect = event.currentTarget.getBoundingClientRect();
+  const mw   = 190;
+  menu.style.left = Math.max(8, Math.min(rect.right - mw, window.innerWidth - mw - 8)) + 'px';
+  menu.style.top  = Math.min(rect.bottom + 4, window.innerHeight - menu.offsetHeight - 8) + 'px';
 }
 
 function closeCardMenu() {
-  const existing = document.getElementById('card-menu-dropdown');
-  if (existing) existing.remove();
+  document.getElementById('card-menu-dropdown')?.remove();
   activeCardMenu = null;
 }
 
@@ -747,11 +655,10 @@ async function copyLink(url) {
   try {
     await navigator.clipboard.writeText(url);
   } catch {
-    // Fallback for browsers without clipboard API
-    const ta = document.createElement('textarea');
-    ta.value = url;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
+    // Fallback for browsers that don't support the Clipboard API
+    const ta = Object.assign(document.createElement('textarea'), {
+      value: url, style: 'position:fixed;opacity:0'
+    });
     document.body.appendChild(ta);
     ta.select();
     document.execCommand('copy');
@@ -773,6 +680,7 @@ function closeSidebar() {
   document.body.style.overflow = '';
 }
 
+// ── Filters ───────────────────────────────────────────────────
 function filterBy(cat, value) {
   const set = state.filters[cat];
   if (set.has(value)) set.delete(value);
@@ -781,99 +689,251 @@ function filterBy(cat, value) {
 }
 
 function clearAllFilters() {
-  for (const set of Object.values(state.filters)) set.clear();
+  Object.values(state.filters).forEach(s => s.clear());
   state.search = '';
-  document.getElementById('search-input').value = '';
+  document.getElementById('search-input').value        = '';
   document.getElementById('mobile-search-input').value = '';
   render();
 }
 
+// ── Overlay helpers ───────────────────────────────────────────
+// Centralised open/close for any popup that uses the shared modal-backdrop.
+// Avoids repeating the same three lines in every open/close function.
+function openOverlay(popupId) {
+  document.getElementById(popupId).style.display        = '';
+  document.getElementById('modal-backdrop').style.display = '';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOverlay(popupId) {
+  document.getElementById(popupId).style.display         = 'none';
+  document.getElementById('modal-backdrop').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// ── Summary popup ─────────────────────────────────────────────
+function openSummary(entryId) {
+  closeCardMenu();
+  const entry = allAppearances.find(e => e.id === entryId);
+  if (!entry?.summary) return;
+  document.getElementById('summary-title').textContent = getCardTitle(entry);
+  document.getElementById('summary-text').textContent  = entry.summary;
+  openOverlay('summary-popup');
+}
+
+function closeSummary() { closeOverlay('summary-popup'); }
+
+// ── About modal ───────────────────────────────────────────────
+function openModal()  { openOverlay('modal'); }
+function closeModal() { closeOverlay('modal'); }
+
+function switchModalTab(tab) {
+  document.querySelectorAll('.modal-tab').forEach(t   => t.classList.toggle('active', t.dataset.tab   === tab));
+  document.querySelectorAll('.modal-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tab));
+}
+
+// ── Progress popup ─────────────────────────────────────────────
+let currentProgressEntry   = null;
+let pendingProgressSeconds = 0;
+let pendingProgressVideoId = null;
+
+function openProgressPopup(entryId) {
+  closeCardMenu();
+  const entry = allAppearances.find(e => e.id === entryId);
+  if (!entry) return;
+  currentProgressEntry = entry;
+
+  document.getElementById('progress-title').textContent = getCardTitle(entry);
+  document.getElementById('prog-hh').value              = '';
+  document.getElementById('prog-mm').value              = '';
+  document.getElementById('prog-ss').value              = '';
+  document.getElementById('progress-watched-prompt').style.display = 'none';
+  document.getElementById('progress-actions').style.display        = 'flex';
+
+  // Show VOD selector only for multi-VOD entries
+  const select = document.getElementById('progress-vod-select');
+  select.style.display = entry.vods.length > 1 ? '' : 'none';
+  select.innerHTML = entry.vods.map(v =>
+    `<option value="${v.video_id}">${escHtml(getStreamerLabel(v))}</option>`
+  ).join('');
+
+  // Pre-fill with existing progress if present
+  const p = userProgress[entryId];
+  if (p) {
+    select.value = p.videoId;
+    const h = Math.floor(p.seconds / 3600);
+    const m = Math.floor((p.seconds % 3600) / 60);
+    const s = p.seconds % 60;
+    if (h)      document.getElementById('prog-hh').value = String(h).padStart(2, '0');
+    if (m || h) document.getElementById('prog-mm').value = String(m).padStart(2, '0');
+    document.getElementById('prog-ss').value = String(s).padStart(2, '0');
+  }
+
+  openOverlay('progress-popup');
+}
+
+function closeProgress() {
+  closeOverlay('progress-popup');
+  currentProgressEntry   = null;
+  pendingProgressSeconds = 0;
+  pendingProgressVideoId = null;
+}
+
+// Auto-advance focus to next input after 2 digits are entered
+function handleProgressInput(el, nextId) {
+  el.value = el.value.replace(/\D/g, '');
+  if (el.value.length === 2 && nextId) document.getElementById(nextId).focus();
+}
+
+// Move focus back to previous input on backspace when current is empty
+function handleProgressBackspace(e, prevId) {
+  if (e.key === 'Backspace' && e.target.value === '' && prevId) {
+    document.getElementById(prevId).focus();
+  }
+}
+
+function saveProgressFromPopup() {
+  if (!currentProgressEntry) return;
+
+  const hh = parseInt(document.getElementById('prog-hh').value || '0', 10);
+  const mm = parseInt(document.getElementById('prog-mm').value || '0', 10);
+  const ss = parseInt(document.getElementById('prog-ss').value || '0', 10);
+  const totalSec = hh * 3600 + mm * 60 + ss;
+  const videoId  = document.getElementById('progress-vod-select').value;
+
+  // Treat 00:00:00 as "clear progress"
+  if (totalSec === 0) { clearProgressFromPopup(); return; }
+
+  // If the timestamp is past the VOD's known end, ask if they want to mark it watched instead
+  const vod = currentProgressEntry.vods.find(v => v.video_id === videoId);
+  if (vod?.timestamp_end_seconds && totalSec >= vod.timestamp_end_seconds) {
+    pendingProgressSeconds = totalSec;
+    pendingProgressVideoId = videoId;
+    document.getElementById('progress-watched-prompt').style.display = 'block';
+    document.getElementById('progress-actions').style.display        = 'none';
+    return;
+  }
+
+  finalizeProgressSave(totalSec, videoId);
+}
+
+function confirmProgressWatched(markWatched) {
+  if (markWatched) {
+    // Use toggleWatched so card removal / filter logic is handled consistently
+    if (!watchedIds.has(currentProgressEntry.id)) toggleWatched(currentProgressEntry.id);
+    else closeProgress();
+  } else {
+    finalizeProgressSave(pendingProgressSeconds, pendingProgressVideoId);
+  }
+}
+
+function cancelProgressPrompt() {
+  document.getElementById('progress-watched-prompt').style.display = 'none';
+  document.getElementById('progress-actions').style.display        = 'flex';
+  pendingProgressSeconds = 0;
+  pendingProgressVideoId = null;
+}
+
+function finalizeProgressSave(seconds, videoId) {
+  userProgress[currentProgressEntry.id] = { videoId, seconds };
+  saveUserProgress();
+  render();
+  closeProgress();
+}
+
+function clearProgressFromPopup() {
+  if (currentProgressEntry) {
+    delete userProgress[currentProgressEntry.id];
+    saveUserProgress();
+    render();
+  }
+  closeProgress();
+}
+
 // ── Event bindings ────────────────────────────────────────────
 function bindEvents() {
-  // Desktop search
+  // Search — desktop and mobile inputs stay in sync
   document.getElementById('search-input').addEventListener('input', e => {
     state.search = e.target.value.trim();
     document.getElementById('mobile-search-input').value = state.search;
     render();
   });
-
-  // Mobile search
   document.getElementById('mobile-search-input').addEventListener('input', e => {
     state.search = e.target.value.trim();
     document.getElementById('search-input').value = state.search;
     render();
   });
 
-  // Hamburger open
+  // Mobile sidebar
   document.getElementById('hamburger-btn').addEventListener('click', openSidebar);
-
-  // Sidebar close button
   document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
-
-  // Backdrop close
   document.getElementById('sidebar-backdrop').addEventListener('click', closeSidebar);
 
-  // Sort
+  // Sort buttons — clicking the active sort flips direction; clicking a new one resets to desc
   document.getElementById('sort-options').addEventListener('click', e => {
     const btn = e.target.closest('.sort-btn');
     if (!btn) return;
     const newSort = btn.dataset.sort;
-    if (newSort === state.sort) {
-      state.sortDir = state.sortDir === 'desc' ? 'asc' : 'desc';
-    } else {
-      state.sort = newSort;
-      state.sortDir = 'desc';
-    }
+    state.sortDir = newSort === state.sort ? (state.sortDir === 'desc' ? 'asc' : 'desc') : 'desc';
+    state.sort    = newSort;
     document.querySelectorAll('.sort-btn').forEach(b => {
-      const isActive = b.dataset.sort === state.sort;
-      b.classList.toggle('active', isActive);
+      const active = b.dataset.sort === state.sort;
+      b.classList.toggle('active', active);
       const arrow = b.querySelector('.sort-arrow');
       if (arrow) {
-        arrow.style.display = isActive ? '' : 'none';
+        arrow.style.display = active ? '' : 'none';
         arrow.classList.toggle('asc', state.sortDir === 'asc');
       }
     });
     render();
   });
 
-  // Watch status
+  // Watch status toggle
   document.querySelector('.watch-toggle-wrap').addEventListener('click', e => {
     const btn = e.target.closest('.watch-toggle-btn');
     if (!btn) return;
     state.watch = btn.dataset.watch;
-    document.querySelectorAll('.watch-toggle-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    document.querySelectorAll('.watch-toggle-btn').forEach(b => b.classList.toggle('active', b === btn));
     render();
   });
 
-  // Filter chips (sidebar)
+  // Sidebar filter chips
   document.getElementById('filter-groups').addEventListener('click', e => {
     const btn = e.target.closest('.filter-chip');
-    if (!btn) return;
-    filterBy(btn.dataset.cat, btn.dataset.value);
+    if (btn) filterBy(btn.dataset.cat, btn.dataset.value);
   });
 
-  // Clear all filters button
   document.getElementById('clear-filters').addEventListener('click', clearAllFilters);
 
-  // Close dropdown and card menu on outside click
+  // Close POV dropdown and card menu on outside click
   document.addEventListener('click', e => {
-    if (!document.getElementById('pov-dropdown').contains(e.target)) {
-      closePovDropdown();
-    }
-    if (activeCardMenu && !e.target.closest('#card-menu-dropdown') && !e.target.closest('.card-menu-btn')) {
-      closeCardMenu();
+    if (!document.getElementById('pov-dropdown').contains(e.target)) closePovDropdown();
+    if (activeCardMenu && !e.target.closest('#card-menu-dropdown') && !e.target.closest('.card-menu-btn')) closeCardMenu();
+    // Close progress/summary/modal popups when clicking the backdrop
+    if (e.target.id === 'modal-backdrop') {
+      closeProgress();
+      closeSummary();
+      closeModal();
     }
   });
 
-  // Close dropdown on scroll
   window.addEventListener('scroll', closePovDropdown, { passive: true });
 
-  // Modal tabs
+  // Modal tab switching
   document.getElementById('modal')?.addEventListener('click', e => {
     const tab = e.target.closest('.modal-tab');
     if (tab) switchModalTab(tab.dataset.tab);
   });
+
+  // Escape closes any open overlay
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    closeModal();
+    closeSummary();
+    closeProgress();
+  });
+
+  // Re-measure chip overflow when the window is resized
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -889,192 +949,6 @@ function escHtml(str) {
 function escAttr(str) {
   if (!str) return '';
   return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-}
-
-// ── Summary popup ─────────────────────────────────────────────
-function openSummary(entryId) {
-  closeCardMenu();
-  const entry = allAppearances.find(e => e.id === entryId);
-  if (!entry?.summary) return;
-
-  document.getElementById('summary-title').textContent = entry.title || entry.vods[0]?.vod_title || 'Collab Summary';
-  document.getElementById('summary-text').textContent = entry.summary;
-  document.getElementById('summary-popup').style.display = '';
-  document.getElementById('modal-backdrop').style.display = '';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeSummary() {
-  document.getElementById('summary-popup').style.display = 'none';
-  document.getElementById('modal-backdrop').style.display = 'none';
-  document.body.style.overflow = '';
-}
-
-// ── Modal ─────────────────────────────────────────────────────
-function openModal() {
-  document.getElementById('modal').style.display = '';
-  document.getElementById('modal-backdrop').style.display = '';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeModal() {
-  document.getElementById('modal').style.display = 'none';
-  document.getElementById('modal-backdrop').style.display = 'none';
-  document.body.style.overflow = '';
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    closeModal();
-    closeSummary();
-    if (typeof closeProgress === 'function') closeProgress();
-  }
-});
-
-function switchModalTab(tab) {
-  document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-  document.querySelectorAll('.modal-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tab));
-}
-
-// ── Progress popup ─────────────────────────────────────────────
-let currentProgressEntry = null;
-let pendingProgressSeconds = 0;
-let pendingProgressVideoId = null;
-
-function openProgressPopup(entryId) {
-  closeCardMenu();
-  const entry = allAppearances.find(e => e.id === entryId);
-  if (!entry) return;
-  currentProgressEntry = entry;
-
-  document.getElementById('progress-title').textContent = entry.title || entry.vods[0]?.vod_title || 'Set Progress';
-
-  // Reset UI state
-  document.getElementById('prog-hh').value = '';
-  document.getElementById('prog-mm').value = '';
-  document.getElementById('prog-ss').value = '';
-  document.getElementById('progress-watched-prompt').style.display = 'none';
-  document.getElementById('progress-actions').style.display = 'flex';
-
-  // Populate Dropdown
-  const select = document.getElementById('progress-vod-select');
-  if (entry.vods.length > 1) {
-    select.style.display = '';
-    select.innerHTML = entry.vods.map(v => `<option value="${v.video_id}">${escHtml(getStreamerLabel(v))}</option>`).join('');
-  } else {
-    select.style.display = 'none';
-    select.innerHTML = `<option value="${entry.vods[0].video_id}">Single</option>`;
-  }
-
-  // Pre-fill existing progress if present
-  if (userProgress[entryId]) {
-    const p = userProgress[entryId];
-    select.value = p.videoId;
-    const h = Math.floor(p.seconds / 3600);
-    const m = Math.floor((p.seconds % 3600) / 60);
-    const s = p.seconds % 60;
-    
-    if (h > 0) document.getElementById('prog-hh').value = String(h).padStart(2, '0');
-    if (m > 0 || h > 0) document.getElementById('prog-mm').value = String(m).padStart(2, '0');
-    document.getElementById('prog-ss').value = String(s).padStart(2, '0');
-  }
-
-  document.getElementById('progress-popup').style.display = '';
-  document.getElementById('modal-backdrop').style.display = '';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeProgress() {
-  document.getElementById('progress-popup').style.display = 'none';
-  document.getElementById('modal-backdrop').style.display = 'none';
-  document.body.style.overflow = '';
-  currentProgressEntry = null;
-}
-
-// Auto-advance inputs
-function handleProgressInput(el, nextId) {
-  el.value = el.value.replace(/\D/g, ''); // Strip non-digits
-  if (el.value.length === 2 && nextId) {
-    document.getElementById(nextId).focus();
-  }
-}
-
-// Backspace jump to previous input
-function handleProgressBackspace(e, prevId) {
-  if (e.key === 'Backspace' && e.target.value === '' && prevId) {
-    document.getElementById(prevId).focus();
-  }
-}
-
-function saveProgressFromPopup() {
-  if (!currentProgressEntry) return;
-
-  const hh = parseInt(document.getElementById('prog-hh').value || '0', 10);
-  const mm = parseInt(document.getElementById('prog-mm').value || '0', 10);
-  const ss = parseInt(document.getElementById('prog-ss').value || '0', 10);
-  const totalSec = (hh * 3600) + (mm * 60) + ss;
-  const videoId = document.getElementById('progress-vod-select').value;
-
-  // Don't save 00:00:00
-  if (totalSec === 0) {
-    clearProgressFromPopup();
-    return;
-  }
-
-  // Check if timestamp is past the end of the VOD
-  const vod = currentProgressEntry.vods.find(v => v.video_id === videoId);
-  if (vod && vod.timestamp_end_seconds && totalSec >= vod.timestamp_end_seconds) {
-    pendingProgressSeconds = totalSec;
-    pendingProgressVideoId = videoId;
-    document.getElementById('progress-watched-prompt').style.display = 'block';
-    document.getElementById('progress-actions').style.display = 'none';
-    return;
-  }
-
-  _finalizeProgressSave(totalSec, videoId);
-}
-
-function confirmProgressWatched(isWatchedChoice) {
-  if (isWatchedChoice) {
-    if (!watchedIds.has(currentProgressEntry.id)) {
-      watchedIds.add(currentProgressEntry.id);
-      saveWatched();
-    }
-    if (userProgress[currentProgressEntry.id]) {
-      delete userProgress[currentProgressEntry.id];
-      saveUserProgress();
-    }
-    render();
-    closeProgress();
-  } else {
-    _finalizeProgressSave(pendingProgressSeconds, pendingProgressVideoId);
-  }
-}
-
-function cancelProgressPrompt() {
-  document.getElementById('progress-watched-prompt').style.display = 'none';
-  const actionsEl = document.getElementById('progress-actions');
-  if (actionsEl) actionsEl.style.display = 'flex';
-  
-  // Also clear the temporary pending cache variables
-  pendingProgressSeconds = null;
-  pendingProgressVideoId = null;
-}
-
-function _finalizeProgressSave(seconds, videoId) {
-  userProgress[currentProgressEntry.id] = { videoId, seconds };
-  saveUserProgress();
-  render(); // Re-render to update single-click URLs
-  closeProgress();
-}
-
-function clearProgressFromPopup() {
-  if (currentProgressEntry && userProgress[currentProgressEntry.id]) {
-    delete userProgress[currentProgressEntry.id];
-    saveUserProgress();
-    render();
-  }
-  closeProgress();
 }
 
 // ── Go ────────────────────────────────────────────────────────
