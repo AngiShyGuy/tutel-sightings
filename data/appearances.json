@@ -833,6 +833,31 @@
     "notes": null
   },
   {
+    "id": "take-it-or-double-it-filian",
+    "title": null,
+    "date": "2023-11-25",
+    "activities": [
+      "Just Chatting"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Filian"
+    ],
+    "appearance_weight": "Cameo",
+    "summary": "Filian calls up her friends and asks them to either take a sum of money or double it and pass it to the next person. She decides to call Vedal with 32$ owed so far.",
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "😹 YLYL Chibi Filian",
+        "streamer": "Filian",
+        "video_id": "9Co6GhHBFt0",
+        "timestamp_seconds": 8830,
+        "timestamp_end_seconds": 8886
+      }
+    ],
+    "notes": null
+  },
+  {
     "id": "lethal-company-saiiren-vtubers",
     "title": "LETHAL COMPANY LOBBY",
     "date": "2023-11-29",
