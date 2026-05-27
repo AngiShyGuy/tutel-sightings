@@ -1502,6 +1502,34 @@
     "notes": null
   },
   {
+    "id": "drinking-ellie",
+    "title": null,
+    "date": "2024-09-28",
+    "activities": [
+      "Yapping",
+      "Drinking"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Ellie Minibot",
+      "Cerber",
+      "Minikomew"
+    ],
+    "appearance_weight": "Full",
+    "summary": null,
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "hireathon day 26! First time drinking! With @MinikoMew , @cerbervt, and @Vedal987 ♡",
+        "streamer": "Ellie Minibot",
+        "video_id": "hZPvhMR0K7w",
+        "timestamp_seconds": 465,
+        "timestamp_end_seconds": 19135
+      }
+    ],
+    "notes": null
+  },
+  {
     "id": "cod-camila-2",
     "title": null,
     "date": "2024-11-09",
@@ -1525,6 +1553,31 @@
         "video_id": "hdy_rEmPaQE",
         "timestamp_seconds": 1350,
         "timestamp_end_seconds": 26236
+      }
+    ],
+    "notes": null
+  },
+  {
+    "id": "debut-ellie",
+    "title": null,
+    "date": "2025-01-04",
+    "activities": [
+      "Yapping"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Ellie Minibot"
+    ],
+    "appearance_weight": "Partial",
+    "summary": null,
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "DEBUT! NEW MODEL! BUILDING A ROBOT! NEW SONG! ♡",
+        "streamer": "Ellie Minibot",
+        "video_id": "xOrOsge2cIE",
+        "timestamp_seconds": 22647,
+        "timestamp_end_seconds": 36760
       }
     ],
     "notes": null
