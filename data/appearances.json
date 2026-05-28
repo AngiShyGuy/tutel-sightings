@@ -1721,6 +1721,32 @@
     "notes": null
   },
   {
+    "id": "new-years-call-in-camila",
+    "title": null,
+    "date": "2025-01-06",
+    "activities": [
+      "Just Chatting"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Partial",
+    "summary": null,
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "NEW YEAR! NEW OUTFIT! IMP IS BACK IMP IS BACK!! LET US CELEBRATE!!",
+        "streamer": "Camila",
+        "video_id": "cKKiaAm0xgU",
+        "timestamp_seconds": 15386,
+        "timestamp_end_seconds": 18891
+      }
+    ],
+    "highlights": null,
+    "notes": null
+  },
+  {
     "id": "subathon-yap-toma",
     "title": null,
     "date": "2025-01-11",
