@@ -36,6 +36,7 @@ async function init() {
     allAppearances = appData;
     // Guard against colors.json being accidentally wrapped in an outer array
     colors = Array.isArray(colorData) ? colorData[0] : colorData;
+    loadStateFromURL();
   } catch (e) {
     console.error('Failed to load data:', e);
     document.getElementById('card-grid').innerHTML =
@@ -44,6 +45,7 @@ async function init() {
   }
 
   buildFilterSidebar();
+  syncUIFromState();
   renderStats();
   render();
   bindEvents();
@@ -418,11 +420,54 @@ function render() {
   }
 
   const total = allAppearances.length;
-  resultsBar.innerHTML = results.length === total
+  const resultsText = results.length === total
     ? `<span class="results-count">${total}</span> sightings`
     : `<span class="results-count">${results.length}</span> of ${total} sightings`;
 
+  const diceSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="15.5" r="1.5"></circle><circle cx="8.5" cy="15.5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle></svg>`;
+
+  resultsBar.innerHTML = `
+    <div class="results-text">${resultsText}</div>
+    <div class="results-actions">
+      <button class="random-btn" onclick="playRandomSighting()" ${results.length === 0 ? 'disabled' : ''} title="Play a random stream from this list">
+        ${diceSvg} Random
+      </button>
+    </div>
+  `;
+
   updateFilterChipStates();
+  updateURLFromState();
+}
+
+// ── Random Sighting ──────────────────────────────────────────
+function playRandomSighting() {
+  const results = filteredAndSorted();
+  if (results.length === 0) return;
+
+  const possibleChoices = [];
+  
+  // Build the pool of valid VODs based on the current list
+  results.forEach(entry => {
+    if (!entry.vods || entry.vods.length === 0) return;
+
+    if (entry.vod_type === 'parts') {
+      // Multi-parter: Only throw Part 1 into the pool
+      possibleChoices.push({ entry, vod: entry.vods[0] });
+    } else {
+      // POVs: Throw every perspective into the pool
+      entry.vods.forEach(vod => possibleChoices.push({ entry, vod }));
+    }
+  });
+
+  if (possibleChoices.length === 0) return;
+
+  // Pick a random choice
+  const choice = possibleChoices[Math.floor(Math.random() * possibleChoices.length)];
+  
+  // getWatchUrl inherently handles injecting user progress timestamps!
+  const url = getWatchUrl(choice.vod, choice.entry.id, true);
+
+  window.open(url, '_blank');
 }
 
 // ── POV dropdown ──────────────────────────────────────────────
@@ -957,6 +1002,75 @@ function escHtml(str) {
 function escAttr(str) {
   if (!str) return '';
   return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+// ── Sync UI Controls from Loaded State ────────────────────────
+function syncUIFromState() {
+  // 1. Fill the search fields with the loaded search parameter
+  const searchInput = document.getElementById('search-input');
+  const mobileSearchInput = document.getElementById('mobile-search-input');
+  if (searchInput) searchInput.value = state.search;
+  if (mobileSearchInput) mobileSearchInput.value = state.search;
+
+  // 2. Set the active class and arrow directions on the sort buttons
+  document.querySelectorAll('.sort-btn').forEach(b => {
+    const active = b.dataset.sort === state.sort;
+    b.classList.toggle('active', active);
+    const arrow = b.querySelector('.sort-arrow');
+    if (arrow) {
+      arrow.style.display = active ? '' : 'none';
+      arrow.classList.toggle('asc', state.sortDir === 'asc');
+    }
+  });
+
+  // 3. Highlight the correct watch status toggle button (All, Watched, Unwatched)
+  document.querySelectorAll('.watch-toggle-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.watch === state.watch);
+  });
+}
+
+// URL PARAMS HANDING!!!!!
+// 1. Take whatever is currently in 'state' and update the browser's URL bar
+function updateURLFromState() {
+  const params = new URLSearchParams();
+
+  // Handle simple strings
+  if (state.search) params.set('search', state.search);
+  if (state.sort !== 'date') params.set('sort', state.sort); // only add if not default
+  if (state.sortDir !== 'desc') params.set('sortDir', state.sortDir);
+  if (state.watch !== 'all') params.set('watch', state.watch);
+
+  // Handle filter Sets (convert Set -> Array -> comma-separated string)
+  for (const [key, set] of Object.entries(state.filters)) {
+    if (set.size > 0) {
+      params.set(key, Array.from(set).join(','));
+    }
+  }
+
+  // Construct the new URL string
+  const queryString = params.toString();
+  const newUrl = `${window.location.pathname}${queryString ? '?' + queryString : ''}`;
+
+  // Update the URL bar without reloading the page
+  window.history.replaceState(null, '', newUrl);
+}
+
+// 2. Look at the URL bar and overwrite 'state' with what we find
+function loadStateFromURL() {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.has('search')) state.search = params.get('search');
+  if (params.has('sort'))   state.sort = params.get('sort');
+  if (params.has('sortDir')) state.sortDir = params.get('sortDir');
+  if (params.has('watch'))  state.watch = params.get('watch');
+
+  // Convert comma-separated strings back into Sets for your filters
+  for (const key of Object.keys(state.filters)) {
+    if (params.has(key)) {
+      const values = params.get(key).split(',');
+      state.filters[key] = new Set(values);
+    }
+  }
 }
 
 // ── Go ────────────────────────────────────────────────────────

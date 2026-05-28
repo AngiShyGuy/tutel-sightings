@@ -346,9 +346,51 @@ input { font-family: inherit; }
   margin-bottom: 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
 }
 .results-count { color: var(--green); font-weight: 500; }
+
+.results-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Container holding the right-side buttons */
+.results-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Gap between each button (havent tested multiple buttons yet so mayhaps will need to change!) */
+}
+
+/* Random Stream Button */
+.random-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  padding: 5px 10px;
+  border-radius: var(--radius-md);
+  transition: background var(--transition), color var(--transition), transform 100ms;
+  cursor: pointer;
+}
+.random-btn:hover:not(:disabled) {
+  background: var(--bg-raised);
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+.random-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.random-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 
 /* --- Card Grid --- */
 .card-grid {
