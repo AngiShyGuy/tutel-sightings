@@ -372,8 +372,8 @@ function renderCard(entry) {
       <div class="card-thumb-wrap" ${thumbClick}>
         ${thumbUrl
           ? `<img class="card-thumb" src="${thumbUrl}" alt="${escAttr(title)}" loading="lazy"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-             <div class="card-thumb-placeholder" style="display:none">🐢</div>`
+               onload="if(this.naturalHeight > 90 ) { this.style.removeProperty('opacity'); this.onload=null; return; } var n=this.src.replace('maxres','hq'); this.src=''; this.src=n; this.style.removeProperty('opacity'); this.onload=null;">
+             <div class="card-thumb-placeholder" style="display:none">🐢</div>` // i might be able to delete this fallback but ill look into this later
           : `<div class="card-thumb-placeholder">🐢</div>`
         }
         <div class="card-thumb-overlay">
