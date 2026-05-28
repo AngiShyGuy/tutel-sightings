@@ -663,12 +663,14 @@ function openCardMenu(event, entryId) {
   const eyeOffIcon   = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
   const progressIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
   const summaryIcon  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>`;
+  const highlightIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
 
   const watched    = isWatched(entry);
   const divider    = `<div class="card-menu-divider"></div>`;
   const watchItem  = `<button class="card-menu-item" onclick="toggleWatched('${entry.id}')">${watched ? eyeOffIcon : eyeIcon} ${watched ? 'Mark as unwatched' : 'Mark as watched'}</button>`;
   const progItem   = `<button class="card-menu-item" onclick="openProgressPopup('${escAttr(entry.id)}')">${progressIcon} Set Progress</button>`;
-  const summItem   = entry.summary ? `<button class="card-menu-item" onclick="openSummary('${escAttr(entry.id)}')">${summaryIcon} Summary</button>${divider}` : '';
+  const hlItem     = (entry.highlights && entry.highlights.length > 0) ? `<button class="card-menu-item" onclick="openHighlights('${escAttr(entry.id)}')">${highlightIcon} Highlights</button>` : '';
+  const summItem   = entry.summary ? `<button class="card-menu-item" onclick="openSummary('${escAttr(entry.id)}')">${summaryIcon} Summary</button>` : '';
 
   // Copy link — one button for single VOD, one per VOD for multi
   const copyItems = entry.vods.length === 1
@@ -678,10 +680,17 @@ function openCardMenu(event, entryId) {
           ${copyIcon}<span>Copy link<span class="card-menu-label-sub">${escHtml(getStreamerLabel(vod))}</span></span>
         </button>`).join('');
 
+  // .filter(Boolean) will automatically remove any empty strings (like missing summaries/highlights) and .join('') mashes the surviving items together without dividers.
+  const group1 = [watchItem, progItem].filter(Boolean).join('');
+  const group2 = [summItem, hlItem].filter(Boolean).join('');
+  const group3 = [copyItems].filter(Boolean).join('');
+
+  // .filter(Boolean) will strip out group2 entirely if it's empty so that .join(divider) puts your divider ONLY between the groups that actually survived.
   const menu = document.createElement('div');
   menu.className = 'card-menu-dropdown';
   menu.id        = 'card-menu-dropdown';
-  menu.innerHTML = watchItem + divider + progItem + divider + summItem + copyItems;
+  menu.innerHTML = [group1, group2, group3].filter(Boolean).join(divider);
+  
   document.body.appendChild(menu);
 
   // Align the menu's right edge to the button's right edge, shifted up from screen edge if needed
@@ -770,6 +779,60 @@ function openSummary(entryId) {
 }
 
 function closeSummary() { closeOverlay('summary-popup'); }
+
+// ── Highlights popup ──────────────────────────────────────────
+function openHighlights(entryId) {
+  closeCardMenu();
+  const entry = allAppearances.find(e => e.id === entryId);
+  if (!entry?.highlights?.length) return;
+  
+  document.getElementById('highlights-title').textContent = getCardTitle(entry);
+  
+  const listHtml = entry.highlights.map(hl => {
+    const vod = entry.vods[hl.vod_index];
+    if (!vod) return '';
+    
+    // Construct direct timestamped link for YouTube
+    const url = `https://youtu.be/${vod.video_id}?t=${hl.timestamp_seconds}`;
+    
+    // --- 🌟 Calculate Relative Collab Time ---
+    let relativeSecs = hl.timestamp_seconds - (vod.timestamp_seconds || 0);
+
+    // If it's a sequential multi-parter, add the durations of all previous parts
+    if (entry.vod_type === 'parts') {
+      for (let i = 0; i < hl.vod_index; i++) {
+        const prevVod = entry.vods[i];
+        const prevDuration = (prevVod.timestamp_end_seconds || 0) - (prevVod.timestamp_seconds || 0);
+        if (prevDuration > 0) {
+          relativeSecs += prevDuration;
+        }
+      }
+    }
+    
+    // Prevent negative timestamps just in case the data is weird
+    const timeStr = formatDuration(Math.max(0, relativeSecs));
+
+    // If it's a multi-POV/multi-part stream, tell them which VOD it belongs to
+    const streamerLabel = entry.vods.length > 1 
+      ? `<span class="highlight-streamer">${escHtml(getStreamerLabel(vod))}</span>` 
+      : '';
+    
+    return `
+      <a href="${url}" target="_blank" rel="noopener" class="highlight-item">
+        <div class="highlight-info">
+          <div class="highlight-title">${escHtml(hl.title)}</div>
+          ${streamerLabel}
+        </div>
+        <div class="highlight-time">${timeStr}</div>
+      </a>
+    `;
+  }).join('');
+  
+  document.getElementById('highlights-list').innerHTML = listHtml;
+  openOverlay('highlights-popup');
+}
+
+function closeHighlights() { closeOverlay('highlights-popup'); }
 
 // ── About modal ───────────────────────────────────────────────
 function openModal()  { openOverlay('modal'); }
@@ -964,6 +1027,7 @@ function bindEvents() {
       closeProgress();
       closeSummary();
       closeModal();
+      closeHighlights();
     }
   });
 
@@ -984,6 +1048,7 @@ function bindEvents() {
     closeModal();
     closeSummary();
     closeProgress();
+    closeHighlights();
   });
 
   // Re-measure chip overflow when the window is resized

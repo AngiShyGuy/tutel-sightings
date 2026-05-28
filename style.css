@@ -1046,6 +1046,63 @@ input { font-family: inherit; }
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* --- Highlights List --- */
+.highlights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: center; /* Centers the text and the timestamp vertically */
+  justify-content: space-between; /* Pushes the time all the way to the right */
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.highlight-item:hover {
+  background: var(--bg-raised);
+  border-color: var(--text-muted);
+}
+
+/* New wrapper to stack the title and streamer label on the left */
+.highlight-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.highlight-title {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.highlight-streamer {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.highlight-time {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
 /* --- Modal --- */
 .modal-backdrop {
   position: fixed;

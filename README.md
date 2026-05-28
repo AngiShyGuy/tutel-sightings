@@ -13,6 +13,7 @@ Hosted on **[GitHub Pages](https://angishyguy.github.io/tutel-sightings)**.
 - **Searching and filtering** based on the title, activities played, collab partners, or games played.
 - **Multiple VOD support** for each stream, allowing for multi-parters or for different streamers' perspectives of the same event.
 - **Collab summaries** for some streams in case you forgot what that one call-in was about again.
+- **Highlights timestamps** for quick access to a stream's best moments.
 - **Watch progress** by marking streams as watched and writing down your current timestamp via the `···` menu.
 - **Export / Import progress data** to back up your watch data as a JSON file and restore it on another browser or device.
 
