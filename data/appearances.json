@@ -549,6 +549,32 @@
     "notes": null
   },
   {
+    "id": "punishment-wheel-camila",
+    "title": null,
+    "date": "2023-09-01",
+    "activities": [
+      "Just Chatting"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Cameo",
+    "summary": "Camila spins a punishment wheel for laughing in a You Laugh You Lose and needs to call a friend to praise her. She calls Vedal.",
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "YOU LAUGH YOU LOSE WHEEL OF PUNISHMENTS",
+        "streamer": "Camila",
+        "video_id": "lZLMguEKJCM",
+        "timestamp_seconds": 3052,
+        "timestamp_end_seconds": 3187
+      }
+    ],
+    "highlights": null,
+    "notes": null
+  },
+  {
     "id": "yapping-short-saiiren",
     "title": null,
     "date": "2023-09-01",
@@ -727,6 +753,32 @@
         "video_id": "SefCvH3ojn4",
         "timestamp_seconds": 11880,
         "timestamp_end_seconds": 19929
+      }
+    ],
+    "highlights": null,
+    "notes": null
+  },
+  {
+    "id": "punishment-wheel-camila-2",
+    "title": "YOU LAUGH, YOU LOSE | SPIN THE WHEEL OF PUNISHMENTS",
+    "date": "2023-10-05",
+    "activities": [
+      "Just Chatting"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Cameo",
+    "summary": "Camila spins a punishment wheel for laughing in a You Laugh You Lose and needs to call a friend to roast her. She calls Vedal. Oh and he also appears earlier in the stream for a few seconds.",
+    "vod_type": "pov",
+    "vods": [
+      {
+        "vod_title": "YOU LAUGH, YOU LOSE | SPIN THE WHEEL OF PUNISHMENTS",
+        "streamer": "Camila",
+        "video_id": "OzVNrt7L_1k",
+        "timestamp_seconds": 10160,
+        "timestamp_end_seconds": 10366
       }
     ],
     "highlights": null,
