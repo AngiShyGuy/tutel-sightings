@@ -936,7 +936,13 @@
         "timestamp_end_seconds": 16570
       }
     ],
-    "highlights": null,
+    "highlights": [
+      {
+        "title": "That's the eject button, Layna.",
+        "timestamp_seconds": 2756,
+        "vod_index": 0
+      }
+    ],
     "notes": null
   },
   {
@@ -1379,7 +1385,13 @@
         "timestamp_end_seconds": 8163
       }
     ],
-    "highlights": null,
+    "highlights": [
+      {
+        "title": "The Womb Tattoo",
+        "timestamp_seconds": 5986,
+        "vod_index": 0
+      }
+    ],
     "notes": null
   },
   {
@@ -1491,7 +1503,23 @@
         "timestamp_end_seconds": 8163
       }
     ],
-    "highlights": null,
+    "highlights": [
+      {
+        "title": "Toma's Dream",
+        "timestamp_seconds": 1251,
+        "vod_index": 0
+      },
+      {
+        "title": "The Cure to Being British",
+        "timestamp_seconds": 1533,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal and Koko :Flushed:",
+        "timestamp_seconds": 1577,
+        "vod_index": 0
+      }
+    ],
     "notes": null
   },
   {
@@ -1639,7 +1667,9 @@
       "Gaming",
       "VR"
     ],
-    "games": [],
+    "games": [
+      "VRChat"
+    ],
     "collab_partners": [
       "Anny"
     ],
@@ -1655,7 +1685,13 @@
         "timestamp_end_seconds": 11939
       }
     ],
-    "highlights": null,
+    "highlights": [
+      {
+        "title": "Mounting a VR Base Station... with tape.",
+        "timestamp_seconds": 6671,
+        "vod_index": 0
+      }
+    ],
     "notes": null
   },
   {
