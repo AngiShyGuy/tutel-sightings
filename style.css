@@ -356,6 +356,11 @@ input { font-family: inherit; }
   gap: 8px;
 }
 
+.results-separator {
+  color: var(--text-muted);
+  opacity: 0.4;
+}
+
 /* Container holding the right-side buttons */
 .results-actions {
   display: flex;

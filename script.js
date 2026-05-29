@@ -94,7 +94,7 @@ function entryDurationInfo(entry) {
   const min = Math.min(...durations);
   const max = Math.max(...durations);
   if (min === max) return { display: formatDuration(min), sortValue: min };
-  return { display: `${formatDuration(min)} ~ ${formatDuration(max)}`, sortValue: (min + max) / 2 };
+return { display: `${formatDuration(min)} ~ ${formatDuration(max)}`, sortValue: max };
 }
 
 // ── Sort ──────────────────────────────────────────────────────
@@ -431,10 +431,15 @@ function render() {
     ? `<span class="results-count">${total}</span> sightings`
     : `<span class="results-count">${results.length}</span> of ${total} sightings`;
 
+  const totalSecs = results.reduce((sum, e) => sum + (entryDurationInfo(e).sortValue ?? 0), 0);
+  const durationText = totalSecs > 0
+    ? `<span class="results-separator">·</span><span class="results-count">${formatDuration(totalSecs)}</span> total`
+    : '';
+
   const diceSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="15.5" r="1.5"></circle><circle cx="8.5" cy="15.5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle></svg>`;
 
   resultsBar.innerHTML = `
-    <div class="results-text">${resultsText}</div>
+    <div class="results-text">${resultsText}${durationText}</div>
     <div class="results-actions">
       <button class="random-btn" onclick="playRandomSighting()" ${results.length === 0 ? 'disabled' : ''} title="Play a random stream from this list">
         ${diceSvg} Random
