@@ -255,8 +255,15 @@ function getWatchUrl(vod, entryId, withProgress = true) {
   if (!vod.video_id) return '#';
   let t = vod.timestamp_seconds;
 
-  if (withProgress && entryId && userProgress?.[entryId]?.videoId === vod.video_id) {
-      t = userProgress?.[entryId]?.seconds;
+  if (withProgress && entryId) {
+    const entry = allAppearances.find(e => e.id === entryId);
+    const p = userProgress?.[entryId];
+    if (entry && p != null) {
+      const vodIndex = entry.vods.indexOf(vod);
+      if (vodIndex !== -1 && p.vodIndex === vodIndex) {
+        t = p.seconds;
+      }
+    }
   }
 
   return t ? `https://youtu.be/${vod.video_id}?t=${t}` : `https://youtu.be/${vod.video_id}`;
@@ -358,7 +365,7 @@ function renderCard(entry) {
   let progressBadgeHtml = '';
   if (userProgress[entry.id]) {
     const p   = userProgress[entry.id];
-    const vod = entry.vods.find(v => v.video_id === p.videoId);
+    const vod = entry.vods[p.vodIndex];
     if (vod?.timestamp_end_seconds) {
       const start   = vod.timestamp_seconds || 0;
       const percent = Math.max(0, Math.min(100,
@@ -486,9 +493,9 @@ function openPovDropdown(event, entryId) {
   }
   dropdownEntry = entryId;
 
-  document.getElementById('pov-dropdown-inner').innerHTML = entry.vods.map(vod => {
+  document.getElementById('pov-dropdown-inner').innerHTML = entry.vods.map((vod, vodIndex) => {
     const baseLabel      = getStreamerLabel(vod);
-    const hasProgress    = userProgress[entryId]?.videoId === vod.video_id;
+    const hasProgress    = userProgress[entryId]?.vodIndex === vodIndex;
     const label          = hasProgress ? `${baseLabel} (Watching)` : baseLabel;
     const url            = getWatchUrl(vod, entryId);
     const color          = vod.streamer ? getColor('collab_partners', vod.streamer) : colors.fallback;
@@ -846,7 +853,7 @@ function switchModalTab(tab) {
 // ── Progress popup ─────────────────────────────────────────────
 let currentProgressEntry   = null;
 let pendingProgressSeconds = 0;
-let pendingProgressVideoId = null;
+let pendingProgressVodIndex = null;
 
 function openProgressPopup(entryId) {
   closeCardMenu();
@@ -864,14 +871,14 @@ function openProgressPopup(entryId) {
   // Show VOD selector only for multi-VOD entries
   const select = document.getElementById('progress-vod-select');
   select.style.display = entry.vods.length > 1 ? '' : 'none';
-  select.innerHTML = entry.vods.map(v =>
-    `<option value="${v.video_id}">${escHtml(getStreamerLabel(v))}</option>`
+  select.innerHTML = entry.vods.map((v, i) =>
+    `<option value="${i}">${escHtml(getStreamerLabel(v))}</option>`
   ).join('');
 
   // Pre-fill with existing progress if present
   const p = userProgress[entryId];
   if (p) {
-    select.value = p.videoId;
+    select.value = p.vodIndex ?? 0;
     const h = Math.floor(p.seconds / 3600);
     const m = Math.floor((p.seconds % 3600) / 60);
     const s = p.seconds % 60;
@@ -887,7 +894,7 @@ function closeProgress() {
   closeOverlay('progress-popup');
   currentProgressEntry   = null;
   pendingProgressSeconds = 0;
-  pendingProgressVideoId = null;
+  pendingProgressVodIndex = null;
 }
 
 // Auto-advance focus to next input after 2 digits are entered
@@ -910,22 +917,22 @@ function saveProgressFromPopup() {
   const mm = parseInt(document.getElementById('prog-mm').value || '0', 10);
   const ss = parseInt(document.getElementById('prog-ss').value || '0', 10);
   const totalSec = hh * 3600 + mm * 60 + ss;
-  const videoId  = document.getElementById('progress-vod-select').value;
+  const vodIndex = parseInt(document.getElementById('progress-vod-select').value, 10);
 
   // Treat 00:00:00 as "clear progress"
   if (totalSec === 0) { clearProgressFromPopup(); return; }
 
   // If the timestamp is past the VOD's known end, ask if they want to mark it watched instead
-  const vod = currentProgressEntry.vods.find(v => v.video_id === videoId);
+  const vod = currentProgressEntry.vods[vodIndex];
   if (vod?.timestamp_end_seconds && totalSec >= vod.timestamp_end_seconds) {
     pendingProgressSeconds = totalSec;
-    pendingProgressVideoId = videoId;
+    pendingProgressVodIndex = vodIndex;
     document.getElementById('progress-watched-prompt').style.display = 'block';
     document.getElementById('progress-actions').style.display        = 'none';
     return;
   }
 
-  finalizeProgressSave(totalSec, videoId);
+  finalizeProgressSave(totalSec, vodIndex);
 }
 
 function confirmProgressWatched(markWatched) {
@@ -934,7 +941,7 @@ function confirmProgressWatched(markWatched) {
     if (!watchedIds.has(currentProgressEntry.id)) toggleWatched(currentProgressEntry.id);
     else closeProgress();
   } else {
-    finalizeProgressSave(pendingProgressSeconds, pendingProgressVideoId);
+    finalizeProgressSave(pendingProgressSeconds, pendingProgressVodIndex);
   }
 }
 
@@ -942,11 +949,11 @@ function cancelProgressPrompt() {
   document.getElementById('progress-watched-prompt').style.display = 'none';
   document.getElementById('progress-actions').style.display        = 'flex';
   pendingProgressSeconds = 0;
-  pendingProgressVideoId = null;
+  pendingProgressVodIndex = null;
 }
 
-function finalizeProgressSave(seconds, videoId) {
-  userProgress[currentProgressEntry.id] = { videoId, seconds };
+function finalizeProgressSave(seconds, vodIndex) {
+  userProgress[currentProgressEntry.id] = { vodIndex, seconds };
   saveUserProgress();
   render();
   closeProgress();
