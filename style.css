@@ -252,6 +252,26 @@ input { font-family: inherit; }
   color: var(--text-primary);
 }
 
+.in-progress-btn {
+  margin-top: 6px;
+  width: 100%;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.in-progress-btn:hover { color: var(--text-secondary); }
+.in-progress-btn[data-active="true"] {
+  background: var(--bg-raised);
+  color: var(--text-primary);
+  border-style: solid;
+  border-color: var(--border-strong);
+}
+
 /* Filter groups */
 .filter-group {
   display: flex;

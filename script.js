@@ -18,6 +18,7 @@ const state = {
   sort:    'date',
   sortDir: 'desc',
   watch:   'all',
+  inProgress: false,
   filters: {
     activities:        new Set(),
     games:             new Set(),
@@ -130,6 +131,7 @@ function passesFilter(entry) {
   const watched = watchedIds.has(entry.id);
   if (state.watch === 'watched'   && !watched) return false;
   if (state.watch === 'unwatched' &&  watched) return false;
+  if (state.inProgress && !userProgress[entry.id]) return false;
 
   // Text search — matches title, partners, and games
   if (state.search) {
@@ -1019,6 +1021,21 @@ function bindEvents() {
     if (!btn) return;
     state.watch = btn.dataset.watch;
     document.querySelectorAll('.watch-toggle-btn').forEach(b => b.classList.toggle('active', b === btn));
+    const ipBtn = document.getElementById('in-progress-btn');
+    if (state.watch === 'unwatched') {
+      ipBtn.style.display = '';
+    } else {
+      ipBtn.style.display = 'none';
+      state.inProgress = false;
+      ipBtn.dataset.active = 'false';
+    }
+    render();
+  });
+
+  document.getElementById('in-progress-btn').addEventListener('click', () => {
+    const ipBtn = document.getElementById('in-progress-btn');
+    state.inProgress = ipBtn.dataset.active !== 'true';
+    ipBtn.dataset.active = String(state.inProgress);
     render();
   });
 
@@ -1104,6 +1121,15 @@ function syncUIFromState() {
   document.querySelectorAll('.watch-toggle-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.watch === state.watch);
   });
+
+  // 4. Highlight the correct in-progress button
+  const ipBtn = document.getElementById('in-progress-btn');
+  if (state.watch === 'unwatched') {
+    ipBtn.style.display = '';
+    ipBtn.dataset.active = String(state.inProgress);
+  } else {
+    ipBtn.style.display = 'none';
+  }
 }
 
 // URL PARAMS HANDING!!!!!
@@ -1116,6 +1142,7 @@ function updateURLFromState() {
   if (state.sort !== 'date') params.set('sort', state.sort); // only add if not default
   if (state.sortDir !== 'desc') params.set('sortDir', state.sortDir);
   if (state.watch !== 'all') params.set('watch', state.watch);
+  if (state.inProgress) params.set('inProgress', '1');
 
   // Handle filter Sets (convert Set -> Array -> comma-separated string)
   for (const [key, set] of Object.entries(state.filters)) {
@@ -1139,7 +1166,8 @@ function loadStateFromURL() {
   if (params.has('search')) state.search = params.get('search');
   if (params.has('sort'))   state.sort = params.get('sort');
   if (params.has('sortDir')) state.sortDir = params.get('sortDir');
-  if (params.has('watch'))  state.watch = params.get('watch');
+  if (params.has('watch'))      state.watch      = params.get('watch');
+  if (params.has('inProgress')) state.inProgress = params.get('inProgress') === '1';
 
   // Convert comma-separated strings back into Sets for your filters
   for (const key of Object.keys(state.filters)) {
