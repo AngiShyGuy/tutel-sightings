@@ -534,10 +534,12 @@ function openPovDropdown(event, entryId) {
     const color          = vod.streamer ? getColor('collab_partners', vod.streamer) : colors.fallback;
     // Active-progress VOD gets a solid border; others get a translucent one
     const borderHex      = hasProgress ? color : `${color}44`;
+    const dur            = vodDuration(vod);
+    const durStr         = dur != null ? ` · ${formatDuration(dur)}` : '';
     return `
       <a class="pov-option" href="${url}" target="_blank" rel="noopener">
         <span class="pov-option-label">${escHtml(vod.vod_title || baseLabel)}</span>
-        <span class="pov-chip" style="background:${color}22;color:${color};border:1px solid ${borderHex}">${escHtml(label)}</span>
+        <span class="pov-chip" style="background:${color}22;color:${color};border:1px solid ${borderHex}">${escHtml(label)}${durStr}</span>
       </a>`;
   }).join('');
 
@@ -708,7 +710,7 @@ function openCardMenu(event, entryId) {
   const watched    = isWatched(entry);
   const divider    = `<div class="card-menu-divider"></div>`;
   const watchItem  = `<button class="card-menu-item" onclick="toggleWatched('${entry.id}')">${watched ? eyeOffIcon : eyeIcon} ${watched ? 'Mark as unwatched' : 'Mark as watched'}</button>`;
-  const progItem   = `<button class="card-menu-item" onclick="openProgressPopup('${escAttr(entry.id)}')">${progressIcon} Set Progress</button>`;
+  const progItem   = watched ? '' : `<button class="card-menu-item" onclick="openProgressPopup('${escAttr(entry.id)}')">${progressIcon} Set Progress</button>`;
   const hlItem     = (entry.highlights && entry.highlights.length > 0) ? `<button class="card-menu-item" onclick="openHighlights('${escAttr(entry.id)}')">${highlightIcon} Highlights</button>` : '';
   const summItem   = entry.summary ? `<button class="card-menu-item" onclick="openSummary('${escAttr(entry.id)}')">${summaryIcon} Summary</button>` : '';
 
