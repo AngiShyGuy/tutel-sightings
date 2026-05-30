@@ -1,0 +1,227 @@
+/* ============================================================
+   TUTEL SIGHTINGS — stats/style.css
+   ============================================================ */
+
+/* ── Variables (mirrored from main site) ─────────────────── */
+:root {
+  --bg-base:       #0f1117;
+  --bg-surface:    #171b26;
+  --bg-card:       #1c2130;
+  --bg-raised:     #222840;
+  --border:        rgba(255,255,255,0.07);
+  --border-strong: rgba(255,255,255,0.13);
+
+  --green:         #22c55e;
+  --green-dim:     rgba(34,197,94,0.15);
+  --green-glow:    rgba(34,197,94,0.08);
+
+  --text-primary:  #f0f2f8;
+  --text-secondary:#8b92a8;
+  --text-muted:    #4f5670;
+
+  --font-sans: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  --transition: 150ms ease;
+}
+
+/* ── Reset ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ── Header ──────────────────────────────────────────────── */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-surface);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.header-logo {
+  font-size: 28px;
+  line-height: 1;
+  filter: drop-shadow(0 0 12px rgba(34,197,94,0.4));
+}
+.header-title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+}
+.header-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 1px;
+}
+.home-link {
+  background: var(--bg-card);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 5px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  transition: color var(--transition), border-color var(--transition), background var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.home-link:hover {
+  color: var(--text-primary);
+  border-color: var(--green);
+  background: var(--green-glow);
+}
+
+/* ── Page layout ─────────────────────────────────────────── */
+.stats-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 36px 28px 60px;
+}
+
+.page-heading {
+  margin-bottom: 32px;
+}
+.page-heading h2 {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: var(--text-primary);
+}
+.page-heading p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  margin-top: 4px;
+}
+
+/* ── Summary stat pills ──────────────────────────────────── */
+.summary-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+.summary-pill {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 20px;
+  flex: 1;
+  min-width: 140px;
+}
+.summary-pill-value {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--green);
+  line-height: 1;
+}
+.summary-pill-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 5px;
+}
+
+/* ── Chart grid ──────────────────────────────────────────── */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.chart-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 22px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.chart-card--wide {
+  grid-column: 1 / -1;
+}
+.chart-card--tall .chart-wrap {
+  height: 340px;
+}
+.chart-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.1px;
+}
+.chart-subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+.chart-wrap {
+  position: relative;
+  height: 260px;
+}
+.chart-card--donut .chart-wrap {
+  height: 240px;
+}
+
+/* ── Loading / error state ───────────────────────────────── */
+.state-msg {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.state-msg span {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .stats-main { padding: 24px 16px 48px; }
+  .header-subtitle { display: none; }
+  .home-link { font-size: 11px; padding: 5px 8px; }
+  .chart-grid { grid-template-columns: 1fr; }
+  .chart-card--wide { grid-column: 1; }
+}
+@media (max-width: 540px) {
+  .header-inner { padding: 12px 16px; }
+  .header-title { font-size: 17px; }
+  .summary-pill-value { font-size: 22px; }
+}

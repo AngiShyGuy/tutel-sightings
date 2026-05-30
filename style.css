@@ -70,6 +70,29 @@ input { font-family: inherit; }
   align-items: center;
   gap: 14px;
 }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.stats-page-link {
+  background: var(--bg-card);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 5px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  transition: color var(--transition), border-color var(--transition), background var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.stats-page-link:hover {
+  color: var(--text-primary);
+  border-color: var(--green);
+  background: var(--green-glow);
+}
 .header-logo {
   font-size: 28px;
   line-height: 1;
@@ -1380,6 +1403,11 @@ span.flatpickr-weekday { background: transparent !important; }
   /* Header */
   .header-stats { display: none; }
   .hamburger-btn { display: flex; }
+  .header-subtitle { display: none; }
+  .stats-page-link {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
 
   /* Mobile search bar */
   .mobile-search-wrap { display: block; }
@@ -1441,5 +1469,6 @@ span.flatpickr-weekday { background: transparent !important; }
 
 @media (max-width: 540px) {
   .header-inner { padding: 12px 16px; }
+  .header-title { font-size: 17px; }
   .card-grid { grid-template-columns: 1fr; }
 }
