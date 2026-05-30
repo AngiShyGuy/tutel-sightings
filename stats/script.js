@@ -251,7 +251,7 @@ async function init() {
       <div class="chart-card">
         <div>
           <div class="chart-title">Collabs per year</div>
-          <div class="chart-subtitle">Number of sighting entries by year</div>
+          <div class="chart-subtitle">Number of Vedal sightings by year</div>
         </div>
         <div class="chart-wrap"><canvas id="c-year-count"></canvas></div>
       </div>
