@@ -1106,12 +1106,14 @@
       "Subathon"
     ],
     "games": [
-      "VRChat"
+      "VRChat",
+      "Connect Four",
+      "Suika Game"
     ],
     "collab_partners": [
       "Camila"
     ],
-    "appearance_weight": "Full",
+    "appearance_weight": "Partial",
     "summary": null,
     "vod_type": "povs",
     "vods": [

@@ -664,7 +664,7 @@ span.flatpickr-weekday { background: transparent !important; }
   padding: 2px 8px;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
   transition: filter var(--transition), opacity var(--transition);
@@ -676,6 +676,7 @@ span.flatpickr-weekday { background: transparent !important; }
   color: #0f1117;
   border-color: #ffffff;
   cursor: default;
+  font-weight: 700;
 }
 .chip--new:hover { filter: none; }
 .chip-dot {
