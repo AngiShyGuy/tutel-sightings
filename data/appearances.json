@@ -2167,6 +2167,33 @@
     "notes": null
   },
   {
+    "id": "greggs-stream-cerber",
+    "title": null,
+    "date": "2025-07-06",
+    "activities": [
+      "Just Chatting",
+      "Subathon"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Cerber"
+    ],
+    "appearance_weight": "Partial",
+    "summary": "Greggs Wanager Cerber tests local Greggspert Vedal987 on his Greggs knowledge.",
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "SONG COVER DEBUT & GREGGS STREAM ＞w＜ ⭐ CERBATHON DAY 22 ૮ ・ﻌ・ა 💜🦴",
+        "streamer": "Cerber",
+        "video_id": "WR2yrqvaHQY",
+        "timestamp_seconds": 18708,
+        "timestamp_end_seconds": 23898
+      }
+    ],
+    "highlights": null,
+    "notes": null
+  },
+  {
     "id": "subathon-mega-call-in",
     "title": "Mega's Birthday Subathon!",
     "date": "2025-07-27",
