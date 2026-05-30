@@ -19,6 +19,8 @@ const state = {
   sortDir: 'desc',
   watch:   'all',
   inProgress: false,
+  dateFrom:  null,  // 'YYYY-MM-DD' string or null
+  dateTo:    null,
   filters: {
     activities:        new Set(),
     games:             new Set(),
@@ -140,6 +142,19 @@ function passesFilter(entry) {
   if (state.watch === 'unwatched' &&  watched) return false;
   if (state.inProgress && !userProgress[entry.id]) return false;
 
+  // Date range filter (tolerant of reversed from/to)
+  if (state.dateFrom || state.dateTo) {
+    if (!entry.date) return false;
+    const lo = state.dateFrom && state.dateTo
+      ? (state.dateFrom <= state.dateTo ? state.dateFrom : state.dateTo)
+      : state.dateFrom;
+    const hi = state.dateFrom && state.dateTo
+      ? (state.dateFrom <= state.dateTo ? state.dateTo : state.dateFrom)
+      : state.dateTo;
+    if (lo && entry.date < lo) return false;
+    if (hi && entry.date > hi) return false;
+  }
+
   // Text search — matches title, partners, and games
   if (state.search) {
     const q        = state.search.toLowerCase();
@@ -166,7 +181,7 @@ function filteredAndSorted() {
 }
 
 function hasActiveFilters() {
-  return Object.values(state.filters).some(s => s.size > 0);
+  return Object.values(state.filters).some(s => s.size > 0) || !!state.dateFrom || !!state.dateTo;
 }
 
 // ── Sidebar filter builder ────────────────────────────────────
@@ -771,9 +786,13 @@ function filterBy(cat, value) {
 
 function clearAllFilters() {
   Object.values(state.filters).forEach(s => s.clear());
-  state.search = '';
+  state.search   = '';
+  state.dateFrom = null;
+  state.dateTo   = null;
   document.getElementById('search-input').value        = '';
   document.getElementById('mobile-search-input').value = '';
+  clearDateInputs('from');
+  clearDateInputs('to');
   window.scrollTo({ top: 0, behavior: 'instant' });
   render();
 }
@@ -1097,6 +1116,8 @@ function bindEvents() {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(applyChipOverflow, 150);
   }, { passive: true });
+
+  bindDateRangeEvents();
 }
 
 // ── Escape helpers ────────────────────────────────────────────
@@ -1141,6 +1162,10 @@ function syncUIFromState() {
   } else {
     ipBtn.style.display = 'none';
   }
+
+  // 5. Restore date range inputs
+  if (state.dateFrom) fillDateInputs('from', state.dateFrom);
+  if (state.dateTo)   fillDateInputs('to',   state.dateTo);
 }
 
 // URL PARAMS HANDING!!!!!
@@ -1154,6 +1179,8 @@ function updateURLFromState() {
   if (state.sortDir !== 'desc') params.set('sortDir', state.sortDir);
   if (state.watch !== 'all') params.set('watch', state.watch);
   if (state.inProgress) params.set('inProgress', '1');
+  if (state.dateFrom) params.set('dateFrom', state.dateFrom);
+  if (state.dateTo)   params.set('dateTo',   state.dateTo);
 
   // Handle filter Sets (convert Set -> Array -> comma-separated string)
   for (const [key, set] of Object.entries(state.filters)) {
@@ -1179,6 +1206,8 @@ function loadStateFromURL() {
   if (params.has('sortDir')) state.sortDir = params.get('sortDir');
   if (params.has('watch'))      state.watch      = params.get('watch');
   if (params.has('inProgress')) state.inProgress = params.get('inProgress') === '1';
+  if (params.has('dateFrom'))   state.dateFrom   = params.get('dateFrom');
+  if (params.has('dateTo'))     state.dateTo     = params.get('dateTo');
 
   // Convert comma-separated strings back into Sets for your filters
   for (const key of Object.keys(state.filters)) {
@@ -1187,6 +1216,93 @@ function loadStateFromURL() {
       state.filters[key] = new Set(values);
     }
   }
+}
+
+// ── Date range filter ─────────────────────────────────────────
+function fillDateInputs(side, iso) {
+  // iso is 'YYYY-MM-DD'
+  const [y, m, d] = iso.split('-');
+  document.getElementById(`dr-${side}-yyyy`).value = y || '';
+  document.getElementById(`dr-${side}-mm`).value   = m || '';
+  document.getElementById(`dr-${side}-dd`).value   = d || '';
+}
+
+function clearDateInputs(side) {
+  ['yyyy','mm','dd'].forEach(p => {
+    document.getElementById(`dr-${side}-${p}`).value = '';
+  });
+}
+
+function readDateInputs(side) {
+  // Returns 'YYYY-MM-DD' if the inputs form a plausible date, else null
+  const y = document.getElementById(`dr-${side}-yyyy`).value.trim();
+  const m = document.getElementById(`dr-${side}-mm`).value.trim();
+  const d = document.getElementById(`dr-${side}-dd`).value.trim();
+  if (!y && !m && !d) return null;
+  // Pad and build — allow partial (year-only, year+month) for fuzzy range edges
+  const yy = y.padStart(4, '0');
+  const mm = m ? m.padStart(2, '0') : '01';
+  const dd = d ? d.padStart(2, '0') : (m ? '01' : '01');
+  // Basic sanity check
+  const iso = `${yy}-${mm}-${dd}`;
+  if (isNaN(Date.parse(iso))) return null;
+  return iso;
+}
+
+function onDateInputChange(side) {
+  if (side === 'from') state.dateFrom = readDateInputs('from');
+  else                 state.dateTo   = readDateInputs('to');
+  document.getElementById('clear-filters').style.display = hasActiveFilters() ? '' : 'none';
+  render();
+}
+
+function bindDateRangeEvents() {
+  ['from', 'to'].forEach(side => {
+    const yyyy = document.getElementById(`dr-${side}-yyyy`);
+    const mm   = document.getElementById(`dr-${side}-mm`);
+    const dd   = document.getElementById(`dr-${side}-dd`);
+
+    // Auto-advance on full value, backtrack on empty backspace
+    yyyy.addEventListener('input', () => {
+      yyyy.value = yyyy.value.replace(/\D/g, '');
+      if (yyyy.value.length === 4) mm.focus();
+      onDateInputChange(side);
+    });
+    mm.addEventListener('input', () => {
+      mm.value = mm.value.replace(/\D/g, '');
+      if (mm.value.length === 2) dd.focus();
+      onDateInputChange(side);
+    });
+    dd.addEventListener('input', () => {
+      dd.value = dd.value.replace(/\D/g, '');
+      onDateInputChange(side);
+    });
+    mm.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && mm.value === '') yyyy.focus();
+    });
+    dd.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && dd.value === '') mm.focus();
+    });
+
+    // Flatpickr calendar on the button
+    const fp = flatpickr(document.getElementById(`dr-${side}-cal`), {
+      disableMobile: true,
+      clickOpens:    false,   // we manage open ourselves
+      allowInput:    false,
+      dateFormat:    'Y-m-d',
+      minDate:       '2023-01-01',
+      maxDate:       'today',
+      onChange: (selectedDates, dateStr) => {
+        fillDateInputs(side, dateStr);
+        onDateInputChange(side);
+      },
+    });
+
+    document.getElementById(`dr-${side}-cal`).addEventListener('click', e => {
+      e.stopPropagation();
+      fp.toggle();
+    });
+  });
 }
 
 // ── Go ────────────────────────────────────────────────────────

@@ -272,6 +272,90 @@ input { font-family: inherit; }
   border-color: var(--border-strong);
 }
 
+/* Date range filter */
+.date-range-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.date-range-label {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  width: 26px;
+  flex-shrink: 0;
+}
+.date-inputs {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.date-part {
+  background: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 5px 6px;
+  outline: none;
+  text-align: center;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  min-width: 0;
+  flex: 2;
+}
+.date-part--sm { flex: 1; }
+.date-part:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-glow);
+}
+.date-part::placeholder { color: var(--text-muted); opacity: 0.5; }
+.date-cal-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+  transition: color var(--transition), border-color var(--transition), background var(--transition);
+}
+.date-cal-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--green);
+  background: var(--green-glow);
+}
+
+/* Flatpickr overrides — keep it consistent with the site theme */
+.flatpickr-calendar {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-strong) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+  font-family: var(--font-sans) !important;
+}
+.flatpickr-calendar.arrowTop::before,
+.flatpickr-calendar.arrowTop::after,
+.flatpickr-calendar.arrowBottom::before,
+.flatpickr-calendar.arrowBottom::after { display: none; }
+.flatpickr-months .flatpickr-month,
+.flatpickr-weekdays,
+span.flatpickr-weekday { background: transparent !important; }
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+  background: var(--green) !important;
+  border-color: var(--green) !important;
+  color: #0f1117 !important;
+}
+.flatpickr-day:hover {
+  background: var(--bg-raised) !important;
+  border-color: transparent !important;
+}
+.flatpickr-day.today { border-color: var(--green) !important; }
+
 /* Filter groups */
 .filter-group {
   display: flex;

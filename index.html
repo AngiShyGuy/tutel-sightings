@@ -23,6 +23,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/themes/dark.min.css" />
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐢</text></svg>">
 </head>
@@ -85,6 +86,32 @@
           <button class="clear-filters-btn" id="clear-filters" style="display:none">Clear all</button>
         </div>
         <div id="filter-groups"></div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Date range</label>
+        <div class="date-range-row">
+          <span class="date-range-label">From</span>
+          <div class="date-inputs">
+            <input type="text" class="date-part" id="dr-from-yyyy" maxlength="4" placeholder="YYYY" />
+            <input type="text" class="date-part date-part--sm" id="dr-from-mm" maxlength="2" placeholder="MM" />
+            <input type="text" class="date-part date-part--sm" id="dr-from-dd" maxlength="2" placeholder="DD" />
+          </div>
+          <button class="date-cal-btn" id="dr-from-cal" title="Pick a date" aria-label="Open calendar for From date">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </button>
+        </div>
+        <div class="date-range-row">
+          <span class="date-range-label">To</span>
+          <div class="date-inputs">
+            <input type="text" class="date-part" id="dr-to-yyyy" maxlength="4" placeholder="YYYY" />
+            <input type="text" class="date-part date-part--sm" id="dr-to-mm" maxlength="2" placeholder="MM" />
+            <input type="text" class="date-part date-part--sm" id="dr-to-dd" maxlength="2" placeholder="DD" />
+          </div>
+          <button class="date-cal-btn" id="dr-to-cal" title="Pick a date" aria-label="Open calendar for To date">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </button>
+        </div>
       </div>
 
       <div class="control-group">
@@ -184,6 +211,7 @@
         </ul>
         <p class="modal-section-label">Miscellaneous</p>
         <p class="modal-text">This project was inspired by emzee's <a href="https://libraryofladev.com/" target="_blank" rel="noopener">Library of Ladev</a>.</p>
+        <p class="modal-text">Calendar picker powered by <a href="https://flatpickr.js.org/" target="_blank" rel="noopener">Flatpickr</a>.</p>
         <p class="modal-text">Shoutouts to <a href="https://krdevnotes.com/" target="_blank" rel="noopener">krdev notes</a> for their YouTube thumbnail fallback code which I shamelessly stole.</p>
       </div>
 
@@ -296,6 +324,7 @@
     </div>
 </body>
 </html>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
