@@ -98,6 +98,13 @@ function entryDurationInfo(entry) {
 return { display: `${formatDuration(min)} ~ ${formatDuration(max)}`, sortValue: max };
 }
 
+function isNewEntry(entry) {
+  if (!entry.date) return false;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 30);
+  return new Date(entry.date) >= cutoff;
+}
+
 // ── Sort ──────────────────────────────────────────────────────
 function sortedAppearances(list) {
   const copy = [...list];
@@ -277,8 +284,12 @@ function getStreamerLabel(vod) {
   return 'Watch';
 }
 
+// NEW
 function renderChips(entry) {
   const chips = [];
+  if (isNewEntry(entry)) {
+    chips.push(`<span class="chip chip--new">New</span>`);
+  }
   const addChip = (cat, value) =>
     chips.push(`<button class="chip" data-cat="${escAttr(cat)}" data-value="${escAttr(value)}" style="${chipStyle(cat, value)}" onclick="filterBy('${escAttr(cat)}','${escAttr(value)}')">${escHtml(value)}</button>`);
 
@@ -379,7 +390,7 @@ function renderCard(entry) {
   }
 
   return `
-    <article class="card" data-id="${entry.id}">
+    <article class="card${isNewEntry(entry) ? ' card--new' : ''}" data-id="${entry.id}">
       <div class="card-thumb-wrap" ${thumbClick}>
         ${thumbUrl
           ? `<img class="card-thumb" src="${thumbUrl}" alt="${escAttr(title)}" loading="lazy"

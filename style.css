@@ -443,6 +443,16 @@ input { font-family: inherit; }
   }
 }
 
+/* Card with New badge */
+.card--new {
+  border-color: rgba(255, 255, 255, 0.45);
+}
+@media (hover: hover) {
+  .card--new:hover {
+    border-color: rgba(255, 255, 255, 0.75);
+  }
+}
+
 /* Thumbnail */
 .card-thumb-wrap {
   position: relative;
@@ -570,13 +580,20 @@ input { font-family: inherit; }
   padding: 2px 8px;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
   transition: filter var(--transition), opacity var(--transition);
   border: 1px solid transparent;
 }
 .chip:hover { filter: brightness(1.15); }
+.chip--new {
+  background: #ffffff;
+  color: #0f1117;
+  border-color: #ffffff;
+  cursor: default;
+}
+.chip--new:hover { filter: none; }
 .chip-dot {
   width: 5px;
   height: 5px;
