@@ -622,13 +622,7 @@ function toggleWatched(entryId) {
     card.style.transform  = 'scale(0.96)';
     setTimeout(() => {
       card.remove();
-      const visible    = document.querySelectorAll('.card').length;
-      const total      = allAppearances.length;
-      const resultsBar = document.getElementById('results-bar');
-      resultsBar.innerHTML = visible === total
-        ? `<span class="results-count">${total}</span> sightings`
-        : `<span class="results-count">${visible}</span> of ${total} sightings`;
-      document.getElementById('empty-state').style.display = visible === 0 ? '' : 'none';
+      render();
     }, 260);
   }
 }
