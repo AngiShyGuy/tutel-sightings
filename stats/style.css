@@ -98,10 +98,12 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   white-space: nowrap;
   flex-shrink: 0;
 }
-.home-link:hover {
-  color: var(--text-primary);
-  border-color: var(--green);
-  background: var(--green-glow);
+@media (hover: hover) {
+  .home-link:hover {
+    color: var(--text-primary);
+    border-color: var(--green);
+    background: var(--green-glow);
+  }
 }
 
 /* ── Page layout ─────────────────────────────────────────── */
