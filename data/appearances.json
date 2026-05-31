@@ -74,7 +74,7 @@
       "Camila",
       "MOTHERv3"
     ],
-    "appearance_weight": "Full",
+    "appearance_weight": "Partial",
     "summary": null,
     "vod_type": "povs",
     "vods": [
@@ -390,7 +390,7 @@
     "collab_partners": [
       "Anny"
     ],
-    "appearance_weight": "Full",
+    "appearance_weight": "Partial",
     "summary": null,
     "vod_type": "povs",
     "vods": [
@@ -410,16 +410,14 @@
     "title": null,
     "date": "2023-06-11",
     "activities": [
-      "Gaming",
+      "Just Chatting",
       "Subathon"
     ],
-    "games": [
-      "Among Us"
-    ],
+    "games": [],
     "collab_partners": [
       "Anny"
     ],
-    "appearance_weight": "Full",
+    "appearance_weight": "Partial",
     "summary": null,
     "vod_type": "povs",
     "vods": [
@@ -448,7 +446,7 @@
     "collab_partners": [
       "Anny"
     ],
-    "appearance_weight": "Full",
+    "appearance_weight": "Partial",
     "summary": null,
     "vod_type": "povs",
     "vods": [
@@ -642,7 +640,7 @@
     "collab_partners": [
       "Saiiren"
     ],
-    "appearance_weight": "Full",
+    "appearance_weight": "Partial",
     "summary": null,
     "vod_type": "povs",
     "vods": [
@@ -1303,6 +1301,51 @@
     "notes": null
   },
   {
+    "id": "overwatch-anny",
+    "title": "notanny Overwatch stream",
+    "date": "2024-03-01",
+    "activities": [
+      "Gaming"
+    ],
+    "games": [
+      "Overwatch"
+    ],
+    "collab_partners": [
+      "Anny"
+    ],
+    "appearance_weight": "Partial",
+    "summary": null,
+    "vod_type": "parts",
+    "vods": [
+      {
+        "vod_title": "Unknown VOD Title",
+        "streamer": "Anny",
+        "vod_part": 1,
+        "video_id": "U0T99O9cVBo",
+        "timestamp_seconds": 0,
+        "timestamp_end_seconds": 412
+      },
+      {
+        "vod_title": "Unknown VOD Title",
+        "streamer": "Anny",
+        "vod_part": 2,
+        "video_id": "4xYC60_5yDk",
+        "timestamp_seconds": 0,
+        "timestamp_end_seconds": 60
+      },
+      {
+        "vod_title": "Unknown VOD Title",
+        "streamer": "Anny",
+        "vod_part": 3,
+        "video_id": "xOBsYFSYdiU",
+        "timestamp_seconds": 0,
+        "timestamp_end_seconds": 145
+      }
+    ],
+    "highlights": null,
+    "notes": null
+  },
+  {
     "id": "drawing-yapping-anny",
     "title": "░E░R░M░I░N░B░I░O░ 🔞 🍊",
     "date": "2024-03-03",
@@ -1348,7 +1391,7 @@
     "collab_partners": [
       "Koko"
     ],
-    "appearance_weight": "Partial",
+    "appearance_weight": "Cameo",
     "summary": "Koko, spurred on by her chat, calls Vedal at 3:00 AM to inform him that he should go to bed.",
     "vod_type": "povs",
     "vods": [
@@ -1375,7 +1418,7 @@
     "collab_partners": [
       "Bao"
     ],
-    "appearance_weight": "Partial",
+    "appearance_weight": "Full",
     "summary": null,
     "vod_type": "povs",
     "vods": [
@@ -1593,7 +1636,7 @@
     "collab_partners": [
       "Camila"
     ],
-    "appearance_weight": "Partial",
+    "appearance_weight": "Full",
     "summary": null,
     "vod_type": "povs",
     "vods": [
@@ -2223,7 +2266,7 @@
   },
   {
     "id": "torture-tuesday-koko",
-    "title": null,
+    "title": "torture tuesday",
     "date": "2025-07-28",
     "activities": [
       "Just Chatting"
