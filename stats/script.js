@@ -370,6 +370,11 @@ async function init() {
     actSorted.map(([, v]) => v),
     actSorted.map(([a])   => getColor('activities', a))
   );
+
+  // Register service worker for PWA support
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/tutel-sightings/sw.js');
+  }
 }
 
 init();

@@ -52,6 +52,11 @@ async function init() {
   renderStats();
   render();
   bindEvents();
+
+  // Register service worker for PWA support
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/tutel-sightings/sw.js');
+  }
 }
 
 // ── Color helpers ─────────────────────────────────────────────

@@ -1,0 +1,25 @@
+{
+  "name": "Tutel Sightings",
+  "short_name": "Tutel Sightings",
+  "description": "A public, searchable, filterable archive of every appearance by Vedal987 on other people's streams.",
+  "start_url": "/tutel-sightings/",
+  "scope": "/tutel-sightings/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay"],
+  "background_color": "#0f1117",
+  "theme_color": "#171b26",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
