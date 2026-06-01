@@ -298,9 +298,9 @@ function getWatchUrl(vod, entryId, withProgress = true) {
   return t ? `https://youtu.be/${vod.video_id}?t=${t}` : `https://youtu.be/${vod.video_id}`;
 }
 
-function getStreamerLabel(vod) {
-  if (vod.vod_part != null) return `Part ${vod.vod_part}`;
-  if (vod.streamer)         return `${vod.streamer}'s POV`;
+function getStreamerLabel(vod, index, isParts) {
+  if (isParts) return `Part ${index + 1}`;
+  if (vod.streamer) return `${vod.streamer}'s POV`;
   return 'Watch';
 }
 
@@ -400,10 +400,21 @@ function renderCard(entry) {
     const p   = userProgress[entry.id];
     const vod = entry.vods[p.vodIndex];
     if (vod?.timestamp_end_seconds) {
-      const start   = vod.timestamp_seconds || 0;
-      const percent = Math.max(0, Math.min(100,
-        Math.floor(((p.seconds - start) / (vod.timestamp_end_seconds - start)) * 100)
-      ));
+      let progressSecs = p.seconds - (vod.timestamp_seconds || 0);
+      let totalSecs    = vod.timestamp_end_seconds - (vod.timestamp_seconds || 0);
+
+      if (entry.vod_type === 'parts') {
+        // Add durations of all completed parts before the current one
+        for (let i = 0; i < p.vodIndex; i++) {
+          const prev = entry.vods[i];
+          progressSecs += (prev.timestamp_end_seconds || 0) - (prev.timestamp_seconds || 0);
+        }
+        // Total is the sum of all parts
+        totalSecs = entry.vods.reduce((sum, v) =>
+          sum + ((v.timestamp_end_seconds || 0) - (v.timestamp_seconds || 0)), 0);
+      }
+
+      const percent = Math.max(0, Math.min(100, Math.floor((progressSecs / totalSecs) * 100)));
       progressBadgeHtml = `<div class="progress-badge">${percent}% Watched</div>`;
       progressHtml      = `<div class="card-progress-bar"><div class="card-progress-fill" style="width:${percent}%"></div></div>`;
     }
@@ -532,7 +543,7 @@ function openPovDropdown(event, entryId) {
   dropdownEntry = entryId;
 
   document.getElementById('pov-dropdown-inner').innerHTML = entry.vods.map((vod, vodIndex) => {
-    const baseLabel      = getStreamerLabel(vod);
+    const baseLabel      = getStreamerLabel(vod, vodIndex, entry.vod_type === 'parts');
     const hasProgress    = userProgress[entryId]?.vodIndex === vodIndex;
     const label          = hasProgress ? `${baseLabel} (Watching)` : baseLabel;
     const url            = getWatchUrl(vod, entryId);
@@ -716,9 +727,9 @@ function openCardMenu(event, entryId) {
   // Copy link — one button for single VOD, one per VOD for multi
   const copyItems = entry.vods.length === 1
     ? `<button class="card-menu-item" onclick="copyLink('${escAttr(getWatchUrl(entry.vods[0], entry.id, false))}')">${copyIcon} Copy link</button>`
-    : entry.vods.map(vod => `
+    : entry.vods.map((vod, i) => `
         <button class="card-menu-item" onclick="copyLink('${escAttr(getWatchUrl(vod, entry.id))}')">
-          ${copyIcon}<span>Copy link<span class="card-menu-label-sub">${escHtml(getStreamerLabel(vod))}</span></span>
+          ${copyIcon}<span>Copy link<span class="card-menu-label-sub">${escHtml(getStreamerLabel(vod, i, entry.vod_type === 'parts'))}</span></span>
         </button>`).join('');
 
   // .filter(Boolean) will automatically remove any empty strings (like missing summaries/highlights) and .join('') mashes the surviving items together without dividers.
@@ -859,7 +870,7 @@ function openHighlights(entryId) {
 
     // If it's a multi-POV/multi-part stream, tell them which VOD it belongs to
     const streamerLabel = entry.vods.length > 1 
-      ? `<span class="highlight-streamer">${escHtml(getStreamerLabel(vod))}</span>` 
+      ? `<span class="highlight-streamer">${escHtml(getStreamerLabel(vod, hl.vod_index, entry.vod_type === 'parts'))}</span>` 
       : '';
     
     return `
@@ -910,7 +921,7 @@ function openProgressPopup(entryId) {
   const select = document.getElementById('progress-vod-select');
   select.style.display = entry.vods.length > 1 ? '' : 'none';
   select.innerHTML = entry.vods.map((v, i) =>
-    `<option value="${i}">${escHtml(getStreamerLabel(v))}</option>`
+    `<option value="${i}">${escHtml(getStreamerLabel(v, i, entry.vod_type === 'parts'))}</option>`
   ).join('');
 
   // Pre-fill with existing progress if present

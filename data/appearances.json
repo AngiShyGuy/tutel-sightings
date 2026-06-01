@@ -276,12 +276,11 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
-    "vod_type": "parts",
+    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "🍥 24 HOUR STREAM UNTIL I GET UNBANNED FROM VEDAL987",
         "streamer": "Camila",
-        "vod_part": 1,
         "video_id": "8Ileww9qkW4",
         "timestamp_seconds": 14257,
         "timestamp_end_seconds": 18351
@@ -704,7 +703,6 @@
       {
         "vod_title": "UNCAPPED SUBATHON DAY 4 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? | !subathon !rates P.2",
         "streamer": "Saiiren",
-        "vod_part": 1,
         "video_id": "Q1-vkW-oYVY",
         "timestamp_seconds": 40620,
         "timestamp_end_seconds": 43081
@@ -712,7 +710,6 @@
       {
         "vod_title": "UNCAPPED SUBATHON DAY 4 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? | !subathon !rates P.3",
         "streamer": "Saiiren",
-        "vod_part": 2,
         "video_id": "z53FJTJ7q-8",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 11415
@@ -831,7 +828,6 @@
       {
         "vod_title": "APEX COLLAB - CHAT VS STREAMER CHAT WINS @ LEVEL 70 | !rates !pp !xp !bp P.1",
         "streamer": "Saiiren",
-        "vod_part": 1,
         "video_id": "dRvD3mhETGE",
         "timestamp_seconds": 36695,
         "timestamp_end_seconds": 43070
@@ -839,7 +835,6 @@
       {
         "vod_title": "APEX COLLAB - CHAT VS STREAMER CHAT WINS @ LEVEL 70 | !rates !pp !xp !bp P.2",
         "streamer": "Saiiren",
-        "vod_part": 2,
         "video_id": "T2mAgWjkl9k",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 2822
@@ -1482,7 +1477,6 @@
       {
         "vod_title": "Unknown VOD Title",
         "streamer": "Anny",
-        "vod_part": 1,
         "video_id": "U0T99O9cVBo",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 412
@@ -1490,7 +1484,6 @@
       {
         "vod_title": "Unknown VOD Title",
         "streamer": "Anny",
-        "vod_part": 2,
         "video_id": "4xYC60_5yDk",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 60
@@ -1498,7 +1491,6 @@
       {
         "vod_title": "Unknown VOD Title",
         "streamer": "Anny",
-        "vod_part": 3,
         "video_id": "xOBsYFSYdiU",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 145
@@ -1613,7 +1605,6 @@
       {
         "vod_title": "Unknown VOD Title",
         "streamer": "Koko",
-        "vod_part": "1",
         "video_id": "S4wsdcXfAY4",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 90
@@ -1621,7 +1612,6 @@
       {
         "vod_title": "Unknown VOD Title",
         "streamer": "Koko",
-        "vod_part": "2",
         "video_id": "kH00ZZo",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 1290
@@ -1629,7 +1619,6 @@
       {
         "vod_title": "Unknown VOD Title",
         "streamer": "Koko",
-        "vod_part": "3",
         "video_id": "lmkb11MZkDA",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 370
@@ -1637,7 +1626,6 @@
       {
         "vod_title": "Unknown VOD Title",
         "streamer": "Koko",
-        "vod_part": "4",
         "video_id": "sVMH337lw0E",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 41
@@ -1645,7 +1633,6 @@
       {
         "vod_title": "Unknown VOD Title",
         "streamer": "Koko",
-        "vod_part": "5",
         "video_id": "fhRF30YQcbs",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 60
@@ -1653,7 +1640,6 @@
       {
         "vod_title": "Unknown VOD Title",
         "streamer": "Koko",
-        "vod_part": "6",
         "video_id": "tRjncVTT9h0",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 173
@@ -2477,6 +2463,33 @@
         "video_id": "bBx7z48bfto",
         "timestamp_seconds": 2401,
         "timestamp_end_seconds": 2780
+      }
+    ],
+    "highlights": null,
+    "notes": null
+  },
+  {
+    "id": "subathon-pre-collab-cerber",
+    "title": null,
+    "date": "2025-06-21",
+    "activities": [
+      "Just Chatting",
+      "Subathon"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Cerber"
+    ],
+    "appearance_weight": "Cameo",
+    "summary": "Vedal helps Cerber set up her impending collab with Evil Neuro.",
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "dawg wants to see you! ＞w＜ evil collab soon! ⭐ CERBATHON DAY 10 ૮ ・ﻌ・ა 💜🦴",
+        "streamer": "Cerber",
+        "video_id": "EZjcksV5t8o",
+        "timestamp_seconds": 5618,
+        "timestamp_end_seconds": 6931
       }
     ],
     "highlights": null,
