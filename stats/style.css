@@ -98,7 +98,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   white-space: nowrap;
   flex-shrink: 0;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .home-link:hover {
     color: var(--text-primary);
     border-color: var(--green);

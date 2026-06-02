@@ -88,7 +88,7 @@ input { font-family: inherit; }
   white-space: nowrap;
   flex-shrink: 0;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .stats-page-link:hover {
     color: var(--text-primary);
     border-color: var(--green);
@@ -239,7 +239,7 @@ input { font-family: inherit; }
   display: flex;
   align-items: center;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .sort-btn:hover { background: var(--bg-raised); color: var(--text-primary); }
 }
 .sort-btn.active {
@@ -273,7 +273,7 @@ input { font-family: inherit; }
   transition: background var(--transition), color var(--transition);
   text-align: center;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .watch-toggle-btn:hover { color: var(--text-secondary); }
 }
 .watch-toggle-btn.active {
@@ -293,7 +293,7 @@ input { font-family: inherit; }
   text-align: center;
   transition: background var(--transition), color var(--transition), border-color var(--transition);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .in-progress-btn:hover { color: var(--text-secondary); }
 }
 .in-progress-btn[data-active="true"] {
@@ -354,7 +354,7 @@ input { font-family: inherit; }
   color: var(--text-muted);
   transition: color var(--transition), border-color var(--transition), background var(--transition);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .date-cal-btn:hover {
     color: var(--text-primary);
     border-color: var(--green);
@@ -382,7 +382,7 @@ span.flatpickr-weekday { background: transparent !important; }
   border-color: var(--green) !important;
   color: #0f1117 !important;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .flatpickr-day:hover {
     background: var(--bg-raised) !important;
     border-color: transparent !important;
@@ -409,7 +409,7 @@ span.flatpickr-weekday { background: transparent !important; }
   text-align: left;
   gap: 6px;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .filter-group-header:hover { background: var(--bg-raised); }
 }
 .filter-group-label {
@@ -448,7 +448,7 @@ span.flatpickr-weekday { background: transparent !important; }
   width: 100%;
   text-align: left;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .filter-chip:hover { background: var(--bg-raised); color: var(--text-primary); }
 }
 .filter-chip.active { background: var(--bg-raised); color: var(--text-primary); }
@@ -478,7 +478,7 @@ span.flatpickr-weekday { background: transparent !important; }
   border-radius: var(--radius-sm);
   transition: color var(--transition), background var(--transition);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .clear-filters-btn:hover { color: var(--text-primary); background: var(--bg-raised); }
 }
 
@@ -528,7 +528,7 @@ span.flatpickr-weekday { background: transparent !important; }
   transition: background var(--transition), color var(--transition), transform 100ms;
   cursor: pointer;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .random-btn:hover:not(:disabled) {
     background: var(--bg-raised);
     color: var(--text-primary);
@@ -561,7 +561,7 @@ span.flatpickr-weekday { background: transparent !important; }
   transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
   position: relative;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .card:hover {
     border-color: var(--border-strong);
     transform: translateY(-2px);
@@ -573,7 +573,7 @@ span.flatpickr-weekday { background: transparent !important; }
 .card--new {
   border-color: rgba(255, 255, 255, 0.45);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .card--new:hover {
     border-color: rgba(255, 255, 255, 0.75);
   }
@@ -594,7 +594,7 @@ span.flatpickr-weekday { background: transparent !important; }
   display: block;
   transition: transform 300ms ease, filter 300ms ease;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .card-thumb-wrap:hover .card-thumb {
     transform: scale(1.03);
     filter: brightness(0.85);
@@ -712,7 +712,7 @@ span.flatpickr-weekday { background: transparent !important; }
   transition: filter var(--transition), opacity var(--transition);
   border: 1px solid transparent;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .chip:hover { filter: brightness(1.15); }
 }
 .chip--new {
@@ -722,7 +722,7 @@ span.flatpickr-weekday { background: transparent !important; }
   cursor: default;
   font-weight: 700;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .chip--new:hover { filter: none; }
 }
 .chip-dot {
@@ -761,7 +761,7 @@ span.flatpickr-weekday { background: transparent !important; }
   cursor: pointer;
   transition: color var(--transition);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .card-title:hover { color: var(--green); }
 }
 
@@ -821,7 +821,7 @@ span.flatpickr-weekday { background: transparent !important; }
   text-decoration: none;
   color: var(--text-primary);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .pov-option:hover { background: var(--bg-raised); }
 }
 .pov-option-label {
@@ -881,7 +881,7 @@ span.flatpickr-weekday { background: transparent !important; }
   transition: background var(--transition), color var(--transition);
   font-family: var(--font-mono);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .card-menu-btn:hover {
     background: var(--bg-raised);
     color: var(--text-primary);
@@ -910,7 +910,7 @@ span.flatpickr-weekday { background: transparent !important; }
   transition: background var(--transition), color var(--transition);
   text-align: left;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .card-menu-item:hover {
     background: var(--bg-raised);
     color: var(--text-primary);
@@ -946,7 +946,7 @@ span.flatpickr-weekday { background: transparent !important; }
   font-size: 13px;
   transition: background var(--transition), color var(--transition);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .empty-clear-btn:hover { background: var(--border-strong); color: var(--text-primary); }
 }
 
@@ -963,7 +963,7 @@ span.flatpickr-weekday { background: transparent !important; }
   transition: background var(--transition);
   flex-shrink: 0;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .hamburger-btn:hover { background: var(--bg-raised); }
 }
 .hamburger-btn span {
@@ -974,7 +974,7 @@ span.flatpickr-weekday { background: transparent !important; }
   border-radius: 2px;
   transition: background var(--transition);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .hamburger-btn:hover span { background: var(--text-primary); }
 }
 
@@ -1055,14 +1055,14 @@ span.flatpickr-weekday { background: transparent !important; }
   display: inline-flex;
   align-items: center;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .footer-data-btn:hover {
     color: var(--text-secondary);
     background: var(--bg-raised);
   }
 }
 .footer-data-btn.danger { color: #f87171; }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .footer-data-btn.danger:hover { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.3); }
 }
 .footer-data-btn.confirming {
@@ -1079,7 +1079,7 @@ span.flatpickr-weekday { background: transparent !important; }
   transition: color var(--transition), border-color var(--transition), background var(--transition);
   font-family: var(--font-sans);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .footer-about-btn:hover {
     color: var(--text-primary);
     border-color: var(--text-muted);
@@ -1213,7 +1213,7 @@ span.flatpickr-weekday { background: transparent !important; }
   background: #ef4444;
   color: #ffffff;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .prog-btn-confirm-watched:hover {
     background: #dc2626;
   }
@@ -1225,7 +1225,7 @@ span.flatpickr-weekday { background: transparent !important; }
   color: var(--text-primary);
   border: 1px solid var(--border-strong);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .prog-btn-confirm-keep:hover {
     background: rgba(255, 255, 255, 0.08);
   }
@@ -1236,7 +1236,7 @@ span.flatpickr-weekday { background: transparent !important; }
   background: transparent;
   color: var(--text-secondary);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .prog-btn-confirm-cancel:hover {
     color: var(--text-primary);
     background: rgba(255, 255, 255, 0.04);
@@ -1269,7 +1269,7 @@ span.flatpickr-weekday { background: transparent !important; }
   transition: background var(--transition), border-color var(--transition);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .highlight-item:hover {
     background: var(--bg-raised);
     border-color: var(--text-muted);
@@ -1360,7 +1360,7 @@ span.flatpickr-weekday { background: transparent !important; }
   transition: background var(--transition), color var(--transition);
   font-family: var(--font-sans);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .modal-tab:hover { color: var(--text-secondary); }
 }
 .modal-tab.active {
@@ -1378,7 +1378,7 @@ span.flatpickr-weekday { background: transparent !important; }
   transition: background var(--transition), color var(--transition);
   flex-shrink: 0;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .modal-close:hover { background: var(--bg-raised); color: var(--text-primary); }
 }
 .modal-body {
@@ -1409,7 +1409,7 @@ span.flatpickr-weekday { background: transparent !important; }
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .modal-text a:hover { opacity: 0.8; }
 }
 .modal-link-list {
@@ -1431,7 +1431,7 @@ span.flatpickr-weekday { background: transparent !important; }
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .modal-link-list a:hover { opacity: 0.8; }
 }
 .modal-legal-block {
