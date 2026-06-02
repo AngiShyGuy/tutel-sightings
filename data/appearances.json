@@ -1407,7 +1407,7 @@
   },
   {
     "id": "drawing-yapping-anny",
-    "title": "░E░R░M░I░N░B░I░O░ 🔞 🍊 (1)",
+    "title": null,
     "date": "2024-02-26",
     "activities": [
       "Just Chatting"
@@ -1853,6 +1853,32 @@
         "video_id": "fGFbwadRVfU",
         "timestamp_seconds": 913,
         "timestamp_end_seconds": 23359
+      }
+    ],
+    "highlights": null,
+    "notes": null
+  },
+  {
+    "id": "browser-crash-camila",
+    "title": null,
+    "date": "2024-07-12",
+    "activities": [
+      "Just Chatting"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Cameo",
+    "summary": "Camila's Cimps crash Vedal's browser by spamming too many gifs, leading him to call and ask the deal is. He also reveals the Neuro-sama project he was working on.",
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "SURPRISE FOR THE OLD CIMPS :3!",
+        "streamer": "Camila",
+        "video_id": "ELlPI77N99Q",
+        "timestamp_seconds": 1578,
+        "timestamp_end_seconds": 1950
       }
     ],
     "highlights": null,
