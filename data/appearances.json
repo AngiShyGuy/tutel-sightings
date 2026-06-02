@@ -2522,6 +2522,33 @@
     "notes": null
   },
   {
+    "id": "pre-collab-zentreya",
+    "title": null,
+    "date": "2025-06-27",
+    "activities": [
+      "Just Chatting",
+      "Subathon"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Zentreya"
+    ],
+    "appearance_weight": "Cameo",
+    "summary": "Vedal helps Zentreya set up her impending collab with Evil Neuro.",
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "Announcement... AND WELL, WE GAME! ! DAY 26 OF 30 ZEN-A-THON",
+        "streamer": "Zentreya",
+        "video_id": "7caZCsvD8vw",
+        "timestamp_seconds": 27858,
+        "timestamp_end_seconds": 29332
+      }
+    ],
+    "highlights": null,
+    "notes": null
+  },
+  {
     "id": "greggs-stream-cerber",
     "title": null,
     "date": "2025-07-06",
