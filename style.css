@@ -1133,7 +1133,7 @@ span.flatpickr-weekday { background: transparent !important; }
 }
 .summary-popup-text {
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   line-height: 1.7;
 }
 
