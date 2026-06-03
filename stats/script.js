@@ -276,7 +276,7 @@ async function init() {
       <div class="chart-card">
         <div>
           <div class="chart-title">Screen time per year</div>
-          <div class="chart-subtitle">Total Vedal on-screen hours by year</div>
+          <div class="chart-subtitle">Total Vedal on-screen hours on other people's streams by year</div>
         </div>
         <div class="chart-wrap"><canvas id="c-year-time"></canvas></div>
       </div>
