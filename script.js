@@ -186,7 +186,11 @@ function filteredAndSorted() {
 }
 
 function hasActiveFilters() {
-  return Object.values(state.filters).some(s => s.size > 0) || !!state.dateFrom || !!state.dateTo;
+  return Object.values(state.filters).some(s => s.size > 0)
+    || !!state.dateFrom || !!state.dateTo
+    || !!state.search
+    || state.watch !== 'all'
+    || state.inProgress;
 }
 
 // ── Sidebar filter builder ────────────────────────────────────
@@ -247,7 +251,10 @@ function updateFilterChipStates() {
     const { cat, value } = btn.dataset;
     btn.classList.toggle('active', state.filters[cat]?.has(value) ?? false);
   });
-  document.getElementById('clear-filters').style.display = hasActiveFilters() ? '' : 'none';
+  const hasTagFilters = Object.values(state.filters).some(s => s.size > 0);
+  document.getElementById('clear-filters').style.display = hasTagFilters ? '' : 'none';
+  const hasDateFilters = !!state.dateFrom || !!state.dateTo;
+  document.getElementById('date-clear-btn').style.display = hasDateFilters ? '' : 'none';
 }
 
 // ── Stats ─────────────────────────────────────────────────────
@@ -482,14 +489,24 @@ function render() {
 
   const diceSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="15.5" r="1.5"></circle><circle cx="8.5" cy="15.5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle></svg>`;
 
+  const clearAllBtn = hasActiveFilters()
+    ? `<button class="random-btn desktop-only-btn" onclick="clearAllFilters()">Clear Filters</button>`
+    : '';
+
   resultsBar.innerHTML = `
     <div class="results-text">${resultsText}${durationText}</div>
     <div class="results-actions">
+      ${clearAllBtn}
       <button class="random-btn" onclick="playRandomSighting()" ${results.length === 0 ? 'disabled' : ''} title="Play a random stream from this list">
         ${diceSvg} Random
       </button>
     </div>
   `;
+
+  document.getElementById('search-clear-btn').style.display = state.search ? '' : 'none';
+
+  const mobileClearAll = document.getElementById('mobile-clear-all-btn');
+  if (mobileClearAll) mobileClearAll.style.display = hasActiveFilters() ? '' : 'none';
 
   updateFilterChipStates();
   updateURLFromState();
@@ -796,15 +813,40 @@ function filterBy(cat, value) {
   render();
 }
 
-function clearAllFilters() {
+function clearTagFilters() {
   Object.values(state.filters).forEach(s => s.clear());
-  state.search   = '';
+  render();
+}
+
+function clearDateFilters() {
   state.dateFrom = null;
   state.dateTo   = null;
-  document.getElementById('search-input').value        = '';
-  document.getElementById('mobile-search-input').value = '';
   clearDateInputs('from');
   clearDateInputs('to');
+  render();
+}
+
+function clearAllFilters() {
+  Object.values(state.filters).forEach(s => s.clear());
+  state.search     = '';
+  state.dateFrom   = null;
+  state.dateTo     = null;
+  state.watch      = 'all';
+  state.inProgress = false;
+  document.getElementById('search-input').value        = '';
+  document.getElementById('mobile-search-input').value = '';
+  document.getElementById('search-clear-btn').style.display        = 'none';
+  document.getElementById('mobile-search-clear-btn').style.display = 'none';
+  const mobileClearAll = document.getElementById('mobile-clear-all-btn');
+  if (mobileClearAll) mobileClearAll.style.display = 'none';
+  clearDateInputs('from');
+  clearDateInputs('to');
+  // Reset watch toggle UI
+  document.querySelectorAll('.watch-toggle-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.watch === 'all'));
+  const ipBtn = document.getElementById('in-progress-btn');
+  ipBtn.style.display  = 'none';
+  ipBtn.dataset.active = 'false';
   window.scrollTo({ top: 0, behavior: 'instant' });
   render();
 }
@@ -1023,15 +1065,37 @@ function bindEvents() {
   document.getElementById('search-input').addEventListener('input', e => {
     state.search = e.target.value.trim();
     document.getElementById('mobile-search-input').value = state.search;
+    document.getElementById('search-clear-btn').style.display = state.search ? '' : 'none';
+    document.getElementById('mobile-search-clear-btn').style.display = state.search ? '' : 'none';
     window.scrollTo({ top: 0, behavior: 'instant' });
     render();
   });
   document.getElementById('mobile-search-input').addEventListener('input', e => {
     state.search = e.target.value.trim();
     document.getElementById('search-input').value = state.search;
+    document.getElementById('mobile-search-clear-btn').style.display = state.search ? '' : 'none';
     window.scrollTo({ top: 0, behavior: 'instant' });
     render();
   });
+
+  document.getElementById('mobile-search-clear-btn').addEventListener('click', () => {
+    state.search = '';
+    document.getElementById('search-input').value        = '';
+    document.getElementById('mobile-search-input').value = '';
+    document.getElementById('search-clear-btn').style.display        = 'none';
+    document.getElementById('mobile-search-clear-btn').style.display = 'none';
+    render();
+  });
+
+  document.getElementById('search-clear-btn').addEventListener('click', () => {
+    state.search = '';
+    document.getElementById('search-input').value        = '';
+    document.getElementById('mobile-search-input').value = '';
+    document.getElementById('search-clear-btn').style.display = 'none';
+    render();
+  });
+
+  document.getElementById('date-clear-btn').addEventListener('click', clearDateFilters);
 
   // Mobile sidebar
   document.getElementById('hamburger-btn').addEventListener('click', openSidebar);
@@ -1087,7 +1151,7 @@ function bindEvents() {
     if (btn) filterBy(btn.dataset.cat, btn.dataset.value);
   });
 
-  document.getElementById('clear-filters').addEventListener('click', clearAllFilters);
+  document.getElementById('clear-filters').addEventListener('click', clearTagFilters);
 
   // Close POV dropdown and card menu on outside click
   document.addEventListener('click', e => {
