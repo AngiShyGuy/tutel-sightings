@@ -274,14 +274,16 @@ input { font-family: inherit; }
 .sort-arrow.asc { transform: rotate(180deg); }
 
 /* Watch toggle */
-.watch-toggle-wrap {
+.watch-toggle-wrap,
+.safari-toggle-wrap {
   display: flex;
   gap: 4px;
   background: var(--bg-base);
   border-radius: var(--radius-md);
   padding: 3px;
 }
-.watch-toggle-btn {
+.watch-toggle-btn,
+.safari-toggle-btn {
   flex: 1;
   padding: 5px 4px;
   font-size: 11px;
@@ -291,9 +293,11 @@ input { font-family: inherit; }
   text-align: center;
 }
 @media (hover: hover) and (pointer: fine) {
-  .watch-toggle-btn:hover { color: var(--text-secondary); }
+  .watch-toggle-btn:hover,
+  .safari-toggle-btn:hover { color: var(--text-secondary); }
 }
-.watch-toggle-btn.active {
+.watch-toggle-btn.active,
+.safari-toggle-btn.active {
   background: var(--bg-raised);
   color: var(--text-primary);
 }
@@ -1556,7 +1560,8 @@ span.flatpickr-weekday { background: transparent !important; }
   .sidebar .filter-group-label {
     font-size: 12px;
   }
-  .sidebar .watch-toggle-btn {
+  .sidebar .watch-toggle-btn,
+  .sidebar .safari-toggle-btn {
     padding: 8px 4px;
     font-size: 12px;
   }

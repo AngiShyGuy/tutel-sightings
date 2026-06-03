@@ -54,6 +54,10 @@ function topN(map, n) {
     .slice(0, n);
 }
 
+function pct(n, total) {
+  return Math.round((n / total) * 100);
+}
+
 // ── Chart factories ───────────────────────────────────────────
 const gridColor = 'rgba(255,255,255,0.06)';
 const tickColor = '#8b92a8';
@@ -91,12 +95,12 @@ function makeBar(id, labels, values, colors, opts = {}) {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: ctx => opts.tooltipFmt ? opts.tooltipFmt(ctx.raw) : ` ${ctx.raw}`,
+            label: ctx => opts.tooltipFmt ? opts.tooltipFmt(ctx.raw, ctx.dataIndex) : ` ${ctx.raw}`,
           },
         },
       },
       scales: opts.horizontal ? {
-        x: { ...yAxisBase, ticks: { ...yAxisBase.ticks, callback: opts.xTickFmt || (v => v) } },
+        x: { ...yAxisBase, max: opts.maxX, ticks: { ...yAxisBase.ticks, callback: opts.xTickFmt || (v => v) } },
         y: { ...xAxisBase, ticks: { color: tickColor, font: { size: 11 } } },
       } : {
         x: xAxisBase,
@@ -139,7 +143,11 @@ function makeDonut(id, labels, values, colorList) {
         },
         tooltip: {
           callbacks: {
-            label: ctx => ` ${ctx.label}: ${ctx.raw}`,
+            title: () => '',
+            label: ctx => {
+              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              return ` ${ctx.label}: ${ctx.raw} (${Math.round((ctx.raw / total) * 100)}%)`;
+            },
           },
         },
       },
@@ -173,11 +181,14 @@ async function init() {
   const byActivity     = {};  // activity → count
   const byWeight       = {};  // weight → count
   let   totalSecs      = 0;
+  let   safariCount    = 0;
 
   data.forEach(entry => {
     const year = entry.date ? entry.date.slice(0, 4) : 'Unknown';
     if (!byYear[year]) byYear[year] = { count: 0, secs: 0 };
     byYear[year].count++;
+
+    if (!!(entry.safari)) safariCount++;
 
     const dur = entryDuration(entry);
     if (dur != null) {
@@ -205,6 +216,7 @@ async function init() {
   const totalHours     = fmtHours(totalSecs);
   const uniquePartners = Object.keys(byPartnerCount).length;
   const uniqueGames    = Object.keys(byGame).length;
+  const safariPct      = pct(safariCount, totalEntries);
 
   const years      = Object.keys(byYear).sort();
   const yearCounts = years.map(y => byYear[y].count);
@@ -214,11 +226,12 @@ async function init() {
   const topByCount = topN(byPartnerCount, TOP);
   const topBySecs  = topN(byPartnerSecs,  TOP);
 
-  const TOP_GAMES   = 8;
-  const gamesSorted = Object.entries(byGame).sort((a, b) => b[1] - a[1]);
-  const topGames    = gamesSorted.slice(0, TOP_GAMES);
-  const otherGames  = gamesSorted.slice(TOP_GAMES).reduce((s, [, v]) => s + v, 0);
-  if (otherGames > 0) topGames.push(['Other', otherGames]);
+  const topGames = Object.entries(byGame)
+    .filter(([, v]) => v >= 2)
+    .sort((a, b) => b[1] - a[1]);
+
+  // Activities sorted by occurrence rate descending (all shown, no cutoff)
+  const actSorted = Object.entries(byActivity).sort((a, b) => b[1] - a[1]);
 
   // ── Render HTML ────────────────────────────────────────────
   document.getElementById('stats-main').innerHTML = `
@@ -243,6 +256,10 @@ async function init() {
       <div class="summary-pill">
         <div class="summary-pill-value">${uniqueGames}</div>
         <div class="summary-pill-label">Games played</div>
+      </div>
+      <div class="summary-pill">
+        <div class="summary-pill-value">${safariPct}%</div>
+        <div class="summary-pill-label">Pinged on Discord</div>
       </div>
     </div>
 
@@ -280,18 +297,18 @@ async function init() {
         <div class="chart-wrap"><canvas id="c-partner-time"></canvas></div>
       </div>
 
-      <div class="chart-card chart-card--wide chart-card--tall">
+      <div class="chart-card chart-card--tall">
         <div>
           <div class="chart-title">Games played</div>
-          <div class="chart-subtitle">Number of sightings per game · titles with fewer than 2 sessions grouped into Other</div>
+          <div class="chart-subtitle">Number of sightings per game · games with only 1 appearance excluded</div>
         </div>
         <div class="chart-wrap"><canvas id="c-games"></canvas></div>
       </div>
 
-      <div class="chart-card chart-card--donut">
+      <div class="chart-card chart-card--tall">
         <div>
           <div class="chart-title">Activities</div>
-          <div class="chart-subtitle">Tag frequency across all sightings</div>
+          <div class="chart-subtitle">% of sightings containing each activity tag</div>
         </div>
         <div class="chart-wrap"><canvas id="c-activities"></canvas></div>
       </div>
@@ -304,6 +321,14 @@ async function init() {
         <div class="chart-wrap"><canvas id="c-weight"></canvas></div>
       </div>
 
+      <div class="chart-card chart-card--donut">
+        <div>
+          <div class="chart-title">Tutel Safari</div>
+          <div class="chart-subtitle">Which sightings were pinged in the Discord?</div>
+        </div>
+        <div class="chart-wrap"><canvas id="c-safari"></canvas></div>
+      </div>
+
     </div>
   `;
 
@@ -311,25 +336,29 @@ async function init() {
 
   // Years — no colors.json entry, use generic palette
   makeBar('c-year-count', years, yearCounts,
-    years.map((_, i) => PALETTE[i % PALETTE.length])
+    years.map((_, i) => PALETTE[i % PALETTE.length]),
+    {
+      tooltipFmt: v => ` ${v} sightings (${pct(v, totalEntries)}% of archive)`,
+    }
   );
 
+  const totalHoursRaw = Math.round(totalSecs / 3600);
   makeBar('c-year-time', years, yearSecs.map(s => Math.round(s / 3600)),
     years.map((_, i) => PALETTE[i % PALETTE.length]),
     {
       yTickFmt:   v => v + 'h',
-      tooltipFmt: v => ` ${v}h on-screen`,
+      tooltipFmt: v => ` ${v}h on-screen (${pct(v, totalHoursRaw)}% of total)`,
     }
   );
 
-  // Partners — use colors.json collab_partners
+  // Partners — occurrence rate in tooltip
   makeBar('c-partner-count',
     topByCount.map(([n])   => n),
     topByCount.map(([, v]) => v),
     topByCount.map(([n])   => getColor('collab_partners', n) + 'cc'),
     {
       horizontal: true,
-      tooltipFmt: v => ` ${v} appearances`,
+      tooltipFmt: v => ` ${v} appearances (${pct(v, totalEntries)}% of sightings)`,
     }
   );
 
@@ -344,14 +373,33 @@ async function init() {
     }
   );
 
-  // Games — use colors.json games; fallback for "Other"
+  // Games — occurrence rate on x-axis and tooltip
   makeBar('c-games',
     topGames.map(([g])   => g),
     topGames.map(([, v]) => v),
     topGames.map(([g])   => getColor('games', g) + 'cc'),
     {
       horizontal: true,
-      tooltipFmt: v => ` ${v} session${v === 1 ? '' : 's'}`,
+      tooltipFmt: (v, i) => {
+        const pctVal = pct(v, totalEntries);
+        return ` ${v} sighting${v === 1 ? '' : 's'} (${pctVal}% of archive)`;
+      },
+    }
+  );
+
+  // Activities — occurrence rate on x-axis and tooltip
+  makeBar('c-activities',
+    actSorted.map(([a])   => a),
+    actSorted.map(([, v]) => pct(v, totalEntries)),
+    actSorted.map(([a])   => getColor('activities', a) + 'cc'),
+    {
+      horizontal: true,
+      maxX:       100,
+      xTickFmt:   v => v + '%',
+      tooltipFmt: (v, i) => {
+        const count = actSorted[i]?.[1] ?? '';
+        return ` ${v}% of sightings (${count})`;
+      },
     }
   );
 
@@ -363,12 +411,11 @@ async function init() {
     weightOrder.map(w  => getColor('appearance_weight', w))
   );
 
-  // Activities — use colors.json activities
-  const actSorted = Object.entries(byActivity).sort((a, b) => b[1] - a[1]);
-  makeDonut('c-activities',
-    actSorted.map(([a])   => a),
-    actSorted.map(([, v]) => v),
-    actSorted.map(([a])   => getColor('activities', a))
+  // Safari status
+  makeDonut('c-safari',
+    ['Pinged', 'Not pinged'],
+    [safariCount, totalEntries - safariCount],
+    ['#22c55e', '#4f5670']
   );
 
   // Register service worker for PWA support

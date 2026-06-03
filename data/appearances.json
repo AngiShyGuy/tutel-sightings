@@ -13,6 +13,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -47,6 +48,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -74,6 +76,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "MOTHERv3 prank calls Vedal using Neuro-sama's TTS voice and pretends to be her.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -103,6 +106,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -129,6 +133,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "MOTHERv3 is weirdo who walks into movie theatres just to buy their popcorn and leave. Vedal is baffled because he is a cheapskate who only buys supermarket popcorn. The two argue about this.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -156,6 +161,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -189,6 +195,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -224,6 +231,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -250,6 +258,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -276,6 +285,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -306,6 +316,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -335,6 +346,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -363,6 +375,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -389,6 +402,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -418,6 +432,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -445,6 +460,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -474,6 +490,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -502,6 +519,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -530,6 +548,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -559,6 +578,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -585,6 +605,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Camila spins a punishment wheel for laughing in a You Laugh You Lose and needs to call a friend to praise her. She calls Vedal.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -611,6 +632,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -639,6 +661,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -668,6 +691,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -698,6 +722,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "parts",
     "vods": [
       {
@@ -736,6 +761,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -767,6 +793,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -793,6 +820,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Camila spins a punishment wheel for laughing in a You Laugh You Lose and needs to call a friend to roast her. She calls Vedal. Oh and he also appears earlier in the stream for a few seconds.",
+    "safari": false,
     "vod_type": "pov",
     "vods": [
       {
@@ -805,6 +833,35 @@
     ],
     "highlights": null,
     "notes": null
+  },
+  {
+    "id": "risk-of-rain-2-camila",
+    "title": null,
+    "date": "2023-11-01",
+    "activities": [
+      "Gaming"
+    ],
+    "games": [
+      "Risk of Rain 2"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Full",
+    "summary": null,
+    "safari": true,
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "imp cant eep ; ;",
+        "streamer": "Camila",
+        "video_id": "MqIsTin4Ng4",
+        "timestamp_seconds": 3276,
+        "timestamp_end_seconds": 19692
+      }
+    ],
+    "highlights": null,
+    "notes": "Streamed on Camila's alt account."
   },
   {
     "id": "for-the-king-saiiren-motherv3-okcode",
@@ -823,6 +880,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "parts",
     "vods": [
       {
@@ -844,34 +902,6 @@
     "notes": null
   },
   {
-    "id": "risk-of-rain-2-camila",
-    "title": null,
-    "date": "2023-11-07",
-    "activities": [
-      "Gaming"
-    ],
-    "games": [
-      "Risk of Rain 2"
-    ],
-    "collab_partners": [
-      "Camila"
-    ],
-    "appearance_weight": "Full",
-    "summary": null,
-    "vod_type": "povs",
-    "vods": [
-      {
-        "vod_title": "imp cant eep ; ;",
-        "streamer": "Camila",
-        "video_id": "MqIsTin4Ng4",
-        "timestamp_seconds": 3276,
-        "timestamp_end_seconds": 19692
-      }
-    ],
-    "highlights": null,
-    "notes": "Streamed on Camila's alt account."
-  },
-  {
     "id": "mario-kart-camila",
     "title": null,
     "date": "2023-11-10",
@@ -887,6 +917,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -918,6 +949,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -944,6 +976,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Filian calls up her friends and asks them to either take a sum of money or double it and pass it to the next person. She decides to call Vedal with 32$ owed so far.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -972,6 +1005,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1009,6 +1043,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1042,6 +1077,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1076,6 +1112,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1103,6 +1140,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -1130,6 +1168,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Camila confesses her love to Vedal with predictable results.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -1168,6 +1207,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1198,6 +1238,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1206,38 +1247,6 @@
         "video_id": "fEzl9ktQsWg",
         "timestamp_seconds": 1227,
         "timestamp_end_seconds": 14982
-      }
-    ],
-    "highlights": null,
-    "notes": null
-  },
-  {
-    "id": "clown-academia-subathon-d29",
-    "title": null,
-    "date": "2024-01-22",
-    "activities": [
-      "Gaming",
-      "VR",
-      "Subathon"
-    ],
-    "games": [
-      "VRChat",
-      "Connect Four",
-      "Suika Game"
-    ],
-    "collab_partners": [
-      "Camila"
-    ],
-    "appearance_weight": "Partial",
-    "summary": null,
-    "vod_type": "povs",
-    "vods": [
-      {
-        "vod_title": "CLOWN ACADEMIA [SUBATHON] (Day 29)(LAST DAY)",
-        "streamer": "Camila",
-        "video_id": "zco99q4yHnY",
-        "timestamp_seconds": 3003,
-        "timestamp_end_seconds": 11409
       }
     ],
     "highlights": null,
@@ -1256,6 +1265,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -1285,6 +1295,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1312,6 +1323,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1320,6 +1332,39 @@
         "video_id": "uvYYnJycPno",
         "timestamp_seconds": 429,
         "timestamp_end_seconds": 4245
+      }
+    ],
+    "highlights": null,
+    "notes": null
+  },
+  {
+    "id": "clown-academia-subathon-d29",
+    "title": null,
+    "date": "2024-01-22",
+    "activities": [
+      "Gaming",
+      "VR",
+      "Subathon"
+    ],
+    "games": [
+      "VRChat",
+      "Connect Four",
+      "Suika Game"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Partial",
+    "summary": null,
+    "safari": true,
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "CLOWN ACADEMIA [SUBATHON] (Day 29)(LAST DAY)",
+        "streamer": "Camila",
+        "video_id": "zco99q4yHnY",
+        "timestamp_seconds": 3003,
+        "timestamp_end_seconds": 11409
       }
     ],
     "highlights": null,
@@ -1338,6 +1383,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1366,6 +1412,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1392,6 +1439,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Koko, spurred on by her chat, calls Vedal at 3:00 AM to inform him that he should go to bed.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -1418,6 +1466,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1444,6 +1493,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1472,6 +1522,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": false,
     "vod_type": "parts",
     "vods": [
       {
@@ -1513,6 +1564,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1545,6 +1597,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Cruel mistress Camila takes away verified Discord kitten Vedal's moderator role and makes him plead for it back.",
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1574,6 +1627,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1600,6 +1654,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": true,
     "vod_type": "parts",
     "vods": [
       {
@@ -1662,6 +1717,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Vedal and Filian invade Numi's stream after raiding her. Numi challenges them to do their best Numi laugh, which Vedal promptly refuses.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -1692,6 +1748,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1722,6 +1779,33 @@
     "notes": null
   },
   {
+    "id": "easter-yapping-camila",
+    "title": null,
+    "date": "2024-04-25",
+    "activities": [
+      "Just Chatting"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Partial",
+    "summary": null,
+    "safari": true,
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "🔴 NEW OUTFIT SHOCK COLLAR WITH BUCKSHOT ROULETTE TRY NOT TO GET TAZED",
+        "streamer": "Camila",
+        "video_id": "WA8W0tVA0fA",
+        "timestamp_seconds": 2321,
+        "timestamp_end_seconds": 9448
+      }
+    ],
+    "highlights": null,
+    "notes": null
+  },
+  {
     "id": "helldivers-cerber",
     "title": "Cerber's Helldivers Stream",
     "date": "2024-04-27",
@@ -1736,6 +1820,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1744,32 +1829,6 @@
         "video_id": "-l5M4x5OI2U",
         "timestamp_seconds": 16,
         "timestamp_end_seconds": 1965
-      }
-    ],
-    "highlights": null,
-    "notes": null
-  },
-  {
-    "id": "easter-yapping-camila",
-    "title": null,
-    "date": "2024-04-28",
-    "activities": [
-      "Just Chatting"
-    ],
-    "games": [],
-    "collab_partners": [
-      "Camila"
-    ],
-    "appearance_weight": "Partial",
-    "summary": null,
-    "vod_type": "povs",
-    "vods": [
-      {
-        "vod_title": "🔴 NEW OUTFIT SHOCK COLLAR WITH BUCKSHOT ROULETTE TRY NOT TO GET TAZED",
-        "streamer": "Camila",
-        "video_id": "WA8W0tVA0fA",
-        "timestamp_seconds": 2321,
-        "timestamp_end_seconds": 9448
       }
     ],
     "highlights": null,
@@ -1792,6 +1851,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1818,6 +1878,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1845,6 +1906,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -1871,6 +1933,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Camila's Cimps crash Vedal's browser by spamming too many gifs, leading him to call and ask the deal is. He also reveals the Neuro-sama project he was working on.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -1900,6 +1963,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1935,6 +1999,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1962,6 +2027,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -1988,6 +2054,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2014,6 +2081,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2041,6 +2109,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Married couple Vedal and iPN talk shit about Camila on her own stream while she's away.",
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2068,6 +2137,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2096,6 +2166,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2122,6 +2193,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2151,6 +2223,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2180,6 +2253,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2207,6 +2281,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2234,6 +2309,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2260,6 +2336,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -2286,6 +2363,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -2316,6 +2394,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2343,6 +2422,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -2369,6 +2449,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": "Vedal and an extremely intoxicated Mega, who is playing American Truck Simulator, discuss alcoholism, different types of alcohol... alien slavery?",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -2398,6 +2479,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2427,6 +2509,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2455,6 +2538,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2481,6 +2565,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Vedal and Camila discuss Vedal's baldness, and the many challenges he's faced because of it.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -2508,6 +2593,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Vedal helps Cerber set up her impending collab with Evil Neuro.",
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2535,6 +2621,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Vedal helps Zentreya set up her impending collab with Evil Neuro.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -2562,6 +2649,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": "Greggs Wanager Cerber tests local Greggspert Vedal987 on his Greggs knowledge.",
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2590,6 +2678,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2616,6 +2705,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2646,6 +2736,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2673,6 +2764,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2700,6 +2792,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Camila calls Vedal to ask if being sexually attracted to Pokemon makes her a furry. Vedal argues that it depends on the Pokemon in question.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -2726,6 +2819,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2752,6 +2846,7 @@
     ],
     "appearance_weight": "Partial",
     "summary": "Camila calls Vedal to plan a future gaming collab together, though he doesn't realize she's streaming initially.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -2788,6 +2883,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {
@@ -2815,6 +2911,7 @@
     ],
     "appearance_weight": "Cameo",
     "summary": "Camila flexes her faster words-per-minute typing speed on Vedal with a prank call. But at the end, Camila is the one who feels like a fool. As usual.",
+    "safari": false,
     "vod_type": "povs",
     "vods": [
       {
@@ -2844,6 +2941,7 @@
     ],
     "appearance_weight": "Full",
     "summary": null,
+    "safari": true,
     "vod_type": "povs",
     "vods": [
       {

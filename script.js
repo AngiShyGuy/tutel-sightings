@@ -21,6 +21,7 @@ const state = {
   inProgress: false,
   dateFrom:  null,  // 'YYYY-MM-DD' string or null
   dateTo:    null,
+  safari:     'all',
   filters: {
     activities:        new Set(),
     games:             new Set(),
@@ -146,6 +147,9 @@ function passesFilter(entry) {
   if (state.watch === 'watched'   && !watched) return false;
   if (state.watch === 'unwatched' &&  watched) return false;
   if (state.inProgress && !userProgress[entry.id]) return false;
+  const pinged = !!(entry.safari);  // absent/undefined treated as false
+  if (state.safari === 'pinged'     && !pinged) return false;
+  if (state.safari === 'not-pinged' &&  pinged) return false;
 
   // Date range filter (tolerant of reversed from/to)
   if (state.dateFrom || state.dateTo) {
@@ -190,7 +194,8 @@ function hasActiveFilters() {
     || !!state.dateFrom || !!state.dateTo
     || !!state.search
     || state.watch !== 'all'
-    || state.inProgress;
+    || state.inProgress
+    || state.safari !== 'all';
 }
 
 // ── Sidebar filter builder ────────────────────────────────────
@@ -833,6 +838,7 @@ function clearAllFilters() {
   state.dateTo     = null;
   state.watch      = 'all';
   state.inProgress = false;
+  state.safari     = 'all';
   document.getElementById('search-input').value        = '';
   document.getElementById('mobile-search-input').value = '';
   document.getElementById('search-clear-btn').style.display        = 'none';
@@ -844,6 +850,8 @@ function clearAllFilters() {
   // Reset watch toggle UI
   document.querySelectorAll('.watch-toggle-btn').forEach(b =>
     b.classList.toggle('active', b.dataset.watch === 'all'));
+  document.querySelectorAll('.safari-toggle-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.safari === 'all'));
   const ipBtn = document.getElementById('in-progress-btn');
   ipBtn.style.display  = 'none';
   ipBtn.dataset.active = 'false';
@@ -1138,6 +1146,15 @@ function bindEvents() {
     render();
   });
 
+  // Safari toggle
+  document.querySelector('.safari-toggle-wrap').addEventListener('click', e => {
+    const btn = e.target.closest('.safari-toggle-btn');
+    if (!btn) return;
+    state.safari = btn.dataset.safari;
+    document.querySelectorAll('.safari-toggle-btn').forEach(b => b.classList.toggle('active', b === btn));
+    render();
+  });
+  
   document.getElementById('in-progress-btn').addEventListener('click', () => {
     const ipBtn = document.getElementById('in-progress-btn');
     state.inProgress = ipBtn.dataset.active !== 'true';
@@ -1232,6 +1249,12 @@ function syncUIFromState() {
 
   // 4. Highlight the correct in-progress button
   const ipBtn = document.getElementById('in-progress-btn');
+
+  // 5. Highlight the correct Safari toggle
+  document.querySelectorAll('.safari-toggle-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.safari === state.safari);
+  });
+
   if (state.watch === 'unwatched') {
     ipBtn.style.display = '';
     ipBtn.dataset.active = String(state.inProgress);
@@ -1253,7 +1276,8 @@ function updateURLFromState() {
   if (state.search) params.set('search', state.search);
   if (state.sort !== 'date') params.set('sort', state.sort); // only add if not default
   if (state.sortDir !== 'desc') params.set('sortDir', state.sortDir);
-  if (state.watch !== 'all') params.set('watch', state.watch);
+  if (state.watch  !== 'all') params.set('watch',  state.watch);
+  if (state.safari !== 'all') params.set('safari', state.safari);
   if (state.inProgress) params.set('inProgress', '1');
   if (state.dateFrom) params.set('dateFrom', state.dateFrom);
   if (state.dateTo)   params.set('dateTo',   state.dateTo);
@@ -1280,7 +1304,8 @@ function loadStateFromURL() {
   if (params.has('search')) state.search = params.get('search');
   if (params.has('sort'))   state.sort = params.get('sort');
   if (params.has('sortDir')) state.sortDir = params.get('sortDir');
-  if (params.has('watch'))      state.watch      = params.get('watch');
+  if (params.has('watch'))  state.watch  = params.get('watch');
+  if (params.has('safari')) state.safari = params.get('safari');
   if (params.has('inProgress')) state.inProgress = params.get('inProgress') === '1';
   if (params.has('dateFrom'))   state.dateFrom   = params.get('dateFrom');
   if (params.has('dateTo'))     state.dateTo     = params.get('dateTo');
