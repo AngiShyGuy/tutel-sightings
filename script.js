@@ -1307,6 +1307,10 @@ function updateURLFromState() {
 
   // Update the URL bar without reloading the page
   window.history.replaceState(null, '', newUrl);
+
+  // Update the stats page link
+  const statsLink = document.querySelector('.stats-page-link');
+  if (statsLink) statsLink.href = 'stats/' + window.location.search;
 }
 
 // 2. Look at the URL bar and overwrite 'state' with what we find

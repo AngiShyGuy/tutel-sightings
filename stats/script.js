@@ -422,6 +422,12 @@ async function init() {
     ['#22c55e', '#4f5670']
   );
 
+  // Pass current query string back to archive link so filters are restored
+  const homeLink = document.querySelector('.home-link');
+  if (homeLink && window.location.search) {
+    homeLink.href = '../' + window.location.search;
+  }
+
   // Register service worker for PWA support
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/tutel-sightings/sw.js');
