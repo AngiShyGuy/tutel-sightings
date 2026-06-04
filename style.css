@@ -1233,6 +1233,17 @@ span.flatpickr-weekday { background: transparent !important; }
   border-color: var(--green);
 }
 
+.progress-hint {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  margin-top: 2px;
+  margin-bottom: 10px;
+}
+.progress-controls {
+  margin-top: 10px;
+}
+
 /* High-Contrast Prompt Buttons for Timestamp Exceeded Warning */
 .prog-btn-confirm-watched,
 .prog-btn-confirm-keep,
@@ -1321,21 +1332,24 @@ span.flatpickr-weekday { background: transparent !important; }
 }
 
 /* New wrapper to stack the title and streamer label on the left */
-.highlight-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
 .highlight-title {
   font-size: 13px;
   line-height: 1.4;
+  flex: 1;
 }
 
 .highlight-streamer {
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-muted);
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 500;
+}
+
+.highlight-time-sep {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--green);
+  margin: 0 4px;
 }
 
 .highlight-time {

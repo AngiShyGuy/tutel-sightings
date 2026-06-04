@@ -302,7 +302,8 @@ function getWatchUrl(vod, entryId, withProgress = true) {
     if (entry && p != null) {
       const vodIndex = entry.vods.indexOf(vod);
       if (vodIndex !== -1 && p.vodIndex === vodIndex) {
-        t = p.seconds;
+        // null seconds means start from natural VOD beginning
+        t = p.seconds ?? vod.timestamp_seconds;
       }
     }
   }
@@ -412,11 +413,15 @@ function renderCard(entry) {
     const p   = userProgress[entry.id];
     const vod = entry.vods[p.vodIndex];
     if (vod?.timestamp_end_seconds) {
-      let progressSecs = p.seconds - (vod.timestamp_seconds || 0);
+      const effectiveSecs = p.seconds ?? (vod.timestamp_seconds || 0);
+      let progressSecs = effectiveSecs - (vod.timestamp_seconds || 0);
       let totalSecs    = vod.timestamp_end_seconds - (vod.timestamp_seconds || 0);
 
       if (entry.vod_type === 'parts') {
-        // Add durations of all completed parts before the current one
+        // Clamp current part's progress to its own duration
+        const currentPartDur = vod.timestamp_end_seconds - (vod.timestamp_seconds || 0);
+        progressSecs = Math.min(progressSecs, currentPartDur);
+        // Add full durations of all completed parts before the current one
         for (let i = 0; i < p.vodIndex; i++) {
           const prev = entry.vods[i];
           progressSecs += (prev.timestamp_end_seconds || 0) - (prev.timestamp_seconds || 0);
@@ -919,17 +924,12 @@ function openHighlights(entryId) {
     const timeStr = formatDuration(Math.max(0, relativeSecs));
 
     // If it's a multi-POV/multi-part stream, tell them which VOD it belongs to
-    const streamerLabel = entry.vods.length > 1 
-      ? `<span class="highlight-streamer">${escHtml(getStreamerLabel(vod, hl.vod_index, entry.vod_type === 'parts'))}</span>` 
-      : '';
+    const streamerLabel = entry.vods.length > 1;
     
     return `
       <a href="${url}" target="_blank" rel="noopener" class="highlight-item">
-        <div class="highlight-info">
-          <div class="highlight-title">${escHtml(hl.title)}</div>
-          ${streamerLabel}
-        </div>
-        <div class="highlight-time">${timeStr}</div>
+        <div class="highlight-title">${escHtml(hl.title)}</div>
+        <div class="highlight-time">${streamerLabel ? `<span class="highlight-streamer">${escHtml(getStreamerLabel(vod, hl.vod_index, entry.vod_type === 'parts'))}</span><span class="highlight-time-sep">·</span>` : ''}${timeStr}</div>
       </a>
     `;
   }).join('');
@@ -951,7 +951,7 @@ function switchModalTab(tab) {
 
 // ── Progress popup ─────────────────────────────────────────────
 let currentProgressEntry   = null;
-let pendingProgressSeconds = 0;
+let pendingProgressSeconds = null;
 let pendingProgressVodIndex = null;
 
 function openProgressPopup(entryId) {
@@ -967,9 +967,11 @@ function openProgressPopup(entryId) {
   document.getElementById('progress-watched-prompt').style.display = 'none';
   document.getElementById('progress-actions').style.display        = 'flex';
 
-  // Show VOD selector only for multi-VOD entries
+  // Show VOD selector and hint only for multi-part entries
   const select = document.getElementById('progress-vod-select');
+  const isParts = entry.vod_type === 'parts' && entry.vods.length > 1;
   select.style.display = entry.vods.length > 1 ? '' : 'none';
+  document.querySelector('.progress-hint').style.display = isParts ? '' : 'none';
   select.innerHTML = entry.vods.map((v, i) =>
     `<option value="${i}">${escHtml(getStreamerLabel(v, i, entry.vod_type === 'parts'))}</option>`
   ).join('');
@@ -978,12 +980,15 @@ function openProgressPopup(entryId) {
   const p = userProgress[entryId];
   if (p) {
     select.value = p.vodIndex ?? 0;
-    const h = Math.floor(p.seconds / 3600);
-    const m = Math.floor((p.seconds % 3600) / 60);
-    const s = p.seconds % 60;
-    if (h)      document.getElementById('prog-hh').value = String(h).padStart(2, '0');
-    if (m || h) document.getElementById('prog-mm').value = String(m).padStart(2, '0');
-    document.getElementById('prog-ss').value = String(s).padStart(2, '0');
+    if (p.seconds !== null && p.seconds !== undefined) {
+      const h = Math.floor(p.seconds / 3600);
+      const m = Math.floor((p.seconds % 3600) / 60);
+      const s = p.seconds % 60;
+      if (h)      document.getElementById('prog-hh').value = String(h).padStart(2, '0');
+      if (m || h) document.getElementById('prog-mm').value = String(m).padStart(2, '0');
+      document.getElementById('prog-ss').value = String(s).padStart(2, '0');
+    }
+    // If seconds is null, leave fields blank — user only saved a part marker
   }
 
   openOverlay('progress-popup');
@@ -1012,23 +1017,31 @@ function handleProgressBackspace(e, prevId) {
 function saveProgressFromPopup() {
   if (!currentProgressEntry) return;
 
-  const hh = parseInt(document.getElementById('prog-hh').value || '0', 10);
-  const mm = parseInt(document.getElementById('prog-mm').value || '0', 10);
-  const ss = parseInt(document.getElementById('prog-ss').value || '0', 10);
-  const totalSec = hh * 3600 + mm * 60 + ss;
-  const vodIndex = parseInt(document.getElementById('progress-vod-select').value, 10);
+  const hhRaw = document.getElementById('prog-hh').value.trim();
+  const mmRaw = document.getElementById('prog-mm').value.trim();
+  const ssRaw = document.getElementById('prog-ss').value.trim();
+  const allBlank = !hhRaw && !mmRaw && !ssRaw;
 
-  // Treat 00:00:00 as "clear progress"
-  if (totalSec === 0) { clearProgressFromPopup(); return; }
+  const hh = parseInt(hhRaw || '0', 10);
+  const mm = parseInt(mmRaw || '0', 10);
+  const ss = parseInt(ssRaw || '0', 10);
+  const totalSec = allBlank ? null : hh * 3600 + mm * 60 + ss;
+  const vodIndex = parseInt(document.getElementById('progress-vod-select').value, 10) || 0;
 
-  // If the timestamp is past the VOD's known end, ask if they want to mark it watched instead
-  const vod = currentProgressEntry.vods[vodIndex];
-  if (vod?.timestamp_end_seconds && totalSec >= vod.timestamp_end_seconds) {
-    pendingProgressSeconds = totalSec;
-    pendingProgressVodIndex = vodIndex;
-    document.getElementById('progress-watched-prompt').style.display = 'block';
-    document.getElementById('progress-actions').style.display        = 'none';
-    return;
+  // If the timestamp is past the VOD's known end, ask if they want to mark it watched instead.
+  // Skip this check for parts entries — an "over end" timestamp on one part doesn't mean
+  // the whole stream is done, and the progress bar clamps it anyway.
+  const isLastPart = currentProgressEntry.vod_type === 'parts'
+    && vodIndex === currentProgressEntry.vods.length - 1;
+  if (totalSec !== null && (currentProgressEntry.vod_type !== 'parts' || isLastPart)) {
+    const vod = currentProgressEntry.vods[vodIndex];
+    if (vod?.timestamp_end_seconds && totalSec >= vod.timestamp_end_seconds) {
+      pendingProgressSeconds  = totalSec;
+      pendingProgressVodIndex = vodIndex;
+      document.getElementById('progress-watched-prompt').style.display = 'block';
+      document.getElementById('progress-actions').style.display        = 'none';
+      return;
+    }
   }
 
   finalizeProgressSave(totalSec, vodIndex);
@@ -1036,9 +1049,8 @@ function saveProgressFromPopup() {
 
 function confirmProgressWatched(markWatched) {
   if (markWatched) {
-    // Use toggleWatched so card removal / filter logic is handled consistently
     if (!watchedIds.has(currentProgressEntry.id)) toggleWatched(currentProgressEntry.id);
-    else closeProgress();
+    closeProgress();
   } else {
     finalizeProgressSave(pendingProgressSeconds, pendingProgressVodIndex);
   }
@@ -1047,7 +1059,7 @@ function confirmProgressWatched(markWatched) {
 function cancelProgressPrompt() {
   document.getElementById('progress-watched-prompt').style.display = 'none';
   document.getElementById('progress-actions').style.display        = 'flex';
-  pendingProgressSeconds = 0;
+  pendingProgressSeconds = null;
   pendingProgressVodIndex = null;
 }
 

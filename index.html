@@ -304,7 +304,8 @@
     </div>
     
     <div class="progress-body">
-      <p class="summary-popup-text" style="margin-bottom: 12px;">At what timestamp in the VOD did you leave off?</p>
+      <p class="summary-popup-text">At what timestamp in the VOD did you leave off?</p>
+      <p class="progress-hint">Leave blank to only save which part you're on.</p>
       <div class="progress-controls">
         <div class="progress-inputs">
           <input type="text" id="prog-hh" maxlength="2" placeholder="00" oninput="handleProgressInput(this, 'prog-mm')">
@@ -330,7 +331,7 @@
 
     <div class="progress-actions" id="progress-actions" style="display: flex; gap: 8px; margin-top: 16px;">
       <button class="footer-about-btn" onclick="saveProgressFromPopup()">Confirm Progress</button>
-      <button class="footer-data-btn danger" onclick="clearProgressFromPopup()">Reset Progress</button>
+      <button class="footer-data-btn danger" onclick="clearProgressFromPopup()">Delete Progress</button>
     </div>
   </div>
 
