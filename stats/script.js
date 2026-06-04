@@ -220,7 +220,7 @@ async function init() {
   const uniquePartners = Object.keys(byPartnerCount).length;
   const uniqueGames    = Object.keys(byGame).length;
   const safariEligibleCount = data.filter(e => e.date && e.date >= SAFARI_LAUNCH).length;
-  const safariPct = safariEligibleCount > 0 ? pct(safariCount, safariEligibleCount) : 0;
+  const safariFailPct = safariEligibleCount > 0 ? pct(safariEligibleCount - safariCount, safariEligibleCount) : 0;
 
   const years      = Object.keys(byYear).sort();
   const yearCounts = years.map(y => byYear[y].count);
@@ -262,8 +262,8 @@ async function init() {
         <div class="summary-pill-label">Games played</div>
       </div>
       <div class="summary-pill">
-        <div class="summary-pill-value">${safariPct}%</div>
-        <div class="summary-pill-label">Pinged on Discord</div>
+        <div class="summary-pill-value">${safariFailPct}%</div>
+        <div class="summary-pill-label">Tutel Safari Failure Rate</div>
       </div>
     </div>
 
@@ -418,7 +418,7 @@ async function init() {
   // Safari status
   makeDonut('c-safari',
     ['Pinged', 'Not pinged'],
-    [safariCount, totalEntries - safariCount],
+    [safariCount, safariEligibleCount - safariCount],
     ['#22c55e', '#4f5670']
   );
 
