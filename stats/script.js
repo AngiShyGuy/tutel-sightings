@@ -183,12 +183,15 @@ async function init() {
   let   totalSecs      = 0;
   let   safariCount    = 0;
 
+  const SAFARI_LAUNCH = '2023-09-04';
+
   data.forEach(entry => {
     const year = entry.date ? entry.date.slice(0, 4) : 'Unknown';
     if (!byYear[year]) byYear[year] = { count: 0, secs: 0 };
     byYear[year].count++;
 
-    if (!!(entry.safari)) safariCount++;
+    const safariEligible = entry.date && entry.date >= SAFARI_LAUNCH;
+    if (safariEligible && !!(entry.safari)) safariCount++;
 
     const dur = entryDuration(entry);
     if (dur != null) {
@@ -216,7 +219,8 @@ async function init() {
   const totalHours     = fmtHours(totalSecs);
   const uniquePartners = Object.keys(byPartnerCount).length;
   const uniqueGames    = Object.keys(byGame).length;
-  const safariPct      = pct(safariCount, totalEntries);
+  const safariEligibleCount = data.filter(e => e.date && e.date >= SAFARI_LAUNCH).length;
+  const safariPct = safariEligibleCount > 0 ? pct(safariCount, safariEligibleCount) : 0;
 
   const years      = Object.keys(byYear).sort();
   const yearCounts = years.map(y => byYear[y].count);
@@ -324,7 +328,7 @@ async function init() {
       <div class="chart-card chart-card--donut">
         <div>
           <div class="chart-title">Tutel Safari</div>
-          <div class="chart-subtitle">Which sightings were pinged in the Discord?</div>
+          <div class="chart-subtitle">Sightings pinged in #tutel-safari since its launch on Sept. 4, 2023</div>
         </div>
         <div class="chart-wrap"><canvas id="c-safari"></canvas></div>
       </div>
