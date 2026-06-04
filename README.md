@@ -79,10 +79,27 @@ Sorted by the total.
 
 ---
 
-## Contributing 4 Dummies
+## Contributing
 
-To contribute a new stream / VOD appearance, open `data/appearances.json` and add a new entry appropriately.
-If you're not familiar with enough with coding, I'd recommend using a grid-based JSON editor like [Jsonite](https://www.jsonite.it/) and use the data schema provided above.
+You can contribute new stream appearances or your own summaries and highlights by editing `data/appearances.json`.
+I'd recommend using a grid-based JSON editor like [Jsonite](https://www.jsonite.it/) and use the data schema provided above.
+
+### Missing Collabs / VODs
+The current list isn't perfect, and several VODs have proven themselves very hard to find.
+
+Some of these include:
+
+- Vedal plays Overwatch with Anny (NotAnny Stream, 2024-03-01)
+- Day 1 of Mega's Birthday Subathon 2025 (Vedal fixes her timer) (2025-07-27)
+- Layna interviews Vedal after getting raided (2024-09-16)
+- Cerber plays Helldivers 2 with Vedal (2024-04-27?)
+- Camila's My Clown Academia: Day 11 Part 2 (Not on Camila's VODs Channel. I checked.)
+- Koko Just Chatting Streams: January 6th 2024 & March 24th 2024
+- not_anny September 4th 2024 stream
+
+(List subject to change.)
+
+If you can share any links for these, or any other Vedal sighting not included yet, it would be greatly appreciated!
 
 ---
 
