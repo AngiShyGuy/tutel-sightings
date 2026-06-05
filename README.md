@@ -10,96 +10,38 @@ Hosted on **[GitHub Pages](https://angishyguy.github.io/tutel-sightings)**.
 
 ## Features
 
-- **Searching and filtering** based on the title, activities played, collab partners, date range or games played.
-- **Multiple VOD support** for each stream, allowing for multi-parters or for different streamers' perspectives of the same event.
-- **Collab summaries** for some streams in case you forgot what that one call-in was about again.
-- **Highlights timestamps** for quick access to a stream's best moments.
-- **Watch progress** by marking streams as watched and writing down your current timestamp via the `···` menu.
-- **Export / Import progress data** to back up your watch data as a JSON file and restore it on another browser or device.
-
----
-
-## Data Schema
-
-All appearance data lives in `data/appearances.json` as an array of entry objects.
-
-### Entry fields
-
-| Field | Type | Description |
-|---|---|---|
-| `id` | string | Unique slug identifier in kebab-case |
-| `title` | string \| null | See **Title Logic** below |
-| `date` | string \| null | Stream date as `YYYY-MM-DD`, or `null` if unknown |
-| `activities` | string[] | See **Activity Tags** below |
-| `games` | string[] | Game name(s), or `[]` if not a gaming session |
-| `collab_partners` | string[] | All other VTubers present |
-| `appearance_weight` | string | See **Appearance Weight** below |
-| `summary` | string | Summary of the events and discussions in the collab |
-| `vod_type` | string | `"povs"` (Default) or `"parts"` — Dictates whether the VODs associated with the stream are sequential parts or different perspectives. Only relevant for multi-VOD entries |
-| `vods` | object[] | One or more VOD objects — see below |
-| `notes` | string \| null | Optional freeform notes, not displayed publicly |
-
-### Title logic
-
-1. If `title` is set → use it
-2. If `title` is `null` and there is one VOD → use that VOD's `vod_title`
-
-Set `title` when:
-- The entry has **multiple VODs** (required — there's no single title to fall back to)
-- The **real VOD title** gives no useful context (streamers name things terribly sometimes)
-
-Otherwise, leave `title` as `null` and let the VOD title speak for itself.
-
-### VOD object
-
-| Field | Type | Description |
-|---|---|---|
-| `vod_title` | string | The real title of the VOD as it appears on YouTube |
-| `streamer` | string | The streamer whose POV this is. Must match a name in `collab_partners` |
-| `vod_part` | integer \| null | Part number for `"parts"` entries (`1`, `2`, …). `null` for `"povs"` entries |
-| `video_id` | string | The YouTube video ID — the part after `?v=` or `youtu.be/` |
-| `timestamp_seconds` | int \| null | When Vedal *appears*, in seconds. `null` if he's there from the start |
-| `timestamp_end_seconds` | int \| null | When Vedal *leaves*, in seconds. `null` if unknown |
-
-### Collab duration
-
-Duration is computed per-VOD as `timestamp_end_seconds − timestamp_seconds`. VODs with either timestamp missing are excluded. If no VODs have both, duration is not displayed.
-
-**`"povs"`** (default) — different streamers covering the same event. Each POV may have a different duration, so a range is shown:
-```
-2:03:41 ~ 3:03:21
-```
-Sorted by the midpoint of the range.
-
-**`"parts"`** — sequential segments of one long session. Durations are summed:
-```
-58:15
-```
-Sorted by the total.
+- **Searching and filtering** by title, collab partners, games played, activity tags, stream date, watch status, and Safari ping status.
+- **Multiple VOD support** for each stream, whether that's different streamers' perspectives of the same event or sequential parts of a longer session.
+- **Collab summaries** for some streams, so you know what that one prank call was about before you click.
+- **Highlight timestamps** for quick access to a stream's best moments.
+- **Watch progress tracking**: mark streams as watched or save your current timestamp via the `···` menu, with export/import support to back up your data.
+- **Stats page** with charts on collab history, screen time, top partners, games played, and more.
 
 ---
 
 ## Contributing
 
-You can contribute new stream appearances or your own summaries and highlights by editing `data/appearances.json`.
-I'd recommend using a grid-based JSON editor like [Jsonite](https://www.jsonite.it/) and use the data schema provided above.
+Contributions are welcome! There are a few ways you can help:
 
-### Missing Collabs / VODs
-The current list isn't perfect, and several VODs have proven themselves very hard to find.
+**New sightings** - if you know of a Vedal appearance that isn't in the archive yet, you can add it by editing `data/appearances.json`. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full data schema and instructions.
 
-Some of these include:
+**Summaries** - many entries are missing a `summary` field. A good summary is 1–2 sentences describing what actually happens in the collab. The more specific and funny, the better. Check the existing ones for the right tone.
 
-- Vedal plays Overwatch with Anny (NotAnny Stream, 2024-03-01)
-- Day 1 of Mega's Birthday Subathon 2025 (Vedal fixes her timer) (2025-07-27)
+**Highlights** - if a stream has a particularly memorable moment, you can add it as a highlight with a timestamp. These show up as quick-access links in the stream's highlights panel.
+
+**Missing or hard-to-find VODs** - the list below tracks sightings we know exist but haven't been able to locate. If you can share a link to any of these, it would be greatly appreciated.
+
+### Currently missing / hard to find VODs
+
+- Vedal plays Overwatch with Anny (NotAnny stream, 2024-03-01)
+- Day 1 of Mega's Birthday Subathon 2025 — Vedal fixes her timer (2025-07-27)
 - Layna interviews Vedal after getting raided (2024-09-16)
 - Cerber plays Helldivers 2 with Vedal (2024-04-27?)
-- Camila's My Clown Academia: Day 11 Part 2 (Not on Camila's VODs Channel. I checked.)
-- Koko Just Chatting Streams: January 6th 2024 & March 24th 2024
+- Camila's My Clown Academia: Day 11 Part 2 *(not on her VODs channel)*
+- Koko Just Chatting streams: January 6th 2024 & March 24th 2024
 - not_anny September 4th 2024 stream
 
-(List subject to change.)
-
-If you can share any links for these, or any other Vedal sighting not included yet, it would be greatly appreciated!
+*(List subject to change.)*
 
 ---
 
