@@ -2279,10 +2279,10 @@
     "collab_partners": [
       "Anny"
     ],
-    "appearance_weight": "Cameo",
+    "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
+    "vod_type": "parts",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -2290,6 +2290,13 @@
         "video_id": "REwc-EN1ZEQ",
         "timestamp_seconds": 0,
         "timestamp_end_seconds": 1035
+      },
+      {
+        "vod_title": "Unknown VOD Title",
+        "streamer": "AlexVoid",
+        "video_id": "qSejWUi_bx0",
+        "timestamp_seconds": 3,
+        "timestamp_end_seconds": 3024
       }
     ],
     "highlights": null
@@ -2348,6 +2355,59 @@
         "video_id": "hdy_rEmPaQE",
         "timestamp_seconds": 1350,
         "timestamp_end_seconds": 26236
+      }
+    ],
+    "highlights": null
+  },
+  {
+    "id": "buckshot-roulette-modding-alex",
+    "title": "buckshot roulette modding",
+    "date": "2024-11-24",
+    "activities": [
+      "Just Chatting",
+      "Development"
+    ],
+    "games": [],
+    "collab_partners": [
+      "AlexVoid"
+    ],
+    "appearance_weight": "Cameo",
+    "summary": null,
+    "safari": false,
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "Unknown VOD Title",
+        "streamer": "AlexVoid",
+        "video_id": "b4fswy--SL4",
+        "timestamp_seconds": 0,
+        "timestamp_end_seconds": 1257
+      }
+    ],
+    "highlights": null
+  },
+  {
+    "id": "neuro-sdk-discussion-alex",
+    "title": "Vedal And Alex Discuss Neuro Gaming API",
+    "date": "2024-12-11",
+    "activities": [
+      "Just Chatting"
+    ],
+    "games": [],
+    "collab_partners": [
+      "AlexVoid"
+    ],
+    "appearance_weight": "Cameo",
+    "summary": null,
+    "safari": false,
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "Unknown VOD Title",
+        "streamer": "AlexVoid",
+        "video_id": "DTxOcQ6cZEw",
+        "timestamp_seconds": 0,
+        "timestamp_end_seconds": 1982
       }
     ],
     "highlights": null
