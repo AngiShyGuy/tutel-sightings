@@ -60,7 +60,7 @@ Below are the currently established activity tags, but more can be added later. 
 | `Subathon` | The stream is part of a subathon |
 | `Drinking` | Drinking is a notable activity |
 | `VR` | VR is involved |
-| `Prank Call` | Vedal is called without knowing he's on stream |
+| `Prank Call` | Vedal is called as part of some kind of joke or dare |
 | `Interview` | Vedal is formally interviewed |
 | `Debut` | This is a streamer's debut stream |
 | `Baking` | Baking is a notable activity |
