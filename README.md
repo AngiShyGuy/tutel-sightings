@@ -40,7 +40,7 @@ Contributions are welcome! There are a few ways you can help:
 - Camila's My Clown Academia: Day 11 Part 2 *(not on her VODs channel)*
 - Koko Just Chatting streams: January 6th 2024, March 24th 2024, April 22nd 2024, April 29th 2024
 - not_anny September 4th 2024 stream
-- AlexVoid Development VODs: April 25th 2024, June 7th 2024, October 27th 2024
+- AlexVoid Development VODs: April 25th 2024, June 7th 2024, October 27th 2024, November 24th 2024
 
 *(List subject to change.)*
 
