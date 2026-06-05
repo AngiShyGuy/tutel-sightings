@@ -61,7 +61,7 @@ Below are the currently established activity tags, but more can be added later. 
 | `Drinking` | Drinking is a notable activity |
 | `VR` | VR is involved |
 | `Prank Call` | Vedal is called as part of some kind of joke or dare |
-| `Interview` | Vedal is formally interviewed |
+| `Interview` | Vedal is (in)formally interviewed |
 | `Debut` | This is a streamer's debut stream |
 | `Baking` | Baking is a notable activity |
 | `Fan Submissions` | Fan-submitted content is featured |
