@@ -4,7 +4,7 @@ A public, searchable, filterable archive of every appearance by **Vedal987** on 
 
 Hosted on **[GitHub Pages](https://angishyguy.github.io/tutel-sightings)**.
 
-![Tutel Sightings preview](https://i.imgur.com/25VGr4l.png)
+![Tutel Sightings preview](https://i.imgur.com/eeIhaOY.png)
 
 ---
 
