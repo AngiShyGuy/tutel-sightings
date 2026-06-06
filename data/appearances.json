@@ -1,32 +1,5 @@
 [
   {
-    "id": "drawing-anny-neuro",
-    "title": null,
-    "date": "2023-03-23",
-    "activities": [
-      "Just Chatting"
-    ],
-    "games": [],
-    "collab_partners": [
-      "Anny",
-      "Neuro-sama"
-    ],
-    "appearance_weight": "Full",
-    "summary": null,
-    "safari": false,
-    "vod_type": "povs",
-    "vods": [
-      {
-        "vod_title": "✨ COZY ART STRIM WITH MY FAMILY ✨giving birth live on stream vedal what have u done",
-        "streamer": "Anny",
-        "video_id": "H06CQ1GPLQY",
-        "timestamp_seconds": 578,
-        "timestamp_end_seconds": 15155
-      }
-    ],
-    "highlights": null
-  },
-  {
     "id": "pummel-party-camila-big-collab",
     "title": null,
     "date": "2023-03-24",

@@ -44,6 +44,14 @@ Contributions are welcome! There are a few ways you can help:
 
 *(List subject to change.)*
 
+### Vedal sighting criteria
+
+- Vedal must talk on-stream (chat messages do not count)
+- The collab must not have been streamed on the vedal987 Twitch channel
+- The collab must not have been pinged in the Neuro-sama Discord server's #announcements channel
+
+(Neuro-sama can still appear in Vedal sightings so long as they adhere to the above criteria)
+
 ---
 
 *Tutel Sightings is a fan project and is not affiliated with Vedal987, Neuro-sama, or any of the VTubers listed.*
