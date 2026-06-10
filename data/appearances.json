@@ -125,10 +125,11 @@
     ],
     "games": [],
     "collab_partners": [
-      "Miyune"
+      "Miyune",
+      "Neuro-sama"
     ],
     "appearance_weight": "Partial",
-    "summary": null,
+    "summary": "Vedal, Neuro and Miyune play a quiz to figure out who knows Miyune the best.",
     "safari": false,
     "vod_type": "povs",
     "vods": [
@@ -765,10 +766,17 @@
       "Camila"
     ],
     "appearance_weight": "Cameo",
-    "summary": "Camila spins a punishment wheel for laughing in a You Laugh You Lose and needs to call a friend to roast her. She calls Vedal. Oh and he also appears earlier in the stream for a few seconds.",
+    "summary": "Camila spins a punishment wheel for laughing in a You Laugh You Lose and needs to call a friend to roast her. She calls Vedal.",
     "safari": false,
-    "vod_type": "pov",
+    "vod_type": "parts",
     "vods": [
+      {
+        "vod_title": "YOU LAUGH, YOU LOSE | SPIN THE WHEEL OF PUNISHMENTS",
+        "streamer": "Camila",
+        "video_id": "OzVNrt7L_1k",
+        "timestamp_seconds": 5648,
+        "timestamp_end_seconds": 5721
+      },
       {
         "vod_title": "YOU LAUGH, YOU LOSE | SPIN THE WHEEL OF PUNISHMENTS",
         "streamer": "Camila",
@@ -1075,7 +1083,7 @@
       "Camila"
     ],
     "appearance_weight": "Partial",
-    "summary": null,
+    "summary": "Vedal uses his own custom Camila TTS voice to impersonate her while her microphone is off. He also uses it to make her moan.",
     "safari": true,
     "vod_type": "povs",
     "vods": [
@@ -1286,7 +1294,7 @@
       {
         "vod_title": "TOMA DEBUT SUBATHON 💛 LAST DAY!!! 💛\n",
         "streamer": "Toma",
-        "video_id": "uvYYnJycPno",
+        "video_id": "YTNYDTwjEP4",
         "timestamp_seconds": 429,
         "timestamp_end_seconds": 4245
       }
