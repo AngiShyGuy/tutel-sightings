@@ -209,7 +209,13 @@
         "timestamp_end_seconds": 13859
       }
     ],
-    "highlights": null
+    "highlights": [
+      {
+        "title": "Marriage Stream",
+        "timestamp_seconds": 11090,
+        "vod_index": 0
+      }
+    ]
   },
   {
     "id": "yapping-camila-short-friyay",
@@ -1026,6 +1032,13 @@
         "video_id": "7tmwW7Uvbg8",
         "timestamp_seconds": 2152,
         "timestamp_end_seconds": 14219
+      },
+      {
+        "vod_title": "ITS A RARE WEDNESDAY STREAM",
+        "streamer": "Zentreya",
+        "video_id": "PuF5LxoS380",
+        "timestamp_seconds": 3593,
+        "timestamp_end_seconds": 15125
       }
     ],
     "highlights": null
@@ -1299,7 +1312,13 @@
         "timestamp_end_seconds": 4245
       }
     ],
-    "highlights": null
+    "highlights": [
+      {
+        "title": "Toma finds the Shock Collar clip",
+        "timestamp_seconds": 2636,
+        "vod_index": 0
+      }
+    ]
   },
   {
     "id": "clown-academia-subathon-d29",
