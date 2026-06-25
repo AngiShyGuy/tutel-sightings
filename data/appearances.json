@@ -3102,5 +3102,35 @@
       }
     ],
     "highlights": null
+  },
+  {
+    "id": "carry-the-glass-camila-2",
+    "title": null,
+    "date": "2026-06-23",
+    "activities": [
+      "Gaming",
+      "Drinking"
+    ],
+    "games": [
+      "Carry The Glass",
+      "Gamble With Your Friends"
+    ],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Partial",
+    "summary": null,
+    "safari": true,
+    "vod_type": "povs",
+    "vods": [
+      {
+        "vod_title": "IMP STUCK IN JAIL (SUBATHON) [DAY 14]\n",
+        "streamer": "Camila",
+        "video_id": "gP6_nbGd9Y8",
+        "timestamp_seconds": 5779,
+        "timestamp_end_seconds": 18412
+      }
+    ],
+    "highlights": null
   }
 ]
