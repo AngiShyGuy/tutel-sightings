@@ -2427,14 +2427,28 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
+    "vod_type": "parts",
     "vods": [
       {
         "vod_title": "🎉⭐ VTUBER AWARDS WATCH PARTY!! ⭐🎉 ૮ ・ﻌ・ა 💜🦴",
         "streamer": "Cerber",
         "video_id": "7xLf6_XUXZI",
         "timestamp_seconds": 3798,
+        "timestamp_end_seconds": 7932
+      },
+      {
+        "vod_title": "🎉⭐ VTUBER AWARDS WATCH PARTY!! ⭐🎉 ૮ ・ﻌ・ა 💜🦴",
+        "streamer": "Cerber",
+        "video_id": "7xLf6_XUXZI",
+        "timestamp_seconds": 10427,
         "timestamp_end_seconds": 11445
+      },
+      {
+        "vod_title": "🎉⭐ VTUBER AWARDS WATCH PARTY!! ⭐🎉 ૮ ・ﻌ・ა 💜🦴",
+        "streamer": "Cerber",
+        "video_id": "7xLf6_XUXZI",
+        "timestamp_seconds": 12774,
+        "timestamp_end_seconds": 12991
       }
     ],
     "highlights": null
