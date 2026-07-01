@@ -70,6 +70,17 @@
         <button class="clear-all-btn" id="mobile-clear-all-btn" onclick="clearAllFilters()" style="display:none">✕ Clear all</button>
       </div>
 
+      <div class="mobile-view-toggle-wrap">
+        <button class="view-toggle-btn active" data-view="grid" aria-label="Grid view">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Grid
+        </button>
+        <button class="view-toggle-btn" data-view="list" aria-label="List view">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          List
+        </button>
+      </div>
+
       <div class="control-group">
         <label class="control-label" for="search-input">Search</label>
         <div class="search-wrap">
@@ -172,6 +183,7 @@
       </div>
       <div class="results-bar" id="results-bar"></div>
       <div class="card-grid" id="card-grid"></div>
+      <div class="card-list" id="card-list" style="display:none"></div>
       <div class="empty-state" id="empty-state" style="display:none">
         <span class="empty-icon">🐢</span>
         <p>No sightings match your filters.</p>

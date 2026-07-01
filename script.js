@@ -9,7 +9,9 @@ let allAppearances = [];
 let colors = {};
 let watchedIds  = new Set(JSON.parse(localStorage.getItem('tutel-watched')   || '[]'));
 let userProgress =        JSON.parse(localStorage.getItem('tutel-progress')  || '{}');
+let viewMode    = localStorage.getItem('tutel-view-mode') || 'grid'; // 'grid' | 'list'
 
+function saveViewMode() { localStorage.setItem('tutel-view-mode', viewMode); }
 function saveWatched()      { localStorage.setItem('tutel-watched',  JSON.stringify([...watchedIds])); }
 function saveUserProgress() { localStorage.setItem('tutel-progress', JSON.stringify(userProgress));    }
 
@@ -338,15 +340,17 @@ function renderChips(entry) {
 // so that getBoundingClientRect() returns real layout values.
 
 function applyChipOverflow() {
-  document.querySelectorAll('.card-chips').forEach(applyChipOverflowContainer);
+  document.querySelectorAll('#card-grid .card-chips').forEach(c => applyChipOverflowContainer(c, 2));
+  document.querySelectorAll('#card-list .list-chips').forEach(c => applyChipOverflowContainer(c, 1));
 }
 
 function applyChipOverflowForCard(card) {
-  const container = card.querySelector('.card-chips');
-  if (container) applyChipOverflowContainer(container);
+  const container = card.querySelector('.card-chips') || card.querySelector('.list-chips');
+  const maxLines  = card.classList.contains('card-list-item') ? 1 : 2;
+  if (container) applyChipOverflowContainer(container, maxLines);
 }
 
-function applyChipOverflowContainer(container) {
+function applyChipOverflowContainer(container, maxLines = 2) {
   const chips = [...container.querySelectorAll('.chip')];
   if (!chips.length) return;
 
@@ -354,13 +358,25 @@ function applyChipOverflowContainer(container) {
   chips.forEach(c => c.style.display = '');
   container.querySelector('.chip-overflow')?.remove();
 
-  // The allowed vertical space is exactly 2 chip heights, measured from the
-  // top of the first chip (not the container, which has padding above it).
-  const firstRect  = chips[0].getBoundingClientRect();
-  const maxBottom  = firstRect.top + firstRect.height * 2 + 8;
+  // Single-line containers (list view) wrap horizontally instead of vertically —
+  // overflow is detected by container width, not chip Y position.
+  const isHorizontal = maxLines === 1 && container.classList.contains('list-chips');
 
-  // Find the first chip that pushes past the 2-line boundary
-  let overflowFrom = chips.findIndex(c => c.getBoundingClientRect().bottom > maxBottom);
+  let overflowFrom;
+  let maxBottom; // only used in the vertical branch, for the badge-fit re-check below
+
+  if (isHorizontal) {
+    const containerRect = container.getBoundingClientRect();
+    const maxRight = containerRect.right;
+    overflowFrom = chips.findIndex(c => c.getBoundingClientRect().right > maxRight);
+  } else {
+    // The allowed vertical space is exactly maxLines chip heights, measured from
+    // the top of the first chip (not the container, which has padding above it).
+    const firstRect = chips[0].getBoundingClientRect();
+    maxBottom = firstRect.top + firstRect.height * maxLines + 8;
+    overflowFrom = chips.findIndex(c => c.getBoundingClientRect().bottom > maxBottom);
+  }
+
   if (overflowFrom === -1) return; // Everything fits
 
   // Hide overflowing chips and collect their data for the tooltip
@@ -378,10 +394,14 @@ function applyChipOverflowContainer(container) {
   container.appendChild(badge);
   badge.textContent = `+${overflowData.length} more`;
 
-  // If the badge itself overflows into a 3rd line, pull one more chip into it
-  // and repeat until it fits. Safety counter prevents an infinite loop.
+  // If the badge itself overflows, pull one more chip into it and repeat
+  // until it fits. Safety counter prevents an infinite loop.
   let safety = chips.length;
-  while (badge.getBoundingClientRect().bottom > maxBottom && overflowFrom > 0 && safety-- > 0) {
+  const stillOverflowing = () => isHorizontal
+    ? badge.getBoundingClientRect().right > container.getBoundingClientRect().right
+    : badge.getBoundingClientRect().bottom > maxBottom;
+
+  while (stillOverflowing() && overflowFrom > 0 && safety-- > 0) {
     overflowFrom--;
     chips[overflowFrom].style.display = 'none';
     overflowData.unshift({ cat: chips[overflowFrom].dataset.cat, value: chips[overflowFrom].dataset.value });
@@ -390,25 +410,18 @@ function applyChipOverflowContainer(container) {
   }
 }
 
-function renderCard(entry) {
+function getCardData(entry) {
   const watched  = isWatched(entry);
   const thumbUrl = getThumbUrl(entry);
   const title    = getCardTitle(entry);
   const { display: duration } = entryDurationInfo(entry);
-  const isMulti  = entry.vods.length > 1;
+  const isMulti   = entry.vods.length > 1;
   const singleUrl = !isMulti ? getWatchUrl(entry.vods[0], entry.id) : '#';
 
-  const thumbClick = isMulti
-    ? `onclick="openPovDropdown(event,'${entry.id}')" style="cursor:pointer"`
-    : `onclick="window.open('${singleUrl}','_blank')" style="cursor:pointer"`;
-  const titleClick = isMulti
-    ? `onclick="openPovDropdown(event,'${entry.id}')"`
-    : `onclick="window.open('${singleUrl}','_blank')"`;
-
-  // Progress bar and badge — only shown when we have both user progress
-  // AND the VOD has a known end timestamp to calculate a percentage against.
-  let progressHtml = '';
   let progressBadgeHtml = '';
+  let progressHtml      = '';
+  let percent           = null;
+
   if (userProgress[entry.id]) {
     const p   = userProgress[entry.id];
     const vod = entry.vods[p.vodIndex];
@@ -418,32 +431,46 @@ function renderCard(entry) {
       let totalSecs    = vod.timestamp_end_seconds - (vod.timestamp_seconds || 0);
 
       if (entry.vod_type === 'parts') {
-        // Clamp current part's progress to its own duration
         const currentPartDur = vod.timestamp_end_seconds - (vod.timestamp_seconds || 0);
         progressSecs = Math.min(progressSecs, currentPartDur);
-        // Add full durations of all completed parts before the current one
         for (let i = 0; i < p.vodIndex; i++) {
           const prev = entry.vods[i];
           progressSecs += (prev.timestamp_end_seconds || 0) - (prev.timestamp_seconds || 0);
         }
-        // Total is the sum of all parts
         totalSecs = entry.vods.reduce((sum, v) =>
           sum + ((v.timestamp_end_seconds || 0) - (v.timestamp_seconds || 0)), 0);
       }
 
-      const percent = Math.max(0, Math.min(100, Math.floor((progressSecs / totalSecs) * 100)));
+      percent = Math.max(0, Math.min(100, Math.floor((progressSecs / totalSecs) * 100)));
       progressBadgeHtml = `<div class="progress-badge">${percent}% Watched</div>`;
       progressHtml      = `<div class="card-progress-bar"><div class="card-progress-fill" style="width:${percent}%"></div></div>`;
     }
   }
 
+  const thumbClick = isMulti
+    ? `onclick="openPovDropdown(event,'${entry.id}')" style="cursor:pointer"`
+    : `onclick="window.open('${singleUrl}','_blank')" style="cursor:pointer"`;
+  const titleClick = isMulti
+    ? `onclick="openPovDropdown(event,'${entry.id}')"`
+    : `onclick="window.open('${singleUrl}','_blank')"`;
+
+  return {
+    watched, thumbUrl, title, duration, isMulti, singleUrl,
+    progressBadgeHtml, progressHtml, percent,
+    thumbClick, titleClick,
+  };
+}
+
+function renderCard(entry) {
+  const d = getCardData(entry);
+
   return `
     <article class="card${isNewEntry(entry) ? ' card--new' : ''}" data-id="${entry.id}">
-      <div class="card-thumb-wrap" ${thumbClick}>
-        ${thumbUrl
-          ? `<img class="card-thumb" src="${thumbUrl}" alt="${escAttr(title)}" loading="lazy"
+      <div class="card-thumb-wrap" ${d.thumbClick}>
+        ${d.thumbUrl
+          ? `<img class="card-thumb" src="${d.thumbUrl}" alt="${escAttr(d.title)}" loading="lazy"
                onload="if(this.naturalHeight > 90 ) { this.style.removeProperty('opacity'); this.onload=null; return; } var n=this.src.replace('maxres','hq'); this.src=''; this.src=n; this.style.removeProperty('opacity'); this.onload=null;">
-             <div class="card-thumb-placeholder" style="display:none">🐢</div>` // i might be able to delete this fallback but ill look into this later
+             <div class="card-thumb-placeholder" style="display:none">🐢</div>`
           : `<div class="card-thumb-placeholder">🐢</div>`
         }
         <div class="card-thumb-overlay">
@@ -451,18 +478,52 @@ function renderCard(entry) {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
         </div>
-        ${isMulti ? `<div class="multi-vod-badge">${entry.vods.length} ${entry.vod_type === 'parts' ? 'Parts' : 'POVs'}</div>` : ''}
-        ${progressBadgeHtml}
-        ${progressHtml}
+        ${d.isMulti ? `<div class="multi-vod-badge">${entry.vods.length} ${entry.vod_type === 'parts' ? 'Parts' : 'POVs'}</div>` : ''}
+        ${d.progressBadgeHtml}
+        ${d.progressHtml}
       </div>
       <div class="card-body">
         <div class="card-chips">${renderChips(entry)}</div>
-        <div class="card-title" ${titleClick}>${escHtml(title)}</div>
+        <div class="card-title" ${d.titleClick}>${escHtml(d.title)}</div>
         <div class="card-meta">
           ${entry.date ? `<span>${entry.date}</span>` : '<span style="opacity:0.4">Date unknown</span>'}
-          ${duration ? `<span class="card-meta-sep">·</span><span class="card-duration">${duration}</span>` : ''}
-          ${watched ? `<span title="Watched" style="display:flex"><svg class="watched-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>` : ''}
+          ${d.duration ? `<span class="card-meta-sep">·</span><span class="card-duration">${d.duration}</span>` : ''}
+          ${d.watched ? `<span title="Watched" style="display:flex"><svg class="watched-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>` : ''}
           <span class="card-menu-wrap">
+            <button class="card-menu-btn" onclick="openCardMenu(event,'${entry.id}')" title="More options">···</button>
+          </span>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderCardList(entry) {
+  const d = getCardData(entry);
+  const sqThumb = d.thumbUrl ? d.thumbUrl.replace(/\/(maxresdefault|hqdefault)\.jpg/, '/sddefault.jpg') : null;
+  const suffix = d.isMulti ? `${entry.vods.length} ${entry.vod_type === 'parts' ? 'Parts' : 'POVs'}` : '';
+
+  return `
+    <article class="card-list-item${isNewEntry(entry) ? ' card-list-item--new' : ''}" data-id="${entry.id}">
+      <div class="list-thumb-wrap" ${d.thumbClick}>
+        ${sqThumb
+          ? `<img class="list-thumb" src="${sqThumb}" alt="${escAttr(d.title)}" loading="lazy">`
+          : `<div class="list-thumb-placeholder">🐢</div>`
+        }
+        ${d.progressHtml}
+      </div>
+      <div class="list-body">
+        <div class="list-chips">${renderChips(entry)}</div>
+        <div class="list-title-row" ${d.titleClick}>
+          <span class="list-title-text">${escHtml(d.title)}</span>
+          ${suffix ? `<span class="list-title-suffix">${suffix}</span>` : ''}
+        </div>
+        <div class="card-meta card-meta--list">
+          ${entry.date ? `<span>${entry.date}</span>` : '<span style="opacity:0.4">Date unknown</span>'}
+          ${d.duration ? `<span class="card-meta-sep">·</span><span class="card-duration">${d.duration}</span>` : ''}
+          ${d.percent !== null ? `<span class="card-meta-sep">·</span><span class="list-progress-text">${d.percent}%</span>` : ''}
+          ${d.watched ? `<span title="Watched" style="display:flex"><svg class="watched-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>` : ''}
+          <span class="card-menu-wrap card-menu-wrap--list">
             <button class="card-menu-btn" onclick="openCardMenu(event,'${entry.id}')" title="More options">···</button>
           </span>
         </div>
@@ -477,13 +538,25 @@ function render() {
   const grid       = document.getElementById('card-grid');
   const empty      = document.getElementById('empty-state');
   const resultsBar = document.getElementById('results-bar');
+  const list       = document.getElementById('card-list');
 
   if (results.length === 0) {
     grid.innerHTML = '';
+    list.innerHTML = '';
     empty.style.display = '';
   } else {
     empty.style.display  = 'none';
-    grid.innerHTML       = results.map(renderCard).join('');
+    if (viewMode === 'list') {
+      grid.style.display = 'none';
+      list.style.display = '';
+      list.innerHTML     = results.map(renderCardList).join('');
+      grid.innerHTML      = '';
+    } else {
+      list.style.display = 'none';
+      grid.style.display = '';
+      grid.innerHTML      = results.map(renderCard).join('');
+      list.innerHTML     = '';
+    }
     requestAnimationFrame(applyChipOverflow);
   }
 
@@ -503,6 +576,16 @@ function render() {
     ? `<button class="random-btn desktop-only-btn" onclick="clearAllFilters()">Clear Filters</button>`
     : '';
 
+  const gridIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`;
+  const listIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
+
+  const desktopViewToggle = `
+    <div class="view-toggle-wrap desktop-only-btn">
+      <button class="view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}" data-view="grid" onclick="setViewMode('grid')" title="Grid view" aria-label="Grid view">${gridIcon}</button>
+      <button class="view-toggle-btn ${viewMode === 'list' ? 'active' : ''}" data-view="list" onclick="setViewMode('list')" title="List view" aria-label="List view">${listIcon}</button>
+    </div>
+  `;
+
   resultsBar.innerHTML = `
     <div class="results-text">${resultsText}${durationText}</div>
     <div class="results-actions">
@@ -510,6 +593,7 @@ function render() {
       <button class="random-btn" onclick="playRandomSighting()" ${results.length === 0 ? 'disabled' : ''} title="Play a random stream from this list">
         ${diceSvg} Random
       </button>
+      ${desktopViewToggle}
     </div>
   `;
 
@@ -649,14 +733,15 @@ function toggleWatched(entryId) {
   closeCardMenu();
 
   const entry = allAppearances.find(e => e.id === entryId);
-  const card  = document.querySelector(`.card[data-id="${entryId}"]`);
+  const card  = document.querySelector(`[data-id="${entryId}"]`);
   if (!entry || !card) return;
 
   if (passesFilter(entry)) {
     // Card still belongs in the current view — re-render it in place
-    card.outerHTML = renderCard(entry);
+    const newHtml = viewMode === 'list' ? renderCardList(entry) : renderCard(entry);
+    card.outerHTML = newHtml;
     requestAnimationFrame(() => {
-      applyChipOverflowForCard(document.querySelector(`.card[data-id="${entryId}"]`));
+      applyChipOverflowForCard(document.querySelector(`[data-id="${entryId}"]`));
     });
   } else {
     // Card no longer passes the filter — animate it out and remove it
@@ -1079,6 +1164,13 @@ function clearProgressFromPopup() {
   closeProgress();
 }
 
+function setViewMode(mode) {
+  viewMode = mode;
+  saveViewMode();
+  document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
+  render();
+}
+
 // ── Event bindings ────────────────────────────────────────────
 function bindEvents() {
   // Search — desktop and mobile inputs stay in sync
@@ -1221,6 +1313,12 @@ function bindEvents() {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(applyChipOverflow, 150);
   }, { passive: true });
+  
+  // Mobile view toggle
+  document.querySelector('.mobile-view-toggle-wrap').addEventListener('click', e => {
+    const btn = e.target.closest('.view-toggle-btn');
+    if (btn) setViewMode(btn.dataset.view);
+  });
 
   bindDateRangeEvents();
 }
@@ -1277,6 +1375,11 @@ function syncUIFromState() {
   // 5. Restore date range inputs
   if (state.dateFrom) fillDateInputs('from', state.dateFrom);
   if (state.dateTo)   fillDateInputs('to',   state.dateTo);
+
+  // 6. Highlight the correct view-mode toggle (grid/list, both desktop and mobile)
+  document.querySelectorAll('.view-toggle-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.view === viewMode);
+  });
 }
 
 // URL PARAMS HANDING!!!!!
