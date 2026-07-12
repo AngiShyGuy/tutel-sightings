@@ -1101,10 +1101,11 @@
     ],
     "games": [],
     "collab_partners": [
-      "Camila"
+      "Camila",
+      "Layna"
     ],
     "appearance_weight": "Partial",
-    "summary": "Vedal uses his own custom Camila TTS voice to impersonate her while her microphone is off. He also uses it to make her moan.",
+    "summary": "Vedal uses his own custom Camila TTS voice to impersonate her while her microphone is off. He also uses it to make her sing (and moan).",
     "safari": true,
     "vod_type": "povs",
     "vods": [
@@ -1116,7 +1117,13 @@
         "timestamp_end_seconds": 6378
       }
     ],
-    "highlights": null
+    "highlights": [
+      {
+        "title": "Layna joins the call.",
+        "timestamp_seconds": 5266,
+        "vod_index": 0
+      }
+    ]
   },
   {
     "id": "clown-academia-subathon-d11",
