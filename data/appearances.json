@@ -766,7 +766,8 @@
     "title": "YOU LAUGH, YOU LOSE | SPIN THE WHEEL OF PUNISHMENTS",
     "date": "2023-10-05",
     "activities": [
-      "Just Chatting"
+      "Just Chatting",
+      "Prank Call"
     ],
     "games": [],
     "collab_partners": [
@@ -944,7 +945,13 @@
         "timestamp_end_seconds": 16460
       }
     ],
-    "highlights": null
+    "highlights": [
+      {
+        "title": "The KissAWeeb Emote",
+        "timestamp_seconds": 5453,
+        "vod_index": 0
+      }
+    ]
   },
   {
     "id": "take-it-or-double-it-filian",
@@ -1238,7 +1245,8 @@
     "title": "Koko confesses to Vedal",
     "date": "2024-01-06",
     "activities": [
-      "Just Chatting"
+      "Just Chatting",
+      "Prank Call"
     ],
     "games": [],
     "collab_partners": [
