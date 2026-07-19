@@ -21,7 +21,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "NAUGHTY IMP HUGE PUMMEL PARTY COLLAB WITH FRIENDS !!!",
@@ -31,7 +30,7 @@
         "timestamp_end_seconds": 18615
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "prank-call-motherv3-sekiro-stream",
@@ -48,7 +47,6 @@
     "appearance_weight": "Cameo",
     "summary": "MOTHERv3 prank calls Vedal using Neuro-sama's TTS voice and pretends to be her.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "AI VTUBER ON SEKIRO?! NOWAY || ACTUALLY A FURRY || find the new emotes i added c:",
@@ -58,7 +56,7 @@
         "timestamp_end_seconds": 16187
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "roblox-doors-camila-motherv3",
@@ -77,7 +75,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "GLITCHMILA scuffed stream",
@@ -87,7 +84,7 @@
         "timestamp_end_seconds": 14165
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "yapping-motherv3-popcorn-reaction-stream",
@@ -103,7 +100,6 @@
     "appearance_weight": "Cameo",
     "summary": "MOTHERv3 is weirdo who walks into movie theatres just to buy their popcorn and leave. Vedal is baffled because he is a cheapskate who only buys supermarket popcorn. The two argue about this.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "LAST STREAM?! | AI REACT | I'M A MAN NOWAYING | AI HAS NEW MODEL?! | ACTUALLY A FURRY x2",
@@ -113,7 +109,7 @@
         "timestamp_end_seconds": 8968
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "interview-miyune-v2-debut",
@@ -131,7 +127,6 @@
     "appearance_weight": "Partial",
     "summary": "Vedal, Neuro and Miyune play a quiz to figure out who knows Miyune the best.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "NEW MIYU DEBUT Let me take you on a journey through time and space",
@@ -141,7 +136,7 @@
         "timestamp_end_seconds": 17695
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "pico-park-human-fall-flat-big-collab",
@@ -164,7 +159,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "18+ Nya Meow Meow | !patreon !discord !yt",
@@ -181,7 +175,7 @@
         "timestamp_end_seconds": 15899
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "pubg-anny",
@@ -199,7 +193,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Anny and Vedal play PUBG",
@@ -209,7 +202,7 @@
         "timestamp_end_seconds": 13859
       }
     ],
-    "highlights": [
+    "timestamps": [
       {
         "title": "Marriage Stream",
         "timestamp_seconds": 11090,
@@ -231,7 +224,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "RANDOM SHORT FRIYAY STRIM",
@@ -241,7 +233,7 @@
         "timestamp_end_seconds": 7177
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "yapping-camila-24hr-stream",
@@ -257,7 +249,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "🍥 24 HOUR STREAM UNTIL I GET UNBANNED FROM VEDAL987",
@@ -267,7 +258,7 @@
         "timestamp_end_seconds": 18351
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "demonologist-camila-saiiren-motherv3",
@@ -287,7 +278,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "New Vtuber plays w/ @camila @vedal987 @motherv3 LATER",
@@ -297,7 +287,7 @@
         "timestamp_end_seconds": 11104
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "bread-and-fred-demo-escape-sim-saiiren",
@@ -316,7 +306,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Games w/ @vedal987",
@@ -326,7 +315,7 @@
         "timestamp_end_seconds": 25160
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "bread-and-fred-saiiren",
@@ -344,7 +333,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Bread & Fred later w/ @vedal987 !throw",
@@ -354,7 +342,7 @@
         "timestamp_end_seconds": 40546
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "graduation-stream-camila",
@@ -370,7 +358,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Camila Graduation Stream",
@@ -380,7 +367,7 @@
         "timestamp_end_seconds": 7551
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "among-us-anny",
@@ -399,7 +386,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "BIRTHDAY SUBATHON DAY 5!! 🍊",
@@ -409,7 +395,7 @@
         "timestamp_end_seconds": 11930
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "subathon-yapping-anny",
@@ -426,7 +412,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "BIRTHDAY SUBATHON DAY 8!! 🍊",
@@ -436,7 +421,7 @@
         "timestamp_end_seconds": 8339
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "among-us-anny-2",
@@ -455,7 +440,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "DEBUT TIME!! 🍊BIRTHDAY SUBATHON DAY 12",
@@ -465,7 +449,7 @@
         "timestamp_end_seconds": 12011
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "ktane-camila",
@@ -483,7 +467,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "DWUNK IMP TRIES TO DEFUSE A BOMB AND SAVE MILLIONS WITH Vedal987",
@@ -493,7 +476,7 @@
         "timestamp_end_seconds": 13660
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "ktane-camila-2",
@@ -511,7 +494,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "LEWD IMP PLAYS KEEP TALKING AND NOBODY EXPLODES WITH Vedal987",
@@ -521,7 +503,7 @@
         "timestamp_end_seconds": 12970
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "ktane-camila-vr",
@@ -540,7 +522,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "🔴 VR KEEP TALKING AND NOBODY EXPLODES WITH this guy",
@@ -550,7 +531,7 @@
         "timestamp_end_seconds": 13490
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "punishment-wheel-camila",
@@ -567,7 +548,6 @@
     "appearance_weight": "Cameo",
     "summary": "Camila spins a punishment wheel for laughing in a You Laugh You Lose and needs to call a friend to praise her. She calls Vedal.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "YOU LAUGH YOU LOSE WHEEL OF PUNISHMENTS",
@@ -577,7 +557,7 @@
         "timestamp_end_seconds": 3187
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "yapping-short-saiiren",
@@ -593,7 +573,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "NEETS ASSEMBLE PERSONA TODAY",
@@ -603,7 +582,7 @@
         "timestamp_end_seconds": 8158
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "cod-camila",
@@ -621,7 +600,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "🔴 COME AND SPEED DATE US ! ! ! ft @bao YIPPIEEEEEEE",
@@ -631,7 +609,7 @@
         "timestamp_end_seconds": 23400
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "payday3-saiiren-subathon-d4",
@@ -650,7 +628,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "UNCAPPED SUBATHON DAY 4 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? | !subathon !rates P.1",
@@ -660,7 +637,7 @@
         "timestamp_end_seconds": 10663
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "payday3-saiiren-camila-subathon-d4",
@@ -680,7 +657,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "parts",
     "vods": [
       {
         "vod_title": "UNCAPPED SUBATHON DAY 4 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? | !subathon !rates P.2",
@@ -697,7 +673,7 @@
         "timestamp_end_seconds": 11415
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "payday3-saiiren-subathon-d12",
@@ -718,7 +694,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "UNCAPPED DEBUT SUBATHON DAY 12 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? | !subathon P.1",
@@ -728,7 +703,7 @@
         "timestamp_end_seconds": 22217
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "payday3-saiiren-subathon-d14",
@@ -749,7 +724,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "UNCAPPED DEBUT SUBATHON DAY 14 | T1 = 90s | GACHA VTUBER CAN YOU PULL ME? P.1",
@@ -759,7 +733,7 @@
         "timestamp_end_seconds": 19929
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "punishment-wheel-camila-2",
@@ -776,7 +750,6 @@
     "appearance_weight": "Cameo",
     "summary": "Camila spins a punishment wheel for laughing in a You Laugh You Lose and needs to call a friend to roast her. She calls Vedal.",
     "safari": false,
-    "vod_type": "parts",
     "vods": [
       {
         "vod_title": "YOU LAUGH, YOU LOSE | SPIN THE WHEEL OF PUNISHMENTS",
@@ -793,7 +766,7 @@
         "timestamp_end_seconds": 10366
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "risk-of-rain-2-camila",
@@ -811,7 +784,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "imp cant eep ; ;",
@@ -821,7 +793,7 @@
         "timestamp_end_seconds": 19692
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "prank-call-filian",
@@ -838,7 +810,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "👯🏻‍♀️ YLYL Bunny Girl Edition",
@@ -848,7 +819,7 @@
         "timestamp_end_seconds": 7047
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "for-the-king-saiiren-motherv3-okcode",
@@ -868,7 +839,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "parts",
     "vods": [
       {
         "vod_title": "APEX COLLAB - CHAT VS STREAMER CHAT WINS @ LEVEL 70 | !rates !pp !xp !bp P.1",
@@ -885,7 +855,7 @@
         "timestamp_end_seconds": 2822
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "mario-kart-camila",
@@ -904,7 +874,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "🔴 DRUNK MARIO KART WITH @vedal987 SPIN THE WHEEL OF PUNISHMENTS YIPPE",
@@ -914,7 +883,7 @@
         "timestamp_end_seconds": 15718
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "yapping-layna-camila",
@@ -935,7 +904,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Kickin it with @camila and @vedal987",
@@ -945,7 +913,7 @@
         "timestamp_end_seconds": 16460
       }
     ],
-    "highlights": [
+    "timestamps": [
       {
         "title": "The KissAWeeb Emote",
         "timestamp_seconds": 5453,
@@ -967,7 +935,6 @@
     "appearance_weight": "Cameo",
     "summary": "Filian calls up her friends and asks them to either take a sum of money or double it and pass it to the next person. She decides to call Vedal with 32$ owed so far.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "😹 YLYL Chibi Filian",
@@ -977,7 +944,7 @@
         "timestamp_end_seconds": 8886
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "birthday-cake-baking-layna-camila",
@@ -995,7 +962,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "BIRTHDAY PARTY STREAM w Camila and Vedal🎉BAKING BRAIN CAKE BLIND",
@@ -1005,7 +971,7 @@
         "timestamp_end_seconds": 16570
       }
     ],
-    "highlights": [
+    "timestamps": [
       {
         "title": "That's the eject button, Layna.",
         "timestamp_seconds": 2756,
@@ -1032,7 +998,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "LETHAL COMPANY LOBBY | !vote !rates !xp !bp",
@@ -1049,7 +1014,7 @@
         "timestamp_end_seconds": 15125
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "clown-academia-subathon-d2",
@@ -1072,7 +1037,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "CLOWN ACADEMIA [SUBATHON] (Day 2)(Part 4)",
@@ -1089,7 +1053,7 @@
         "timestamp_end_seconds": 17132
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "clown-academia-subathon-d5",
@@ -1107,7 +1071,6 @@
     "appearance_weight": "Partial",
     "summary": "Vedal uses his own custom Camila TTS voice to impersonate her while her microphone is off. He also uses it to make her sing (and moan).",
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "CLOWN ACADEMIA [SUBATHON] (Day 5)(Part 1)",
@@ -1117,7 +1080,7 @@
         "timestamp_end_seconds": 6378
       }
     ],
-    "highlights": [
+    "timestamps": [
       {
         "title": "Layna joins the call.",
         "timestamp_seconds": 5266,
@@ -1140,7 +1103,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "🔴 Vedal and Camila after AImila collab",
@@ -1150,7 +1112,7 @@
         "timestamp_end_seconds": 2525
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "clown-academia-subathon-d17",
@@ -1167,7 +1129,6 @@
     "appearance_weight": "Cameo",
     "summary": "Camila confesses her love to Vedal with predictable results.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "CLOWN ACADEMIA [SUBATHON] (Day 17)(Part 1)",
@@ -1177,7 +1138,7 @@
         "timestamp_end_seconds": 12569
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "lethal-company-camila-big-collab",
@@ -1205,7 +1166,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "CLOWN ACADEMIA [SUBATHON] (Day 19)(Part 3)",
@@ -1215,7 +1175,7 @@
         "timestamp_end_seconds": 5839
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "clown-academia-subathon-d22",
@@ -1235,7 +1195,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "CLOWN ACADEMIA [SUBATHON] (Day 22)(Part 2)",
@@ -1245,7 +1204,7 @@
         "timestamp_end_seconds": 14982
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "confession-koko",
@@ -1262,7 +1221,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -1272,7 +1230,7 @@
         "timestamp_end_seconds": 95
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "toma-3.0-debut",
@@ -1291,7 +1249,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "3.0 TOMA DEBUT SUBATHON 💛 DRUNK TRUCK SIM 💛 DAY2 💛 - Chat",
@@ -1301,7 +1258,7 @@
         "timestamp_end_seconds": 7238
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "toma-3.0-subathon-end",
@@ -1318,7 +1275,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "TOMA DEBUT SUBATHON 💛 LAST DAY!!! 💛\n",
@@ -1328,7 +1284,7 @@
         "timestamp_end_seconds": 4245
       }
     ],
-    "highlights": [
+    "timestamps": [
       {
         "title": "Toma finds the Shock Collar clip",
         "timestamp_seconds": 2636,
@@ -1356,7 +1312,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "CLOWN ACADEMIA [SUBATHON] (Day 29)(LAST DAY)",
@@ -1366,7 +1321,7 @@
         "timestamp_end_seconds": 11409
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "yapping-saiiren-story-time",
@@ -1382,7 +1337,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Story time into games | !rates !xp !bp",
@@ -1392,7 +1346,7 @@
         "timestamp_end_seconds": 6395
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "payday-3-saiiren",
@@ -1410,7 +1364,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "PLAYING GAMES WITH TUTEL | !rates !xp !bp !ff14",
@@ -1420,7 +1373,7 @@
         "timestamp_end_seconds": 13280
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "yapping-koko-monkey-gooning-monday",
@@ -1436,7 +1389,6 @@
     "appearance_weight": "Cameo",
     "summary": "Koko, spurred on by her chat, calls Vedal at 3:00 AM to inform him that he should go to bed.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "monkey gooning monday",
@@ -1446,7 +1398,7 @@
         "timestamp_end_seconds": 1749
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "drawing-yapping-anny",
@@ -1462,7 +1414,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "░E░R░M░I░N░B░I░O░ 🔞 🍊",
@@ -1472,7 +1423,7 @@
         "timestamp_end_seconds": 32695
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "drawing-anny",
@@ -1488,7 +1439,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "nuro art focus mode ♡",
@@ -1498,7 +1448,7 @@
         "timestamp_end_seconds": 13694
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "overwatch-anny",
@@ -1516,7 +1466,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "parts",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -1540,7 +1489,7 @@
         "timestamp_end_seconds": 145
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "shark-tank-bao",
@@ -1557,7 +1506,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "You're trapped",
@@ -1567,7 +1515,7 @@
         "timestamp_end_seconds": 8163
       }
     ],
-    "highlights": [
+    "timestamps": [
       {
         "title": "The Womb Tattoo",
         "timestamp_seconds": 5986,
@@ -1589,7 +1537,6 @@
     "appearance_weight": "Cameo",
     "summary": "Cruel mistress Camila takes away verified Discord kitten Vedal's moderator role and makes him plead for it back.",
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "RAMADAN-A-THON DAY 2 AND REACTING TO CHAT SUBMITTED MEMES (#6)",
@@ -1599,7 +1546,7 @@
         "timestamp_end_seconds": 6093
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "helldivers-2-saiiren-koko",
@@ -1618,7 +1565,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Diving with a friend today? | !rates !xp !yt",
@@ -1628,7 +1574,7 @@
         "timestamp_end_seconds": 9010
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "yapping-koko",
@@ -1644,7 +1590,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": true,
-    "vod_type": "parts",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -1689,7 +1634,7 @@
         "timestamp_end_seconds": 173
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "numi-call-in",
@@ -1706,7 +1651,6 @@
     "appearance_weight": "Cameo",
     "summary": "Vedal and Filian invade Numi's stream after raiding her. Numi challenges them to do their best Numi laugh, which Vedal promptly refuses.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "TIPSY SUNDAYS OH MAN OH NO OH GOD",
@@ -1716,7 +1660,7 @@
         "timestamp_end_seconds": 704
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "content-warning-toma-koko-camila",
@@ -1736,7 +1680,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "DADDY TOMA'S HOME 💛 CONTENT WARNING W KOKO, CAMIMI, VEDAL LATER 💛",
@@ -1746,7 +1689,7 @@
         "timestamp_end_seconds": 8163
       }
     ],
-    "highlights": [
+    "timestamps": [
       {
         "title": "Toma's Dream",
         "timestamp_seconds": 1251,
@@ -1778,7 +1721,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -1788,7 +1730,7 @@
         "timestamp_end_seconds": 792
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "quick-check-up-alex",
@@ -1804,7 +1746,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -1814,7 +1755,7 @@
         "timestamp_end_seconds": 124
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "easter-yapping-camila",
@@ -1830,7 +1771,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "🔴 NEW OUTFIT SHOCK COLLAR WITH BUCKSHOT ROULETTE TRY NOT TO GET TAZED",
@@ -1840,7 +1780,7 @@
         "timestamp_end_seconds": 9448
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "helldivers-cerber",
@@ -1858,7 +1798,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -1868,7 +1807,7 @@
         "timestamp_end_seconds": 1965
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "call-in-koko",
@@ -1884,7 +1823,6 @@
     "appearance_weight": "Cameo",
     "summary": "Vedal calls Koko to ask if his mic sounds weird.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -1894,7 +1832,7 @@
         "timestamp_end_seconds": 95
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "variety-games-camila",
@@ -1914,7 +1852,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "🔴 BIDEO GAME COLLAB WITH BEDAL @vedal987 REAL omg",
@@ -1924,7 +1861,7 @@
         "timestamp_end_seconds": 15530
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "call-in-camila",
@@ -1940,7 +1877,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "🔴 HANGING OUT WITH YOUR FAVORITE IMP",
@@ -1950,7 +1886,7 @@
         "timestamp_end_seconds": 1203
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "development-alex",
@@ -1967,7 +1903,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "you don't need to stress about deadlines that can always be pushed back",
@@ -1977,7 +1912,7 @@
         "timestamp_end_seconds": 1288
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "modding-hwtbam-alex",
@@ -1994,7 +1929,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "focus time modding wwtbam",
@@ -2004,7 +1938,7 @@
         "timestamp_end_seconds": 23359
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "browser-crash-camila",
@@ -2020,7 +1954,6 @@
     "appearance_weight": "Cameo",
     "summary": "Camila's Cimps crash Vedal's browser by spamming too many gifs, leading him to call and ask the deal is. He also reveals the Neuro-sama project he was working on.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "SURPRISE FOR THE OLD CIMPS :3!",
@@ -2030,7 +1963,7 @@
         "timestamp_end_seconds": 1950
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "vrchat-anny",
@@ -2049,7 +1982,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "HANGING OUT WITH @vedal987 🍊",
@@ -2059,7 +1991,7 @@
         "timestamp_end_seconds": 11939
       }
     ],
-    "highlights": [
+    "timestamps": [
       {
         "title": "Mounting a VR Base Station... with tape.",
         "timestamp_seconds": 6671,
@@ -2084,7 +2016,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "KUDOBOARD AND CHESS WITH VEDAL | Subathon Day 2",
@@ -2094,7 +2025,7 @@
         "timestamp_end_seconds": 26949
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "summerthon-yap-toma",
@@ -2111,7 +2042,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Subathon Day 4",
@@ -2121,7 +2051,7 @@
         "timestamp_end_seconds": 20608
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "48-hour-stream-p2-camila",
@@ -2137,7 +2067,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "48 HOUR STREAM - Part 2",
@@ -2147,7 +2076,7 @@
         "timestamp_end_seconds": 10270
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "48-hour-stream-p3-camila",
@@ -2163,7 +2092,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "48 HOUR STREAM - Final",
@@ -2173,7 +2101,7 @@
         "timestamp_end_seconds": 9010
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "call-in-ipn-camila",
@@ -2190,7 +2118,6 @@
     "appearance_weight": "Cameo",
     "summary": "Married couple Vedal and iPN talk shit about Camila on her own stream while she's away.",
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "REACTING TO CHAT SUBMITTED MEMES (#18) | (LIFE UPDATE)",
@@ -2200,7 +2127,7 @@
         "timestamp_end_seconds": 5597
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "interview-layna-postraid",
@@ -2217,7 +2144,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -2227,7 +2153,7 @@
         "timestamp_end_seconds": 1375
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "drinking-anny",
@@ -2245,7 +2171,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "drinking the pain away yippee",
@@ -2255,7 +2180,7 @@
         "timestamp_end_seconds": 17807
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "gaming-anny",
@@ -2271,7 +2196,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "gaming the pain away",
@@ -2281,7 +2205,7 @@
         "timestamp_end_seconds": 12113
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "development-alex-2",
@@ -2298,7 +2222,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "parts",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -2315,7 +2238,7 @@
         "timestamp_end_seconds": 3024
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "drinking-ellie",
@@ -2334,7 +2257,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "hireathon day 26! First time drinking! With @MinikoMew , @cerbervt, and @Vedal987 ♡",
@@ -2344,7 +2266,7 @@
         "timestamp_end_seconds": 19135
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "cod-camila-2",
@@ -2363,7 +2285,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "dunking on zomboes with green boy o also we are drinking o_O (COLLAB w/ Vedal987)",
@@ -2373,7 +2294,7 @@
         "timestamp_end_seconds": 26236
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "buckshot-roulette-modding-alex",
@@ -2390,7 +2311,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -2400,7 +2320,7 @@
         "timestamp_end_seconds": 1257
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "neuro-sdk-discussion-alex",
@@ -2416,7 +2336,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -2426,7 +2345,7 @@
         "timestamp_end_seconds": 1982
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "vtuber-awards-cerber",
@@ -2443,7 +2362,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "parts",
     "vods": [
       {
         "vod_title": "🎉⭐ VTUBER AWARDS WATCH PARTY!! ⭐🎉 ૮ ・ﻌ・ა 💜🦴",
@@ -2467,7 +2385,7 @@
         "timestamp_end_seconds": 12991
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "debut-ellie",
@@ -2484,7 +2402,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "DEBUT! NEW MODEL! BUILDING A ROBOT! NEW SONG! ♡",
@@ -2494,7 +2411,7 @@
         "timestamp_end_seconds": 36760
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "new-years-call-in-camila",
@@ -2510,7 +2427,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "NEW YEAR! NEW OUTFIT! IMP IS BACK IMP IS BACK!! LET US CELEBRATE!!",
@@ -2520,7 +2436,7 @@
         "timestamp_end_seconds": 18891
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "subathon-yap-toma",
@@ -2536,7 +2452,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "SUBATHON DAY 2",
@@ -2546,7 +2461,7 @@
         "timestamp_end_seconds": 16987
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "charity-goal-minikomew",
@@ -2565,7 +2480,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "MINI THON 2 0 ! Streaming ALL DAY EVERYDAY for American Heart Association Day 3",
@@ -2575,7 +2489,7 @@
         "timestamp_end_seconds": 29053
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "interview-layna-charity",
@@ -2592,7 +2506,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -2602,7 +2515,7 @@
         "timestamp_end_seconds": 1338
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "yapping-megalodon",
@@ -2618,7 +2531,6 @@
     "appearance_weight": "Partial",
     "summary": "Vedal and an extremely intoxicated Mega, who is playing American Truck Simulator, discuss alcoholism, different types of alcohol... alien slavery?",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "𓂁♡ Drinking and driving (in ATS) xdx damn it feels good to be back＜3♡𓂁",
@@ -2628,7 +2540,7 @@
         "timestamp_end_seconds": 23532
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "carry-the-glass-camila",
@@ -2647,7 +2559,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "drunk carry the glass with green boy idk (COLLAB w/ Vedal987)",
@@ -2657,7 +2568,7 @@
         "timestamp_end_seconds": 19935
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "popucom-filian",
@@ -2676,7 +2587,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "🍐FILIAN IS BACK REVIEWING THE MOST CURSED COMMERCIALS OAT🍐 Catching up ＞Gaming with Vedal",
@@ -2686,7 +2596,7 @@
         "timestamp_end_seconds": 12473
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "subathon-cerber-call-in",
@@ -2704,7 +2614,6 @@
     "appearance_weight": "Cameo",
     "summary": "Cerber calls Vedal to fix her subathon timer.",
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "CERBATHON DAY 1 ⭐ AAAAAAAAAA ૮ ・ﻌ・ა 💜🦴",
@@ -2714,7 +2623,7 @@
         "timestamp_end_seconds": 4151
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "raid-call-in-camila",
@@ -2730,7 +2639,6 @@
     "appearance_weight": "Cameo",
     "summary": "Vedal and Camila discuss Vedal's baldness, and the many challenges he's faced because of it.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "IMP REACTS TO CHATS SUBMITTED MEMES (#32)",
@@ -2740,7 +2648,7 @@
         "timestamp_end_seconds": 2780
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "subathon-pre-collab-cerber",
@@ -2757,7 +2665,6 @@
     "appearance_weight": "Cameo",
     "summary": "Vedal helps Cerber set up her impending collab with Evil Neuro. Meanwhile, Vedal is playing Far Cry 3, one of his favorite games.",
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "dawg wants to see you! ＞w＜ evil collab soon! ⭐ CERBATHON DAY 10 ૮ ・ﻌ・ა 💜🦴",
@@ -2767,7 +2674,7 @@
         "timestamp_end_seconds": 6931
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "pre-collab-zentreya",
@@ -2785,7 +2692,6 @@
     "appearance_weight": "Cameo",
     "summary": "Vedal helps Zentreya set up her impending collab with Evil Neuro.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Announcement... AND WELL, WE GAME! ! DAY 26 OF 30 ZEN-A-THON",
@@ -2795,7 +2701,7 @@
         "timestamp_end_seconds": 29332
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "greggs-stream-cerber",
@@ -2812,7 +2718,6 @@
     "appearance_weight": "Partial",
     "summary": "Greggs Wanager Cerber tests local Greggspert Vedal987 on his Greggs knowledge.",
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "SONG COVER DEBUT & GREGGS STREAM ＞w＜ ⭐ CERBATHON DAY 22 ૮ ・ﻌ・ა 💜🦴",
@@ -2822,7 +2727,7 @@
         "timestamp_end_seconds": 23898
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "subathon-mega-call-in",
@@ -2840,7 +2745,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Unknown VOD Title",
@@ -2850,7 +2754,7 @@
         "timestamp_end_seconds": 1473
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "torture-tuesday-koko",
@@ -2866,7 +2770,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "𝘁𝗼𝗿𝘁𝘂𝗿𝗲 𝘁𝘂𝗲𝘀𝗱𝗮𝘆",
@@ -2876,7 +2779,7 @@
         "timestamp_end_seconds": 7956
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "peak-camila",
@@ -2896,7 +2799,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Drunk Peak With Vedal987",
@@ -2906,7 +2808,7 @@
         "timestamp_end_seconds": 19448
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "fashion-review-cottontail",
@@ -2923,7 +2825,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Reviewing Chat's Fashion with the Top 3 Fashionista Vedal987",
@@ -2933,7 +2834,7 @@
         "timestamp_end_seconds": 13552
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "prank-call-pokemon-camila",
@@ -2950,7 +2851,6 @@
     "appearance_weight": "Cameo",
     "summary": "Camila calls Vedal to ask if being sexually attracted to Pokemon makes her a furry. Vedal argues that it depends on the Pokemon in question.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "REACTING TO CHAT SUBMITTED MEMES (#39)",
@@ -2960,7 +2860,7 @@
         "timestamp_end_seconds": 3414
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "call-in-camila-2",
@@ -2976,7 +2876,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "IMP PLAYS THE LONG DRIVE FOR THE FIRST TIME",
@@ -2986,7 +2885,7 @@
         "timestamp_end_seconds": 6397
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "pixel-canvas-cdawg",
@@ -3003,7 +2902,6 @@
     "appearance_weight": "Cameo",
     "summary": null,
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Short Chatting Stream With Some Canvas War",
@@ -3013,7 +2911,7 @@
         "timestamp_end_seconds": 477
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "collab-planning-camila",
@@ -3029,7 +2927,6 @@
     "appearance_weight": "Partial",
     "summary": "Camila calls Vedal to plan a future gaming collab together, though he doesn't realize she's streaming initially.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "IMP BACK AND WOULD YOU LOOK AT THAT 👀👉SOME FUN THINGS TO SHARE",
@@ -3039,7 +2936,7 @@
         "timestamp_end_seconds": 8122
       }
     ],
-    "highlights": [
+    "timestamps": [
       {
         "title": "Vedal wants Nekopara VR",
         "timestamp_seconds": 6231,
@@ -3065,7 +2962,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "DRUNK VR MINECRAFT WITH VEDAL987",
@@ -3075,7 +2971,7 @@
         "timestamp_end_seconds": 14584
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "typing-argument-camila",
@@ -3092,7 +2988,6 @@
     "appearance_weight": "Cameo",
     "summary": "Camila flexes her faster words-per-minute typing speed on Vedal with a prank call. But at the end, Camila is the one who feels like a fool. As usual.",
     "safari": false,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Imp Plays 34dle",
@@ -3102,7 +2997,7 @@
         "timestamp_end_seconds": 5504
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "charity-goal-minikomew-2",
@@ -3121,7 +3016,6 @@
     "appearance_weight": "Full",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "Heart Stream Heroes! Day 6 streaming to defend your heart 📦",
@@ -3131,7 +3025,7 @@
         "timestamp_end_seconds": 15286
       }
     ],
-    "highlights": null
+    "timestamps": null
   },
   {
     "id": "carry-the-glass-camila-2",
@@ -3151,7 +3045,6 @@
     "appearance_weight": "Partial",
     "summary": null,
     "safari": true,
-    "vod_type": "povs",
     "vods": [
       {
         "vod_title": "IMP STUCK IN JAIL (SUBATHON) [DAY 14]\n",
@@ -3161,6 +3054,6 @@
         "timestamp_end_seconds": 18412
       }
     ],
-    "highlights": null
+    "timestamps": null
   }
 ]

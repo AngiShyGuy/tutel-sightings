@@ -40,6 +40,7 @@ async function init() {
       fetch('data/colors.json').then(r => r.json()),
     ]);
     allAppearances = appData;
+    buildEntryMeta(allAppearances);
     // Guard against colors.json being accidentally wrapped in an outer array
     colors = Array.isArray(colorData) ? colorData[0] : colorData;
     loadStateFromURL();
@@ -60,6 +61,126 @@ async function init() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/tutel-sightings/sw.js');
   }
+}
+
+// ── Entry metadata (computed once at load, read everywhere) ───
+const entryMeta = {}; // keyed by entry.id
+
+function buildEntryMeta(entries) {
+  entries.forEach(entry => {
+    const vods = entry.vods;
+
+    // ── Per-streamer grouping ─────────────────────────────────
+    // Build a map of streamer → [array of global vod indices], in order
+    const streamerGroups = new Map(); // streamer → [vodIndex, ...]
+    vods.forEach((vod, i) => {
+      if (!streamerGroups.has(vod.streamer)) streamerGroups.set(vod.streamer, []);
+      streamerGroups.get(vod.streamer).push(i);
+    });
+
+    const distinctStreamers = streamerGroups.size;
+
+    // ── Per-VOD derived info ──────────────────────────────────
+    const vodList = vods.map((vod, i) => {
+      const siblings   = streamerGroups.get(vod.streamer); // all indices for this streamer
+      const isPart     = siblings.length > 1;              // this streamer has multiple vods
+      const isUnique   = distinctStreamers > 1 && !isPart; // sole POV, no parts
+      const isBoth     = siblings.length > 1 && distinctStreamers > 1; // parts within a multi-POV
+
+      const partNumber = isPart ? siblings.indexOf(i) + 1 : null;
+      const partTotal  = isPart ? siblings.length : null;
+
+      // Label logic
+      let label;
+      if (vods.length === 1) {
+        label = 'Watch';
+      } else if (isBoth) {
+        label = `${vod.streamer}'s POV · Part ${partNumber}`;
+      } else if (isPart) {
+        label = `Part ${partNumber}`;
+      } else {
+        label = `${vod.streamer}'s POV`;
+      }
+
+      // Individual VOD duration in seconds (null if either timestamp missing)
+      const duration = (vod.timestamp_seconds != null && vod.timestamp_end_seconds != null)
+        ? vod.timestamp_end_seconds - vod.timestamp_seconds
+        : null;
+
+      return {
+        streamer:   vod.streamer,
+        label,
+        partNumber,
+        partTotal,
+        isPart,
+        isUnique,
+        isBoth,
+        duration,   // seconds, or null
+      };
+    });
+
+    // ── Screen time per streamer (sum parts, keep POVs separate) ─
+    const screenTimePerStreamer = {};
+    streamerGroups.forEach((indices, streamer) => {
+      const total = indices.reduce((sum, i) => {
+        return sum + (vodList[i].duration ?? 0);
+      }, 0);
+      // Only include if at least one VOD had a known duration
+      const hasAny = indices.some(i => vodList[i].duration !== null);
+      screenTimePerStreamer[streamer] = hasAny ? total : null;
+    });
+
+    // ── Entry-level max screen time ───────────────────────────
+    // Single streamer: sum all parts. Multiple streamers: take the max per-streamer total.
+    const streamerTotals = Object.values(screenTimePerStreamer).filter(v => v !== null);
+    const maxScreenTime = streamerTotals.length === 0 ? null
+      : distinctStreamers === 1 ? streamerTotals[0]
+      : Math.max(...streamerTotals);
+
+    // ── Badge label for the multi-vod indicator ───────────────
+    let badgeLabel = null;
+    if (vods.length > 1) {
+      if (distinctStreamers === 1) {
+        badgeLabel = `${vods.length} Parts`;
+      } else if (vodList.every(v => !v.isPart)) {
+        badgeLabel = `${vods.length} POVs`;
+      } else {
+        badgeLabel = `${vods.length} VODs`; // mixed case
+      }
+    }
+
+    // ── Duration display string (reuses existing formatDuration) ─
+    // For multi-streamer entries: show a min~max range across per-streamer totals.
+    // For single-streamer: show the summed total.
+    let durationDisplay = null;
+    if (maxScreenTime !== null) {
+      if (distinctStreamers === 1) {
+        durationDisplay = formatDuration(maxScreenTime);
+      } else {
+        const validTotals = streamerTotals.sort((a, b) => a - b);
+        const min = validTotals[0];
+        const max = validTotals[validTotals.length - 1];
+        durationDisplay = min === max
+          ? formatDuration(min)
+          : `${formatDuration(min)} ~ ${formatDuration(max)}`;
+      }
+    }
+
+    entryMeta[entry.id] = {
+      // Entry-level
+      distinctStreamers,
+      isMulti:    vods.length > 1,
+      isParts:    vods.length > 1 && distinctStreamers === 1,
+      isPovs:     distinctStreamers > 1,
+      badgeLabel,
+      maxScreenTime,          // seconds, or null
+      durationDisplay,        // formatted string, or null
+      screenTimePerStreamer,   // { streamer: seconds|null }
+
+      // Per-VOD (parallel to entry.vods)
+      vodList,
+    };
+  });
 }
 
 // ── Color helpers ─────────────────────────────────────────────
@@ -92,21 +213,6 @@ function formatDuration(secs) {
 
 // Returns { display, sortValue } for an entry's collab duration.
 // "povs" entries show a min~max range; "parts" entries sum their durations.
-function entryDurationInfo(entry) {
-  const durations = entry.vods.map(vodDuration).filter(d => d !== null);
-  if (!durations.length) return { display: null, sortValue: null };
-
-  if (entry.vods.length === 1 || entry.vod_type === 'parts') {
-    const total = durations.reduce((a, b) => a + b, 0);
-    return { display: formatDuration(total), sortValue: total };
-  }
-
-  // Multiple POVs — show range, sort by midpoint
-  const min = Math.min(...durations);
-  const max = Math.max(...durations);
-  if (min === max) return { display: formatDuration(min), sortValue: min };
-return { display: `${formatDuration(min)} ~ ${formatDuration(max)}`, sortValue: max };
-}
 
 function isNewEntry(entry) {
   if (!entry.date) return false;
@@ -129,8 +235,8 @@ function sortedAppearances(list) {
     });
   } else if (state.sort === 'duration') {
     copy.sort((a, b) => {
-      const da = entryDurationInfo(a).sortValue;
-      const db = entryDurationInfo(b).sortValue;
+      const da = entryMeta[a.id].maxScreenTime;
+      const db = entryMeta[b.id].maxScreenTime;
       if (da == null && db == null) return 0;
       if (da == null) return 1;  // no-duration entries sink to bottom
       if (db == null) return -1;
@@ -313,12 +419,6 @@ function getWatchUrl(vod, entryId, withProgress = true) {
   return t ? `https://youtu.be/${vod.video_id}?t=${t}` : `https://youtu.be/${vod.video_id}`;
 }
 
-function getStreamerLabel(vod, index, isParts) {
-  if (isParts) return `Part ${index + 1}`;
-  if (vod.streamer) return `${vod.streamer}'s POV`;
-  return 'Watch';
-}
-
 // NEW
 function renderChips(entry) {
   const chips = [];
@@ -414,8 +514,9 @@ function getCardData(entry) {
   const watched  = isWatched(entry);
   const thumbUrl = getThumbUrl(entry);
   const title    = getCardTitle(entry);
-  const { display: duration } = entryDurationInfo(entry);
-  const isMulti   = entry.vods.length > 1;
+  const meta     = entryMeta[entry.id];
+  const duration = meta.durationDisplay;
+  const isMulti  = meta.isMulti;
   const singleUrl = !isMulti ? getWatchUrl(entry.vods[0], entry.id) : '#';
 
   let progressBadgeHtml = '';
@@ -430,15 +531,19 @@ function getCardData(entry) {
       let progressSecs = effectiveSecs - (vod.timestamp_seconds || 0);
       let totalSecs    = vod.timestamp_end_seconds - (vod.timestamp_seconds || 0);
 
-      if (entry.vod_type === 'parts') {
+      const vodMeta = meta.vodList[p.vodIndex];
+      if (vodMeta.isPart) {
         const currentPartDur = vod.timestamp_end_seconds - (vod.timestamp_seconds || 0);
         progressSecs = Math.min(progressSecs, currentPartDur);
+        // Sum only same-streamer previous parts, not all previous vods
+        const siblings = entry.vods;
         for (let i = 0; i < p.vodIndex; i++) {
-          const prev = entry.vods[i];
-          progressSecs += (prev.timestamp_end_seconds || 0) - (prev.timestamp_seconds || 0);
+          if (entry.vods[i].streamer === vod.streamer) {
+            const prev = entry.vods[i];
+            progressSecs += (prev.timestamp_end_seconds || 0) - (prev.timestamp_seconds || 0);
+          }
         }
-        totalSecs = entry.vods.reduce((sum, v) =>
-          sum + ((v.timestamp_end_seconds || 0) - (v.timestamp_seconds || 0)), 0);
+        totalSecs = meta.screenTimePerStreamer[vod.streamer] ?? totalSecs;
       }
 
       percent = Math.max(0, Math.min(100, Math.floor((progressSecs / totalSecs) * 100)));
@@ -478,7 +583,7 @@ function renderCard(entry) {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
         </div>
-        ${d.isMulti ? `<div class="multi-vod-badge">${entry.vods.length} ${entry.vod_type === 'parts' ? 'Parts' : 'POVs'}</div>` : ''}
+        ${entryMeta[entry.id].badgeLabel ? `<div class="multi-vod-badge">${entryMeta[entry.id].badgeLabel}</div>` : ''}
         ${d.progressBadgeHtml}
         ${d.progressHtml}
       </div>
@@ -501,7 +606,7 @@ function renderCard(entry) {
 function renderCardList(entry) {
   const d = getCardData(entry);
   const sqThumb = d.thumbUrl ? d.thumbUrl.replace(/\/(maxresdefault|hqdefault)\.jpg/, '/sddefault.jpg') : null;
-  const suffix = d.isMulti ? `${entry.vods.length} ${entry.vod_type === 'parts' ? 'Parts' : 'POVs'}` : '';
+  const suffix = entryMeta[entry.id].badgeLabel ?? '';
 
   return `
     <article class="card-list-item${isNewEntry(entry) ? ' card-list-item--new' : ''}" data-id="${entry.id}">
@@ -565,7 +670,7 @@ function render() {
     ? `<span class="results-count">${total}</span> sightings`
     : `<span class="results-count">${results.length}</span> of ${total} sightings`;
 
-  const totalSecs = results.reduce((sum, e) => sum + (entryDurationInfo(e).sortValue ?? 0), 0);
+  const totalSecs = results.reduce((sum, e) => sum + (entryMeta[e.id].maxScreenTime ?? 0), 0);
   const durationText = totalSecs > 0
     ? `<span class="results-separator">·</span><span class="results-count">${formatDuration(totalSecs)}</span> total`
     : '';
@@ -617,12 +722,20 @@ function playRandomSighting() {
   results.forEach(entry => {
     if (!entry.vods || entry.vods.length === 0) return;
 
-    if (entry.vod_type === 'parts') {
-      // Multi-parter: Only throw Part 1 into the pool
+    const meta = entryMeta[entry.id];
+    if (meta.isParts) {
       possibleChoices.push({ entry, vod: entry.vods[0] });
+    } else if (meta.isPovs) {
+      // For POV entries (possibly with parts within), push only the first VOD per streamer
+      const seen = new Set();
+      entry.vods.forEach(vod => {
+        if (!seen.has(vod.streamer)) {
+          seen.add(vod.streamer);
+          possibleChoices.push({ entry, vod });
+        }
+      });
     } else {
-      // POVs: Throw every perspective into the pool
-      entry.vods.forEach(vod => possibleChoices.push({ entry, vod }));
+      possibleChoices.push({ entry, vod: entry.vods[0] });
     }
   });
 
@@ -654,7 +767,7 @@ function openPovDropdown(event, entryId) {
   dropdownEntry = entryId;
 
   document.getElementById('pov-dropdown-inner').innerHTML = entry.vods.map((vod, vodIndex) => {
-    const baseLabel      = getStreamerLabel(vod, vodIndex, entry.vod_type === 'parts');
+    const baseLabel      = entryMeta[entryId].vodList[vodIndex].label;
     const hasProgress    = userProgress[entryId]?.vodIndex === vodIndex;
     const label          = hasProgress ? `${baseLabel} (Watching)` : baseLabel;
     const url            = getWatchUrl(vod, entryId);
@@ -822,18 +935,18 @@ function openCardMenu(event, entryId) {
   activeCardMenu = entryId;
 
   // SVG icon strings
-  const copyIcon     = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
-  const eyeIcon      = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
-  const eyeOffIcon   = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
-  const progressIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
-  const summaryIcon  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>`;
-  const highlightIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+  const copyIcon      = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+  const eyeIcon       = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  const eyeOffIcon    = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+  const progressIcon  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+  const summaryIcon   = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>`;
+  const timestampIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>`;
 
   const watched    = isWatched(entry);
   const divider    = `<div class="card-menu-divider"></div>`;
   const watchItem  = `<button class="card-menu-item" onclick="toggleWatched('${entry.id}')">${watched ? eyeOffIcon : eyeIcon} ${watched ? 'Mark as unwatched' : 'Mark as watched'}</button>`;
   const progItem   = watched ? '' : `<button class="card-menu-item" onclick="openProgressPopup('${escAttr(entry.id)}')">${progressIcon} Set Progress</button>`;
-  const hlItem     = (entry.highlights && entry.highlights.length > 0) ? `<button class="card-menu-item" onclick="openHighlights('${escAttr(entry.id)}')">${highlightIcon} Highlights</button>` : '';
+  const tsItem     = (entry.timestamps && entry.timestamps.length > 0) ? `<button class="card-menu-item" onclick="openTimestamps('${escAttr(entry.id)}')">${timestampIcon} Timestamps</button>` : '';
   const summItem   = entry.summary ? `<button class="card-menu-item" onclick="openSummary('${escAttr(entry.id)}')">${summaryIcon} Summary</button>` : '';
 
   // Copy link — one button for single VOD, one per VOD for multi
@@ -841,12 +954,12 @@ function openCardMenu(event, entryId) {
     ? `<button class="card-menu-item" onclick="copyLink('${escAttr(getWatchUrl(entry.vods[0], entry.id, false))}')">${copyIcon} Copy link</button>`
     : entry.vods.map((vod, i) => `
         <button class="card-menu-item" onclick="copyLink('${escAttr(getWatchUrl(vod, entry.id))}')">
-          ${copyIcon}<span>Copy link<span class="card-menu-label-sub">${escHtml(getStreamerLabel(vod, i, entry.vod_type === 'parts'))}</span></span>
+          ${copyIcon}<span>Copy link<span class="card-menu-label-sub">${escHtml(entryMeta[entry.id].vodList[i].label)}</span></span>
         </button>`).join('');
 
-  // .filter(Boolean) will automatically remove any empty strings (like missing summaries/highlights) and .join('') mashes the surviving items together without dividers.
+  // .filter(Boolean) will automatically remove any empty strings (like missing summaries/timestamps) and .join('') mashes the surviving items together without dividers.
   const group1 = [watchItem, progItem].filter(Boolean).join('');
-  const group2 = [summItem, hlItem].filter(Boolean).join('');
+  const group2 = [summItem, tsItem].filter(Boolean).join('');
   const group3 = [copyItems].filter(Boolean).join('');
 
   // .filter(Boolean) will strip out group2 entirely if it's empty so that .join(divider) puts your divider ONLY between the groups that actually survived.
@@ -976,15 +1089,15 @@ function openSummary(entryId) {
 
 function closeSummary() { closeOverlay('summary-popup'); }
 
-// ── Highlights popup ──────────────────────────────────────────
-function openHighlights(entryId) {
+// ── Timestamps popup ──────────────────────────────────────────
+function openTimestamps(entryId) {
   closeCardMenu();
   const entry = allAppearances.find(e => e.id === entryId);
-  if (!entry?.highlights?.length) return;
+  if (!entry?.timestamps?.length) return;
   
-  document.getElementById('highlights-title').textContent = getCardTitle(entry);
+  document.getElementById('timestamps-title').textContent = getCardTitle(entry);
   
-  const listHtml = entry.highlights.map(hl => {
+  const listHtml = entry.timestamps.map(hl => {
     const vod = entry.vods[hl.vod_index];
     if (!vod) return '';
     
@@ -995,12 +1108,12 @@ function openHighlights(entryId) {
     let relativeSecs = hl.timestamp_seconds - (vod.timestamp_seconds || 0);
 
     // If it's a sequential multi-parter, add the durations of all previous parts
-    if (entry.vod_type === 'parts') {
+    const vodMeta = entryMeta[entry.id].vodList[hl.vod_index];
+    if (vodMeta.isPart) {
       for (let i = 0; i < hl.vod_index; i++) {
-        const prevVod = entry.vods[i];
-        const prevDuration = (prevVod.timestamp_end_seconds || 0) - (prevVod.timestamp_seconds || 0);
-        if (prevDuration > 0) {
-          relativeSecs += prevDuration;
+        if (entry.vods[i].streamer === vod.streamer) {
+          const prevDuration = (entry.vods[i].timestamp_end_seconds || 0) - (entry.vods[i].timestamp_seconds || 0);
+          if (prevDuration > 0) relativeSecs += prevDuration;
         }
       }
     }
@@ -1012,18 +1125,18 @@ function openHighlights(entryId) {
     const streamerLabel = entry.vods.length > 1;
     
     return `
-      <a href="${url}" target="_blank" rel="noopener" class="highlight-item">
-        <div class="highlight-title">${escHtml(hl.title)}</div>
-        <div class="highlight-time">${streamerLabel ? `<span class="highlight-streamer">${escHtml(getStreamerLabel(vod, hl.vod_index, entry.vod_type === 'parts'))}</span><span class="highlight-time-sep">·</span>` : ''}${timeStr}</div>
+      <a href="${url}" target="_blank" rel="noopener" class="timestamp-item">
+        <div class="timestamp-title">${escHtml(hl.title)}</div>
+        <div class="timestamp-time">${streamerLabel ? `<span class="timestamp-streamer">${escHtml(entryMeta[entry.id].vodList[hl.vod_index].label)}</span><span class="timestamp-time-sep">·</span>` : ''}${timeStr}</div>
       </a>
     `;
   }).join('');
   
-  document.getElementById('highlights-list').innerHTML = listHtml;
-  openOverlay('highlights-popup');
+  document.getElementById('timestamps-list').innerHTML = listHtml;
+  openOverlay('timestamps-popup');
 }
 
-function closeHighlights() { closeOverlay('highlights-popup'); }
+function closeTimestamps() { closeOverlay('timestamps-popup'); }
 
 // ── About modal ───────────────────────────────────────────────
 function openModal()  { openOverlay('modal'); }
@@ -1054,11 +1167,12 @@ function openProgressPopup(entryId) {
 
   // Show VOD selector and hint only for multi-part entries
   const select = document.getElementById('progress-vod-select');
-  const isParts = entry.vod_type === 'parts' && entry.vods.length > 1;
-  select.style.display = entry.vods.length > 1 ? '' : 'none';
+  const meta    = entryMeta[entry.id];
+  const isParts = meta.isParts;
+  select.style.display = meta.isMulti ? '' : 'none';
   document.querySelector('.progress-hint').style.display = isParts ? '' : 'none';
   select.innerHTML = entry.vods.map((v, i) =>
-    `<option value="${i}">${escHtml(getStreamerLabel(v, i, entry.vod_type === 'parts'))}</option>`
+    `<option value="${i}">${escHtml(meta.vodList[i].label)}</option>`
   ).join('');
 
   // Pre-fill with existing progress if present
@@ -1116,9 +1230,10 @@ function saveProgressFromPopup() {
   // If the timestamp is past the VOD's known end, ask if they want to mark it watched instead.
   // Skip this check for parts entries — an "over end" timestamp on one part doesn't mean
   // the whole stream is done, and the progress bar clamps it anyway.
-  const isLastPart = currentProgressEntry.vod_type === 'parts'
-    && vodIndex === currentProgressEntry.vods.length - 1;
-  if (totalSec !== null && (currentProgressEntry.vod_type !== 'parts' || isLastPart)) {
+  const meta       = entryMeta[currentProgressEntry.id];
+  const vodMeta    = meta.vodList[vodIndex];
+  const isLastPart = vodMeta.isPart && vodMeta.partNumber === vodMeta.partTotal;
+  if (totalSec !== null && (!vodMeta.isPart || isLastPart)) {
     const vod = currentProgressEntry.vods[vodIndex];
     if (vod?.timestamp_end_seconds && totalSec >= vod.timestamp_end_seconds) {
       pendingProgressSeconds  = totalSec;
@@ -1283,7 +1398,7 @@ function bindEvents() {
       closeProgress();
       closeSummary();
       closeModal();
-      closeHighlights();
+      closeTimestamps();
     }
   });
 
@@ -1304,7 +1419,7 @@ function bindEvents() {
     closeModal();
     closeSummary();
     closeProgress();
-    closeHighlights();
+    closeTimestamps();
   });
 
   // Re-measure chip overflow when the window is resized

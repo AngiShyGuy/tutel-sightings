@@ -23,9 +23,8 @@ All appearance data lives in `data/appearances.json` as an array of entry object
 | `appearance_weight` | string | See **Appearance weight** below |
 | `summary` | string \| null | 1–2 sentence description of what happens; `null` if not written yet |
 | `safari` | boolean | Whether this sighting was pinged in the `#tutel-safari` Discord channel |
-| `vod_type` | string | `"povs"` (default) or `"parts"` — see **VOD type** below |
 | `vods` | object[] | One or more VOD objects — see **VOD object** below |
-| `highlights` | object[] \| null | Highlight timestamps, or `null` if none — see **Highlights** below |
+| `timestamps` | object[] \| null | Stream timestamps, or `null` if none — see **Timestamps** below |
 
 ---
 
@@ -80,17 +79,6 @@ Entries can have multiple tags, for example a stream that's both a `Subathon` an
 | `Full` | Vedal is present for most or all of the collab. He is also generally included in the stream title. |
 | `Partial` | Vedal appears for a significant portion but not throughout. Long subathon appearances fall under this. |
 | `Cameo` | Brief appearance: a quick call-in, raid, or drop-in |
-
----
-
-### VOD type
-
-| Value | Meaning |
-|---|---|
-| `"povs"` | Multiple streamers each recorded their own perspective of the same event. Duration is shown as a range (`1:23:45 ~ 2:10:00`). |
-| `"parts"` | One long session split across multiple video uploads. Durations are summed. |
-
-For single-VOD entries, `vod_type` doesn't matter but `"povs"` is the default.
 
 ---
 
@@ -150,18 +138,18 @@ For single-VOD entries, `vod_type` doesn't matter but `"povs"` is the default.
 
 ---
 
-### Highlights
+### Timestamps
 
 A list of notable timestamps within the stream. These appear in a popup accessible from the stream card.
 
 | Field | Type | Description |
 |---|---|---|
-| `title` | string | Short label for the highlight (e.g. `"That's the eject button, Layna."`) |
+| `title` | string | Short label for the timestamp (e.g. `"That's the eject button, Layna."`) |
 | `timestamp_seconds` | int | Absolute timestamp in the VOD file, in seconds |
 | `vod_index` | int | Zero-based index into the `vods` array — which VOD this timestamp belongs to |
 
 ```json
-"highlights": [
+"timestamps": [
   {
     "title": "That's the eject button, Layna.",
     "timestamp_seconds": 2756,
@@ -175,7 +163,7 @@ A list of notable timestamps within the stream. These appear in a popup accessib
 ]
 ```
 
-Set to `null` if there are no highlights.
+Set to `null` if there are no timestamps.
 
 ---
 

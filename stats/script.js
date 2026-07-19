@@ -29,18 +29,17 @@ function getColor(category, key) {
 }
 
 // ── Helpers ───────────────────────────────────────────────────
-function vodDuration(vod) {
-  if (vod.timestamp_seconds == null || vod.timestamp_end_seconds == null) return null;
-  return vod.timestamp_end_seconds - vod.timestamp_seconds;
-}
-
 function entryDuration(entry) {
-  const durations = entry.vods.map(vodDuration).filter(d => d !== null);
-  if (!durations.length) return null;
-  if (entry.vods.length === 1 || entry.vod_type === 'parts') {
-    return durations.reduce((a, b) => a + b, 0);
+  // Sum per-streamer, then take the max across streamers.
+  // (Single streamer = just the sum. Multiple POVs = longest one.)
+  const perStreamer = {};
+  for (const vod of entry.vods) {
+    if (vod.timestamp_seconds == null || vod.timestamp_end_seconds == null) continue;
+    const dur = vod.timestamp_end_seconds - vod.timestamp_seconds;
+    perStreamer[vod.streamer] = (perStreamer[vod.streamer] || 0) + dur;
   }
-  return Math.max(...durations);
+  const totals = Object.values(perStreamer);
+  return totals.length ? Math.max(...totals) : null;
 }
 
 function fmtHours(secs) {

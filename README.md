@@ -13,7 +13,7 @@ Hosted on **[GitHub Pages](https://angishyguy.github.io/tutel-sightings)**.
 - **Searching and filtering** by title, collab partners, games played, activity tags, stream date, watch status, and Safari ping status.
 - **Multiple VOD support** for each stream, whether that's different streamers' perspectives of the same event or sequential parts of a longer session.
 - **Collab summaries** for some streams, so you know what that one prank call was about before you click.
-- **Highlight timestamps** for quick access to a stream's best moments.
+- **Stream timestamps** for quick access to a stream's best moments.
 - **Watch progress tracking**: mark streams as watched or save your current timestamp via the `···` menu, with export/import support to back up your data.
 - **Stats page** with charts on collab history, screen time, top partners, games played, and more.
 
@@ -27,7 +27,7 @@ Contributions are welcome! There are a few ways you can help:
 
 **Summaries** - many entries are missing a `summary` field. A good summary is 1–2 sentences describing what actually happens in the collab. The more specific and funny, the better. Check the existing ones for the right tone.
 
-**Highlights** - if a stream has a particularly memorable moment, you can add it as a highlight with a timestamp. These show up as quick-access links in the stream's highlights panel.
+**Timestamps** - if a stream has a particularly memorable moment, or you just want to document when certain things happen, you can add it as a timestamp. These show up as quick-access links in the stream's timestamps panel.
 
 **Missing or hard-to-find VODs** - the list below tracks sightings we know exist but haven't been able to locate. If you can share a link to any of these, it would be greatly appreciated.
 

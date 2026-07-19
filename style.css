@@ -1302,8 +1302,8 @@ span.flatpickr-weekday { background: transparent !important; }
   }
 }
 
-/* --- Highlights List --- */
-.highlights-list {
+/* --- Timestamps List --- */
+.timestamps-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -1314,7 +1314,7 @@ span.flatpickr-weekday { background: transparent !important; }
   scrollbar-color: var(--border-strong) transparent;
 }
 
-.highlight-item {
+.timestamp-item {
   display: flex;
   align-items: center; /* Centers the text and the timestamp vertically */
   justify-content: space-between; /* Pushes the time all the way to the right */
@@ -1329,34 +1329,34 @@ span.flatpickr-weekday { background: transparent !important; }
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .highlight-item:hover {
+  .timestamp-item:hover {
     background: var(--bg-raised);
     border-color: var(--text-muted);
   }
 }
 
 /* New wrapper to stack the title and streamer label on the left */
-.highlight-title {
+.timestamp-title {
   font-size: 13px;
   line-height: 1.4;
   flex: 1;
 }
 
-.highlight-streamer {
+.timestamp-streamer {
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--green);
   font-weight: 500;
 }
 
-.highlight-time-sep {
+.timestamp-time-sep {
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--green);
   margin: 0 4px;
 }
 
-.highlight-time {
+.timestamp-time {
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--green);
