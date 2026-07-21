@@ -860,7 +860,158 @@
         "timestamp_end_seconds": 13660
       }
     ],
-    "timestamps": null
+    "timestamps": [
+      {
+        "title": "Round 1 Starts (Vedal on the Manual - 1.3 The First Bomb - Defused)",
+        "timestamp_seconds": 2556,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 2 Starts (Vedal on the Manual - 2.1 Something Old, Something New - Defused)",
+        "timestamp_seconds": 2867,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 3 Starts (Vedal on the Manual - 2.2 Double Your Money - Defused)",
+        "timestamp_seconds": 3145,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 4 Starts (Vedal on the Manual - 2.3 One Step Up - Defused)",
+        "timestamp_seconds": 3512,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 5 Starts (Vedal on the Manual - 2.4 Pick up the Pace - Exploded)",
+        "timestamp_seconds": 3845,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 6 Starts (Vedal on the Manual - 2.4 Pick up the Pace - Exploded)",
+        "timestamp_seconds": 4095,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 7 Starts (Vedal on the Manual - 2.4 Pick up the Pace - Exploded)",
+        "timestamp_seconds": 4315,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 8 Starts (Vedal on the Manual - 2.4 Pick up the Pace - Exploded)",
+        "timestamp_seconds": 4464,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 9 Starts (Vedal on the Manual - 2.4 Pick up the Pace - Defused)",
+        "timestamp_seconds": 4806,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 10 Starts (Camila on the Manual - 1.3 The First Bomb - Defused)",
+        "timestamp_seconds": 5473,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 11 Starts (Camila on the Manual - 2.1 Something Old, Something New - Defused)",
+        "timestamp_seconds": 5648,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 12 Starts (Camila on the Manual - 2.4 Pick up the Pace - Exploded)",
+        "timestamp_seconds": 5767,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 13 Starts (Camila on the Manual - 2.4 Pick up the Pace - Exploded)",
+        "timestamp_seconds": 5961,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 14 Starts (Camila on the Manual - 2.4 Pick up the Pace - Exploded)",
+        "timestamp_seconds": 6146,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 15 Starts (Camila on the Manual - 2.4 Pick up the Pace - Exploded)",
+        "timestamp_seconds": 6340,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 16 Starts (Camila on the Manual - 2.4 Pick up the Pace - Exploded)",
+        "timestamp_seconds": 6682,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 17 Starts (Camila on the Manual - 2.4 Pick up the Pace - Defused)",
+        "timestamp_seconds": 6897,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 18 Starts (Camila on the Manual - 3.1 A Hidden Message - Defused)",
+        "timestamp_seconds": 7119,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 19 Starts (Vedal on the Manual - 3.1 A Hidden Message - Exploded)",
+        "timestamp_seconds": 7467,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 20 Starts (Vedal on the Manual - 3.1 A Hidden Message - Defused)",
+        "timestamp_seconds": 7807,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 21 Starts (Vedal on the Manual - 3.2 Something's Different - Exploded)",
+        "timestamp_seconds": 8148,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 22 Starts (Vedal on the Manual - 3.2 Something's Different - Defused)",
+        "timestamp_seconds": 8596,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 23 Starts (Vedal on the Manual - 3.3 One Giant Leap - Exploded)",
+        "timestamp_seconds": 9076,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 24 Starts (Vedal on the Manual - 3.3 One Giant Leap - Exploded)",
+        "timestamp_seconds": 9408,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 25 Starts (Vedal on the Manual - 3.7 Eight Minutes - Exploded)",
+        "timestamp_seconds": 9773,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 26 Starts (Vedal on the Manual - 3.7 Eight Minutes - Exploded)",
+        "timestamp_seconds": 10280,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 27 Starts (Vedal on the Manual - 3.7 Eight Minutes - Exploded)",
+        "timestamp_seconds": 10461,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 28 Starts (Vedal on the Manual - 3.7 Eight Minutes - Defused)",
+        "timestamp_seconds": 10825,
+        "vod_index": 0
+      },
+      {
+        "title": "Round 29 Starts (Vedal on the Manual - 4.1 A Small Wrinkle - Defused)",
+        "timestamp_seconds": 12290,
+        "vod_index": 0
+      },
+      {
+        "title": "Just Chatting",
+        "timestamp_seconds": 12516,
+        "vod_index": 0
+      }
+    ]
   },
   {
     "id": "ktane-camila-2",
