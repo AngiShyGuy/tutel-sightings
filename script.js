@@ -6,6 +6,7 @@
 
 // ── State ────────────────────────────────────────────────────
 let allAppearances = [];
+let appearancesById = new Map();
 let colors = {};
 let watchedIds  = new Set(JSON.parse(localStorage.getItem('tutel-watched')   || '[]'));
 let userProgress =        JSON.parse(localStorage.getItem('tutel-progress')  || '{}');
@@ -32,6 +33,9 @@ const state = {
   },
 };
 
+const NEW_ENTRY_CUTOFF = new Date();
+NEW_ENTRY_CUTOFF.setDate(NEW_ENTRY_CUTOFF.getDate() - 30);
+
 // ── Bootstrap ────────────────────────────────────────────────
 async function init() {
   try {
@@ -41,6 +45,7 @@ async function init() {
     ]);
     allAppearances = appData;
     buildEntryMeta(allAppearances);
+    appearancesById = new Map(allAppearances.map(e => [e.id, e]));
     // Guard against colors.json being accidentally wrapped in an outer array
     colors = Array.isArray(colorData) ? colorData[0] : colorData;
     loadStateFromURL();
@@ -194,14 +199,6 @@ function chipStyle(category, key) {
   return `background:${hex}22; color:${hex}; border-color:${hex}44;`;
 }
 
-// ── Duration helpers ──────────────────────────────────────────
-// Returns the duration of Vedal's appearance in a single VOD, in seconds.
-// Returns null if either timestamp is missing.
-function vodDuration(vod) {
-  if (vod.timestamp_seconds == null || vod.timestamp_end_seconds == null) return null;
-  return vod.timestamp_end_seconds - vod.timestamp_seconds;
-}
-
 function formatDuration(secs) {
   if (secs == null || secs < 0) return null;
   const h = Math.floor(secs / 3600);
@@ -211,14 +208,8 @@ function formatDuration(secs) {
   return `${m}:${String(s).padStart(2,'0')}`;
 }
 
-// Returns { display, sortValue } for an entry's collab duration.
-// "povs" entries show a min~max range; "parts" entries sum their durations.
-
 function isNewEntry(entry) {
-  if (!entry.date) return false;
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - 30);
-  return new Date(entry.date) >= cutoff;
+  return !!entry.date && new Date(entry.date) >= NEW_ENTRY_CUTOFF;
 }
 
 // ── Sort ──────────────────────────────────────────────────────
@@ -285,10 +276,11 @@ function passesFilter(entry) {
   // Exception: appearance_weight is a single value per entry, so multiple selections are OR'd.
   for (const [cat, set] of Object.entries(state.filters)) {
     if (!set.size) continue;
-    if (cat === 'activities')        { if (![...set].every(v => entry.activities.includes(v)))        return false; }
-    else if (cat === 'games')        { if (![...set].every(v => entry.games.includes(v)))             return false; }
-    else if (cat === 'collab_partners') { if (![...set].every(v => entry.collab_partners.includes(v))) return false; }
-    else if (cat === 'appearance_weight') { if (!set.has(entry.appearance_weight))                    return false; }
+    if (cat === 'appearance_weight') { if (!set.has(entry.appearance_weight)) return false; }
+    else {
+      const arr = entry[cat]; // activities, games, or collab_partners
+      for (const v of set) { if (!arr.includes(v)) return false; }
+    }
   }
   return true;
 }
@@ -316,6 +308,14 @@ function buildFilterSidebar() {
   const allPartners   = [...new Set(allAppearances.flatMap(e => e.collab_partners))].sort(sortIgnoreCase);
   const allWeights    = ['Full', 'Partial', 'Cameo'];
 
+  const counts = { activities: {}, games: {}, collab_partners: {}, appearance_weight: {} };
+  allAppearances.forEach(e => {
+    e.activities.forEach(a => counts.activities[a] = (counts.activities[a] || 0) + 1);
+    e.games.forEach(g => counts.games[g] = (counts.games[g] || 0) + 1);
+    e.collab_partners.forEach(p => counts.collab_partners[p] = (counts.collab_partners[p] || 0) + 1);
+    counts.appearance_weight[e.appearance_weight] = (counts.appearance_weight[e.appearance_weight] || 0) + 1;
+  });
+
   const sections = [
     { label: 'Activity',          cat: 'activities',        items: allActivities },
     { label: 'Game',              cat: 'games',             items: allGames      },
@@ -333,12 +333,7 @@ function buildFilterSidebar() {
       </button>
       <div class="filter-group-content" style="display:none">
         ${items.map(item => {
-          const count = allAppearances.filter(e => {
-            if (cat === 'activities')        return e.activities.includes(item);
-            if (cat === 'games')             return e.games.includes(item);
-            if (cat === 'collab_partners')   return e.collab_partners.includes(item);
-            if (cat === 'appearance_weight') return e.appearance_weight === item;
-          }).length;
+          const count = counts[cat][item] || 0;
           const color = getColor(cat, item);
           return `
             <button class="filter-chip" data-cat="${cat}" data-value="${item}">
@@ -396,7 +391,7 @@ function getCardTitle(entry) {
 function getThumbUrl(entry) {
   const first = entry.vods[0];
   if (!first?.video_id) return null;
-  return `https://img.youtube.com/vi/${first.video_id}/maxresdefault.jpg`;
+  return `https://img.youtube.com/vi/${first.video_id}/hqdefault.jpg`;
 }
 
 // Builds a YouTube watch URL for a VOD.
@@ -405,7 +400,7 @@ function getWatchUrl(vod, entryId, withProgress = true) {
   let t = vod.timestamp_seconds;
 
   if (withProgress && entryId) {
-    const entry = allAppearances.find(e => e.id === entryId);
+    const entry = appearancesById.get(entryId);
     const p = userProgress?.[entryId];
     if (entry && p != null) {
       const vodIndex = entry.vods.indexOf(vod);
@@ -536,7 +531,6 @@ function getCardData(entry) {
         const currentPartDur = vod.timestamp_end_seconds - (vod.timestamp_seconds || 0);
         progressSecs = Math.min(progressSecs, currentPartDur);
         // Sum only same-streamer previous parts, not all previous vods
-        const siblings = entry.vods;
         for (let i = 0; i < p.vodIndex; i++) {
           if (entry.vods[i].streamer === vod.streamer) {
             const prev = entry.vods[i];
@@ -755,7 +749,7 @@ let dropdownEntry = null;
 
 function openPovDropdown(event, entryId) {
   event.stopPropagation();
-  const entry    = allAppearances.find(e => e.id === entryId);
+  const entry    = appearancesById.get(entryId);
   const dropdown = document.getElementById('pov-dropdown');
   if (!entry) return;
 
@@ -774,7 +768,9 @@ function openPovDropdown(event, entryId) {
     const color          = vod.streamer ? getColor('collab_partners', vod.streamer) : colors.fallback;
     // Active-progress VOD gets a solid border; others get a translucent one
     const borderHex      = hasProgress ? color : `${color}44`;
-    const dur            = vodDuration(vod);
+    const dur = (vod.timestamp_seconds != null && vod.timestamp_end_seconds != null)
+      ? vod.timestamp_end_seconds - vod.timestamp_seconds
+      : null;
     const durStr         = dur != null ? ` · ${formatDuration(dur)}` : '';
     return `
       <a class="pov-option" href="${url}" target="_blank" rel="noopener">
@@ -845,7 +841,7 @@ function toggleWatched(entryId) {
   saveWatched();
   closeCardMenu();
 
-  const entry = allAppearances.find(e => e.id === entryId);
+  const entry = appearancesById.get(entryId);
   const card  = document.querySelector(`[data-id="${entryId}"]`);
   if (!entry || !card) return;
 
@@ -930,7 +926,7 @@ function openCardMenu(event, entryId) {
   if (activeCardMenu === entryId) { closeCardMenu(); return; }
   closeCardMenu();
 
-  const entry = allAppearances.find(e => e.id === entryId);
+  const entry = appearancesById.get(entryId);
   if (!entry) return;
   activeCardMenu = entryId;
 
@@ -1080,7 +1076,7 @@ function closeOverlay(popupId) {
 // ── Summary popup ─────────────────────────────────────────────
 function openSummary(entryId) {
   closeCardMenu();
-  const entry = allAppearances.find(e => e.id === entryId);
+  const entry = appearancesById.get(entryId);
   if (!entry?.summary) return;
   document.getElementById('summary-title').textContent = getCardTitle(entry);
   document.getElementById('summary-text').textContent  = entry.summary;
@@ -1092,7 +1088,7 @@ function closeSummary() { closeOverlay('summary-popup'); }
 // ── Timestamps popup ──────────────────────────────────────────
 function openTimestamps(entryId) {
   closeCardMenu();
-  const entry = allAppearances.find(e => e.id === entryId);
+  const entry = appearancesById.get(entryId);
   if (!entry?.timestamps?.length) return;
   
   document.getElementById('timestamps-title').textContent = getCardTitle(entry);
@@ -1154,7 +1150,7 @@ let pendingProgressVodIndex = null;
 
 function openProgressPopup(entryId) {
   closeCardMenu();
-  const entry = allAppearances.find(e => e.id === entryId);
+  const entry = appearancesById.get(entryId);
   if (!entry) return;
   currentProgressEntry = entry;
 
