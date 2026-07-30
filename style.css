@@ -423,7 +423,7 @@ span.flatpickr-weekday { background: transparent !important; }
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 4px 2px;
+  padding: 6px 6px;
   border-radius: var(--radius-sm);
   transition: background var(--transition);
   cursor: pointer;
