@@ -41,6 +41,7 @@ Contributions are welcome! There are a few ways you can help:
 - Koko Just Chatting streams: March 29th 2023, January 6th 2024, March 24th 2024, April 22nd 2024, April 29th 2024
 - not_anny September 4th 2024 stream
 - AlexVoid Development VODs: April 25th 2024, June 7th 2024, October 27th 2024, November 24th 2024
+- Vedal & Cottontail Fashion Review Stream (August 12th 2025)
 
 *(List subject to change.)*
 
