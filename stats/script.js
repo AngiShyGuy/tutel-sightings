@@ -306,8 +306,8 @@ async function init() {
 
       <div class="chart-card">
         <div>
-          <div class="chart-title">Avg. time gap between sightings</div>
-          <div class="chart-subtitle">Average number of days between consecutive Vedal sightings</div>
+          <div class="chart-title">Avg. time gap per year</div>
+          <div class="chart-subtitle">Average number of days between consecutive Vedal sightings by year</div>
         </div>
         <div class="chart-wrap"><canvas id="c-year-gap"></canvas></div>
       </div>
