@@ -213,6 +213,26 @@ async function init() {
     byWeight[entry.appearance_weight] = (byWeight[entry.appearance_weight] || 0) + 1;
   });
 
+  // ── Average gap between consecutive sightings per year ─────
+  const byYearGap = {};  // year → avg days between consecutive sightings
+  const yearDatedEntries = {};  // year → sorted array of date strings
+  data.forEach(entry => {
+    if (!entry.date) return;
+    const year = entry.date.slice(0, 4);
+    if (!yearDatedEntries[year]) yearDatedEntries[year] = [];
+    yearDatedEntries[year].push(entry.date);
+  });
+  Object.entries(yearDatedEntries).forEach(([year, dates]) => {
+    dates.sort();
+    if (dates.length < 2) return; // need at least 2 sightings to compute a gap
+    const gaps = [];
+    for (let i = 1; i < dates.length; i++) {
+      const diff = (new Date(dates[i]) - new Date(dates[i - 1])) / 86400000;
+      if (diff > 0) gaps.push(diff); // skip same-day sightings
+    }
+    if (gaps.length) byYearGap[year] = Math.round(gaps.reduce((a, b) => a + b, 0) / gaps.length);
+  });
+
   // ── Derived values ─────────────────────────────────────────
   const totalEntries   = data.length;
   const totalHours     = fmtHours(totalSecs);
@@ -266,7 +286,7 @@ async function init() {
       </div>
     </div>
 
-    <div class="chart-grid">
+    <div class="chart-group">
 
       <div class="chart-card">
         <div>
@@ -284,6 +304,18 @@ async function init() {
         <div class="chart-wrap"><canvas id="c-year-time"></canvas></div>
       </div>
 
+      <div class="chart-card">
+        <div>
+          <div class="chart-title">Avg. time gap between sightings</div>
+          <div class="chart-subtitle">Average number of days between consecutive Vedal sightings</div>
+        </div>
+        <div class="chart-wrap"><canvas id="c-year-gap"></canvas></div>
+      </div>
+
+    </div>
+
+    <div class="chart-group">
+
       <div class="chart-card chart-card--tall">
         <div>
           <div class="chart-title">Top collab partners — by appearances</div>
@@ -300,6 +332,10 @@ async function init() {
         <div class="chart-wrap"><canvas id="c-partner-time"></canvas></div>
       </div>
 
+    </div>
+
+    <div class="chart-group">
+
       <div class="chart-card chart-card--tall">
         <div>
           <div class="chart-title">Games played</div>
@@ -315,6 +351,10 @@ async function init() {
         </div>
         <div class="chart-wrap"><canvas id="c-activities"></canvas></div>
       </div>
+
+    </div>
+
+    <div class="chart-group">
 
       <div class="chart-card chart-card--donut">
         <div>
@@ -351,6 +391,16 @@ async function init() {
     {
       yTickFmt:   v => v + 'h',
       tooltipFmt: v => ` ${v}h on-screen (${pct(v, totalHoursRaw)}% of total)`,
+    }
+  );
+
+  // Gap between sightings per year
+  const gapYears  = years.filter(y => byYearGap[y] != null);
+  const gapValues = gapYears.map(y => byYearGap[y]);
+  makeBar('c-year-gap', gapYears, gapValues,
+    gapYears.map((_, i) => PALETTE[i % PALETTE.length]),
+    {
+      tooltipFmt: v => ` ${v} day avg. between sightings`,
     }
   );
 

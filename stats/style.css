@@ -159,11 +159,15 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-top: 5px;
 }
 
-/* ── Chart grid ──────────────────────────────────────────── */
-.chart-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+/* ── Chart groups ────────────────────────────────────────── */
+.chart-group {
+  display: flex;
   gap: 20px;
+  margin-bottom: 20px;
+}
+.chart-group .chart-card {
+  flex: 1;
+  min-width: 0; /* prevent flex blowout */
 }
 .chart-card {
   background: var(--bg-surface);
@@ -219,8 +223,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .stats-main { padding: 24px 16px 48px; }
   .header-subtitle { display: none; }
   .home-link { font-size: 11px; padding: 5px 8px; }
-  .chart-grid { grid-template-columns: 1fr; }
-  .chart-card--wide { grid-column: 1; }
+  .chart-group { flex-direction: column; }
 }
 @media (max-width: 540px) {
   .header-inner { padding: 12px 16px; }
