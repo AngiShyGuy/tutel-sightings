@@ -230,7 +230,7 @@ async function init() {
       const diff = (new Date(dates[i]) - new Date(dates[i - 1])) / 86400000;
       if (diff > 0) gaps.push(diff); // skip same-day sightings
     }
-    if (gaps.length) byYearGap[year] = Math.round(gaps.reduce((a, b) => a + b, 0) / gaps.length);
+    if (gaps.length) byYearGap[year] = parseFloat((gaps.reduce((a, b) => a + b, 0) / gaps.length).toFixed(1));
   });
 
   // ── Derived values ─────────────────────────────────────────
@@ -400,7 +400,7 @@ async function init() {
   makeBar('c-year-gap', gapYears, gapValues,
     gapYears.map((_, i) => PALETTE[i % PALETTE.length]),
     {
-      tooltipFmt: v => ` ${v} day avg. between sightings`,
+      tooltipFmt: v => ` ${v} day${v === 1 ? '' : 's'} avg. between sightings`,
     }
   );
 
