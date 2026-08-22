@@ -46,6 +46,8 @@ async function init() {
     allAppearances = appData;
     buildEntryMeta(allAppearances);
     appearancesById = new Map(allAppearances.map(e => [e.id, e]));
+    // Seed the editor's remote snapshot immediately so suggestions work before any save
+    applyEditorLayer._remote = [...allAppearances];
     // Guard against colors.json being accidentally wrapped in an outer array
     colors = Array.isArray(colorData) ? colorData[0] : colorData;
     loadStateFromURL();
@@ -562,9 +564,15 @@ function getCardData(entry) {
 
 function renderCard(entry) {
   const d = getCardData(entry);
+  const isDeleted = editorMode && editorLocal.deleted.has(entry.id);
+  const isModified = editorMode && !isDeleted && !!editorLocal.modified[entry.id];
+  const isNew      = isNewEntry(entry);
+  // Class priority: deleted > modified > new
+  const stateClass = isDeleted ? ' card--deleted' : isModified ? ' card--modified' : isNew ? ' card--new' : '';
 
   return `
-    <article class="card${isNewEntry(entry) ? ' card--new' : ''}" data-id="${entry.id}">
+    <article class="card${stateClass}" data-id="${entry.id}">
+      ${isDeleted ? `<div class="card-deleted-banner"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Marked for deletion</div>` : ''}
       <div class="card-thumb-wrap" ${d.thumbClick}>
         ${d.thumbUrl
           ? `<img class="card-thumb" src="${d.thumbUrl}" alt="${escAttr(d.title)}" loading="lazy"
@@ -601,9 +609,13 @@ function renderCardList(entry) {
   const d = getCardData(entry);
   const sqThumb = d.thumbUrl ? d.thumbUrl.replace(/\/(maxresdefault|hqdefault)\.jpg/, '/sddefault.jpg') : null;
   const suffix = entryMeta[entry.id].badgeLabel ?? '';
+  const isDeleted = editorMode && editorLocal.deleted.has(entry.id);
+  const isModified = editorMode && !isDeleted && !!editorLocal.modified[entry.id];
+  const isNew      = isNewEntry(entry);
+  const stateClass = isDeleted ? ' card--deleted' : isModified ? ' card--modified' : isNew ? ' card-list-item--new' : '';
 
   return `
-    <article class="card-list-item${isNewEntry(entry) ? ' card-list-item--new' : ''}" data-id="${entry.id}">
+    <article class="card-list-item${stateClass}" data-id="${entry.id}">
       <div class="list-thumb-wrap" ${d.thumbClick}>
         ${sqThumb
           ? `<img class="list-thumb" src="${sqThumb}" alt="${escAttr(d.title)}" loading="lazy">`
@@ -612,6 +624,7 @@ function renderCardList(entry) {
         ${d.progressHtml}
       </div>
       <div class="list-body">
+        ${isDeleted ? `<div class="list-deleted-label"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Marked for deletion</div>` : ''}
         <div class="list-chips">${renderChips(entry)}</div>
         <div class="list-title-row" ${d.titleClick}>
           <span class="list-title-text">${escHtml(d.title)}</span>
@@ -937,6 +950,10 @@ function openCardMenu(event, entryId) {
   const progressIcon  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
   const summaryIcon   = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>`;
   const timestampIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>`;
+  const editIcon      = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+  const restoreIcon   = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.45"/></svg>`;
+
+  const isDeleted = editorLocal.deleted.has(entryId);
 
   const watched    = isWatched(entry);
   const divider    = `<div class="card-menu-divider"></div>`;
@@ -953,22 +970,28 @@ function openCardMenu(event, entryId) {
           ${copyIcon}<span>Copy link<span class="card-menu-label-sub">${escHtml(entryMeta[entry.id].vodList[i].label)}</span></span>
         </button>`).join('');
 
+  const editItem = editorMode ? `<button class="card-menu-item" onclick="openEntryEditor('${escAttr(entry.id)}')">${editIcon} Edit entry</button>` : '';
+  const undeleteItem = isDeleted
+    ? `<button class="card-menu-item card-menu-item--restore" onclick="unmarkEntryForDeletion('${escAttr(entry.id)}')">${restoreIcon} Unmark for deletion</button>`
+    : '';
+
   // .filter(Boolean) will automatically remove any empty strings (like missing summaries/timestamps) and .join('') mashes the surviving items together without dividers.
   const group1 = [watchItem, progItem].filter(Boolean).join('');
   const group2 = [summItem, tsItem].filter(Boolean).join('');
   const group3 = [copyItems].filter(Boolean).join('');
+  const group4 = [editItem, undeleteItem].filter(Boolean).join('');
 
   // .filter(Boolean) will strip out group2 entirely if it's empty so that .join(divider) puts your divider ONLY between the groups that actually survived.
   const menu = document.createElement('div');
   menu.className = 'card-menu-dropdown';
   menu.id        = 'card-menu-dropdown';
-  menu.innerHTML = [group1, group2, group3].filter(Boolean).join(divider);
+  menu.innerHTML = [group1, group2, group3, group4].filter(Boolean).join(divider);
   
   document.body.appendChild(menu);
 
   // Align the menu's right edge to the button's right edge, shifted up from screen edge if needed
   const rect = event.currentTarget.getBoundingClientRect();
-  const mw   = 190;
+  const mw   = 200;
   menu.style.left = Math.max(8, Math.min(rect.right - mw, window.innerWidth - mw - 8)) + 'px';
   menu.style.top  = Math.min(rect.bottom + 4, window.innerHeight - menu.offsetHeight - 8) + 'px';
 }
@@ -1394,6 +1417,7 @@ function bindEvents() {
       closeProgress();
       closeSummary();
       closeModal();
+      closeSettings();
       closeTimestamps();
     }
   });
@@ -1409,10 +1433,17 @@ function bindEvents() {
     if (tab) switchModalTab(tab.dataset.tab);
   });
 
+  // Settings modal tab switching
+  document.getElementById('settings-modal')?.addEventListener('click', e => {
+    const tab = e.target.closest('.modal-tab');
+    if (tab) switchSettingsTab(tab.dataset.tab);
+  });
+
   // Escape closes any open overlay
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     closeModal();
+    closeSettings();
     closeSummary();
     closeProgress();
     closeTimestamps();
@@ -1636,5 +1667,921 @@ function bindDateRangeEvents() {
   });
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  ENTRY EDITOR — storage bootstrap
+//  Must be initialised before init() runs, because render functions
+//  (renderCard, renderCardList, openCardMenu) read editorLocal.deleted.
+// ═══════════════════════════════════════════════════════════════
+
+const EDITOR_STORAGE_KEY = 'tutel-editor-local';
+
+function loadEditorLocal() {
+  try {
+    const raw = localStorage.getItem(EDITOR_STORAGE_KEY);
+    if (!raw) return { added: [], modified: {}, deleted: new Set() };
+    const parsed = JSON.parse(raw);
+    return {
+      added:    Array.isArray(parsed.added)    ? parsed.added    : [],
+      modified: parsed.modified && typeof parsed.modified === 'object' ? parsed.modified : {},
+      deleted:  new Set(Array.isArray(parsed.deleted) ? parsed.deleted : []),
+    };
+  } catch {
+    return { added: [], modified: {}, deleted: new Set() };
+  }
+}
+
+function saveEditorLocal() {
+  const toStore = {
+    added:    editorLocal.added,
+    modified: editorLocal.modified,
+    deleted:  [...editorLocal.deleted],
+  };
+  localStorage.setItem(EDITOR_STORAGE_KEY, JSON.stringify(toStore));
+}
+
+// Initialise editor state at load time — must precede init()
+const editorLocal = loadEditorLocal();
+
+// Editor mode — off by default, not persisted
+let editorMode = false;
+
+function openSettings() {
+  // Reset settings modal tabs to Data on every open
+  switchSettingsTab('data');
+  openOverlay('settings-modal');
+}
+function closeSettings() { closeOverlay('settings-modal'); }
+
+function switchSettingsTab(tab) {
+  document.querySelectorAll('#settings-modal .modal-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('#settings-modal .modal-panel').forEach(p =>
+    p.classList.toggle('active', p.dataset.panel === tab));
+}
+
+function toggleEditorMode() {
+  editorMode = !editorMode;
+  const toggle = document.getElementById('editor-mode-toggle');
+  toggle.classList.toggle('settings-toggle--on', editorMode);
+  toggle.setAttribute('aria-checked', String(editorMode));
+  // Re-merge and re-render so editor visual markers (deleted/modified/new)
+  // appear or disappear without closing the settings popup
+  applyEditorLayer();
+}
+
+function exportAppearancesJson() {
+  // Build the full merged array sorted by date (nulls last)
+  const merged = [...allAppearances].sort((a, b) => {
+    if (!a.date && !b.date) return 0;
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+  });
+  const data = JSON.stringify(merged, null, 2);
+  const url  = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+  const a    = Object.assign(document.createElement('a'), { href: url, download: 'appearances.json' });
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearEditorData() {
+  const btn = document.getElementById('clear-editor-btn');
+  if (btn.dataset.confirming === 'true') {
+    editorLocal.added    = [];
+    editorLocal.modified = {};
+    editorLocal.deleted  = new Set();
+    saveEditorLocal();
+    applyEditorLayer();
+    btn.textContent        = 'Clear all editor data';
+    btn.dataset.confirming = 'false';
+    btn.classList.remove('confirming');
+  } else {
+    btn.textContent        = 'Are you sure?';
+    btn.dataset.confirming = 'true';
+    btn.classList.add('confirming');
+    setTimeout(() => {
+      if (btn.dataset.confirming === 'true') {
+        btn.textContent        = 'Clear all editor data';
+        btn.dataset.confirming = 'false';
+        btn.classList.remove('confirming');
+      }
+    }, 3000);
+  }
+}
+
 // ── Go ────────────────────────────────────────────────────────
 init();
+
+// ═══════════════════════════════════════════════════════════════
+//  ENTRY EDITOR — full modal logic
+// ═══════════════════════════════════════════════════════════════
+
+// Apply editor local layer on top of allAppearances and rebuild indexes.
+// Call this after any editor save operation.
+function applyEditorLayer() {
+  // Start from the remote data stored before any editor layer was applied.
+  // We store the pristine remote array on first call.
+  if (!applyEditorLayer._remote) {
+    applyEditorLayer._remote = [...allAppearances];
+  }
+  const remote = applyEditorLayer._remote;
+
+  // Build merged array:
+  // 1. Remote entries (apply modifications; deleted entries stay in the array
+  //    so they remain visible in the grid — they're just visually marked)
+  const merged = remote
+    .map(e => editorLocal.modified[e.id] ? editorLocal.modified[e.id] : e);
+
+  // 2. Append locally-added entries
+  editorLocal.added.forEach(e => merged.push(e));
+
+  allAppearances = merged;
+  buildEntryMeta(allAppearances);
+  appearancesById = new Map(allAppearances.map(e => [e.id, e]));
+  buildFilterSidebar();
+  renderStats();
+  render();
+}
+
+// ── Deletion helpers ──────────────────────────────────────────
+function unmarkEntryForDeletion(entryId) {
+  closeCardMenu();
+  editorLocal.deleted.delete(entryId);
+  saveEditorLocal();
+  // Re-render the card in place
+  const card = document.querySelector(`[data-id="${entryId}"]`);
+  if (card) {
+    const entry = appearancesById.get(entryId);
+    if (entry) {
+      const newHtml = viewMode === 'list' ? renderCardList(entry) : renderCard(entry);
+      card.outerHTML = newHtml;
+      requestAnimationFrame(() => {
+        applyChipOverflowForCard(document.querySelector(`[data-id="${entryId}"]`));
+      });
+    }
+  }
+}
+
+// ── Editor modal state ────────────────────────────────────────
+let editorEntryId    = null;  // id of the entry being edited (null = new)
+let editorIsRemote   = false; // true if editing a GitHub/remote entry
+let editorActiveTab  = 'general';
+
+// These hold the live working state of the editor form
+let editorVods       = [];    // array of vod draft objects
+let editorTimestamps = [];    // array of timestamp draft objects
+
+// Drag state for VOD reordering
+let dragSrcIndex = null;
+
+// ── Open editor ───────────────────────────────────────────────
+function openEntryEditor(entryId) {
+  closeCardMenu();
+
+  const entry = appearancesById.get(entryId);
+  if (!entry) return;
+
+  editorEntryId  = entryId;
+  editorIsRemote = !editorLocal.added.some(e => e.id === entryId);
+  editorActiveTab = 'general';
+
+  // Deep-copy vods and timestamps so we edit clones, not the live data
+  editorVods       = entry.vods.map(v => ({ ...v }));
+  editorTimestamps = entry.timestamps ? entry.timestamps.map(t => ({ ...t })) : [];
+
+  // Populate all fields
+  populateEditorGeneral(entry);
+  populateEditorVods();
+  populateEditorTimestamps();
+  populateEditorOther(entry);
+
+  // Switch to General tab
+  switchEditorTab('general');
+
+  document.getElementById('entry-editor-modal').style.display = '';
+  document.getElementById('editor-backdrop').style.display = '';
+  document.body.style.overflow = 'hidden';
+
+  // Set modal header title and init flatpickr
+  initEditorOnOpen(entryId);
+}
+
+function closeEntryEditor(force = false) {
+  if (!force && editorHasUnsavedChanges()) {
+    if (!confirm('Close the editor? Any unsaved changes will be lost.')) return;
+  }
+  document.getElementById('entry-editor-modal').style.display = 'none';
+  document.getElementById('editor-backdrop').style.display = 'none';
+  document.body.style.overflow = '';
+  editorEntryId = null;
+}
+
+function editorHasUnsavedChanges() {
+  // Simple check: always warn when open. Could be smarter later.
+  return true;
+}
+
+// ── Tab switching ─────────────────────────────────────────────
+function switchEditorTab(tab) {
+  editorActiveTab = tab;
+  document.querySelectorAll('.editor-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.editor-panel').forEach(p =>
+    p.classList.toggle('active', p.dataset.panel === tab));
+}
+
+// ── General tab ───────────────────────────────────────────────
+function populateEditorGeneral(entry) {
+  document.getElementById('editor-id').value      = entry.id || '';
+  document.getElementById('editor-title').value   = entry.title || '';
+  document.getElementById('editor-date').value    = entry.date || '';
+  document.getElementById('editor-safari').checked = !!entry.safari;
+
+  // Weight
+  document.querySelectorAll('.weight-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.weight === entry.appearance_weight);
+  });
+
+  // Tag fields
+  renderEditorTags('activities',      entry.activities || []);
+  renderEditorTags('collab_partners', entry.collab_partners || []);
+  renderEditorTags('games',           entry.games || []);
+
+  // Update revert/delete button states
+  const revertBtn = document.getElementById('editor-revert-btn');
+  const deleteBtn = document.getElementById('editor-delete-btn');
+  if (editorIsRemote) {
+    revertBtn.style.display = '';
+    const isModified = !!editorLocal.modified[editorEntryId];
+    revertBtn.disabled = !isModified;
+    revertBtn.title = isModified ? 'Revert all changes to the original remote data' : 'No local changes to revert';
+    deleteBtn.textContent = editorLocal.deleted.has(editorEntryId) ? 'Unmark for deletion' : 'Mark for deletion';
+  } else {
+    revertBtn.style.display = 'none';
+    deleteBtn.textContent = 'Delete entry';
+  }
+
+  // Update auto-ID preview
+  updateEditorIdPreview();
+}
+
+// ── Tag chip system ───────────────────────────────────────────
+// Each tag field is: a chip container + an autocomplete input
+function getEditorTags(fieldKey) {
+  const container = document.getElementById(`editor-tags-${fieldKey}`);
+  return [...container.querySelectorAll('.editor-tag-chip')].map(c => c.dataset.value);
+}
+
+function renderEditorTags(fieldKey, values) {
+  const container = document.getElementById(`editor-tags-${fieldKey}`);
+  container.innerHTML = values.map(v => buildTagChip(fieldKey, v)).join('');
+}
+
+function buildTagChip(fieldKey, value) {
+  const color = getColor(fieldKey, value);
+  const style = `background:${color}22;color:${color};border-color:${color}44;`;
+  return `<span class="editor-tag-chip" data-field="${escAttr(fieldKey)}" data-value="${escAttr(value)}" style="${style}">
+    ${escHtml(value)}<button class="editor-tag-remove" onclick="removeEditorTag('${escAttr(fieldKey)}','${escAttr(value)}')" title="Remove">×</button>
+  </span>`;
+}
+
+function removeEditorTag(fieldKey, value) {
+  const tags = getEditorTags(fieldKey).filter(v => v !== value);
+  renderEditorTags(fieldKey, tags);
+  // If removing a collab partner, refresh streamer autocomplete scope
+  if (fieldKey === 'collab_partners') refreshVodStreamerOptions();
+}
+
+function addEditorTag(fieldKey, value) {
+  value = value.trim();
+  if (!value) return;
+  const existing = getEditorTags(fieldKey);
+  if (existing.includes(value)) return; // no duplicates
+  renderEditorTags(fieldKey, [...existing, value]);
+  if (fieldKey === 'collab_partners') refreshVodStreamerOptions();
+}
+
+function handleTagInput(event, fieldKey) {
+  const input = event.target;
+  const val   = input.value;
+
+  // Tab autocompletes the top suggestion
+  if (event.type === 'keydown' && event.key === 'Tab') {
+    if (_suggestionEl && _suggestionEl.style.display !== 'none' && _suggestionField === fieldKey) {
+      const first = _suggestionEl.querySelector('.editor-suggestion-item');
+      if (first) {
+        event.preventDefault();
+        first.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+        return;
+      }
+    }
+    // No suggestions open — let Tab move focus naturally
+  }
+
+  // Enter or comma commits the typed value
+  if (event.type === 'keydown' && (event.key === 'Enter' || event.key === ',')) {
+    event.preventDefault();
+    const typed = val.replace(/,$/, '').trim();
+    if (typed) {
+      addEditorTag(fieldKey, typed);
+      input.value = '';
+    }
+    hideTagSuggestions();
+    return;
+  }
+
+  // Backspace on empty input removes last tag
+  if (event.type === 'keydown' && event.key === 'Backspace' && val === '') {
+    const tags = getEditorTags(fieldKey);
+    if (tags.length) {
+      renderEditorTags(fieldKey, tags.slice(0, -1));
+      if (fieldKey === 'collab_partners') refreshVodStreamerOptions();
+    }
+    return;
+  }
+
+  // Typing — show suggestions
+  if (event.type === 'input') {
+    showTagSuggestions(fieldKey, val);
+  }
+}
+
+function getKnownValues(fieldKey) {
+  // Collect all known values for this field from the remote dataset
+  if (!applyEditorLayer._remote) return [];
+  const remote = applyEditorLayer._remote;
+  return [...new Set(remote.flatMap(e => e[fieldKey] || []))].sort((a, b) =>
+    a.toLowerCase().localeCompare(b.toLowerCase()));
+}
+
+// Single shared suggestion popup, appended to <body> so CSS transform on the
+// modal doesn't corrupt fixed positioning.
+let _suggestionEl   = null;
+let _suggestionField = null; // which fieldKey is currently shown
+
+function getOrCreateSuggestionEl() {
+  if (!_suggestionEl) {
+    _suggestionEl = document.createElement('div');
+    _suggestionEl.className = 'editor-suggestions';
+    _suggestionEl.style.display = 'none';
+    document.body.appendChild(_suggestionEl);
+  }
+  return _suggestionEl;
+}
+
+function showTagSuggestions(fieldKey, query) {
+  const list = getOrCreateSuggestionEl();
+  _suggestionField = fieldKey;
+
+  const q = query.toLowerCase().trim();
+  const existing = new Set(getEditorTags(fieldKey));
+  const matches = getKnownValues(fieldKey).filter(v =>
+    !existing.has(v) && (q === '' || v.toLowerCase().includes(q))
+  );
+  if (!matches.length) { hideTagSuggestions(); return; }
+
+  list.innerHTML = matches.map((v, i) => {
+    const color = getColor(fieldKey, v);
+    return `<button class="editor-suggestion-item${i === 0 ? ' editor-suggestion-item--top' : ''}" onmousedown="event.preventDefault();addEditorTag('${escAttr(fieldKey)}','${escAttr(v)}');document.getElementById('editor-tag-input-${fieldKey}').value='';hideTagSuggestions()">
+      <span class="editor-suggestion-dot" style="background:${color}"></span>${escHtml(v)}${i === 0 ? '<span class="editor-suggestion-tab-hint">Tab</span>' : ''}
+    </button>`;
+  }).join('');
+
+  // Anchor to the tag field box so width/left are stable regardless of chip count.
+  // getBoundingClientRect() is viewport-space; since the suggestion el is a direct
+  // child of <body> with no transformed ancestor, fixed coords map 1:1 to viewport.
+  const anchor = document.getElementById(`editor-tagfield-${fieldKey}`);
+  if (!anchor) { list.style.display = 'none'; return; }
+
+  const rect = anchor.getBoundingClientRect();
+  const gap  = 6;
+
+  list.style.left    = rect.left + 'px';
+  list.style.width   = rect.width + 'px';
+  list.style.top     = '-9999px';
+  list.style.display = '';
+
+  const popupHeight = Math.min(list.scrollHeight, 240);
+  const spaceBelow  = window.innerHeight - rect.bottom - gap;
+  list.style.top = (spaceBelow >= popupHeight || rect.top < popupHeight + gap)
+    ? (rect.bottom + gap) + 'px'              // below (preferred)
+    : (rect.top - popupHeight - gap) + 'px';  // above (fallback)
+}
+
+function hideTagSuggestions() {
+  if (_suggestionEl) _suggestionEl.style.display = 'none';
+  _suggestionField = null;
+}
+
+// ── ID auto-generation ────────────────────────────────────────
+function updateEditorIdPreview() {
+  // Only auto-update if the user hasn't manually changed the ID for a new entry.
+  // For existing entries, show validation state only.
+  const idInput = document.getElementById('editor-id');
+  validateEditorId(idInput.value);
+}
+
+function autoGenerateId() {
+  // Build slug from title override, or first VOD title, or partners
+  let source = document.getElementById('editor-title').value.trim();
+  if (!source && editorVods.length && editorVods[0].vod_title) {
+    source = editorVods[0].vod_title;
+  }
+  if (!source) {
+    const partners = getEditorTags('collab_partners');
+    source = partners.join(' ');
+  }
+  const slug = source
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .slice(0, 60)
+    .replace(/^-|-$/g, '');
+  document.getElementById('editor-id').value = slug;
+  validateEditorId(slug);
+}
+
+function validateEditorId(value) {
+  const indicator = document.getElementById('editor-id-indicator');
+  if (!value) {
+    indicator.textContent = '';
+    indicator.className = 'editor-id-indicator';
+    return false;
+  }
+  const idPattern = /^[a-z0-9-]+$/;
+  if (!idPattern.test(value)) {
+    indicator.textContent = 'Only lowercase letters, numbers, and hyphens';
+    indicator.className = 'editor-id-indicator editor-id-indicator--error';
+    return false;
+  }
+  // Check uniqueness — allow current entry's own ID
+  const isDuplicate = allAppearances.some(e => e.id === value && e.id !== editorEntryId);
+  if (isDuplicate) {
+    indicator.textContent = 'ID already in use';
+    indicator.className = 'editor-id-indicator editor-id-indicator--error';
+    return false;
+  }
+  indicator.textContent = '✓';
+  indicator.className = 'editor-id-indicator editor-id-indicator--ok';
+  return true;
+}
+
+// ── Shared drag-to-reorder engine ────────────────────────────
+// Works for any list: pass the container, the data array to mutate, and a callback to re-render after a successful drop.
+// Rows must have [draggable="true"] on their handle child (.drag-handle),
+function bindDragList(container, dataArray, onReorder) {
+  let srcIndex = null;
+
+  function clearOver() {
+    container.querySelectorAll('.drag-row--over').forEach(r => r.classList.remove('drag-row--over'));
+  }
+
+  container.addEventListener('dragstart', e => {
+    const handle = e.target.closest('.drag-handle');
+    if (!handle) return;
+    const row = handle.closest('[data-drag-index]');
+    if (!row) return;
+    srcIndex = parseInt(row.dataset.dragIndex, 10);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(srcIndex));
+    e.dataTransfer.setDragImage(row, 20, row.offsetHeight / 2);
+    requestAnimationFrame(() => row.classList.add('vod-row--dragging'));
+  });
+
+  container.addEventListener('dragend', () => {
+    srcIndex = null;
+    container.querySelectorAll('.vod-row--dragging').forEach(r => r.classList.remove('vod-row--dragging'));
+    clearOver();
+  });
+
+  container.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const row = e.target.closest('[data-drag-index]');
+    if (!row || !container.contains(row)) { clearOver(); return; }
+    const overIndex = parseInt(row.dataset.dragIndex, 10);
+    if (overIndex === srcIndex) { clearOver(); return; }
+    clearOver();
+    row.classList.add('drag-row--over');
+  });
+
+  container.addEventListener('dragleave', e => {
+    if (!container.contains(e.relatedTarget)) clearOver();
+  });
+
+  container.addEventListener('drop', e => {
+    e.preventDefault();
+    clearOver();
+    if (srcIndex === null) return;
+    const row = e.target.closest('[data-drag-index]');
+    if (!row) return;
+    const targetIndex = parseInt(row.dataset.dragIndex, 10);
+    if (targetIndex === srcIndex) { srcIndex = null; return; }
+    const moved = dataArray.splice(srcIndex, 1)[0];
+    const insertAt = targetIndex > srcIndex ? targetIndex - 1 : targetIndex;
+    dataArray.splice(insertAt, 0, moved);
+    srcIndex = null;
+    onReorder();
+  });
+}
+
+// ── VODs tab ──────────────────────────────────────────────────
+function populateEditorVods() {
+  renderVodList();
+  // Bind drag once on the container — survives innerHTML re-renders because
+  // all handlers use event delegation (e.target.closest).
+  bindDragList(
+    document.getElementById('editor-vods-list'),
+    editorVods,
+    () => { renderVodList(); syncTimestampVodDropdowns(); }
+  );
+}
+
+function renderVodList() {
+  const container = document.getElementById('editor-vods-list');
+  if (!editorVods.length) {
+    container.innerHTML = `<p class="editor-empty-hint">No VODs yet. Add one below.</p>`;
+    syncTimestampVodDropdowns();
+    return;
+  }
+  container.innerHTML = editorVods.map((vod, i) => buildVodRow(vod, i)).join('');
+  syncTimestampVodDropdowns();
+}
+
+function buildVodRow(vod, index) {
+  const startHms = secsToHms(vod.timestamp_seconds);
+  const endHms   = secsToHms(vod.timestamp_end_seconds);
+
+  // Streamer options: all current collab_partners
+  const partners = getEditorTags('collab_partners');
+  const streamerOptions = partners.map(p =>
+    `<option value="${escAttr(p)}" ${p === vod.streamer ? 'selected' : ''}>${escHtml(p)}</option>`
+  ).join('');
+  const noPartnersNote = partners.length === 0
+    ? `<option value="">— add partners first —</option>`
+    : `<option value="" ${!vod.streamer ? 'selected' : ''}>— select —</option>`;
+
+  return `
+    <div class="vod-row" data-drag-index="${index}">
+      <div class="vod-row-handle drag-handle" draggable="true" title="Drag to reorder">
+        <span class="vod-index-badge">${index}</span>
+        <svg width="12" height="20" viewBox="0 0 12 20" fill="currentColor"><circle cx="4" cy="2" r="1.5"/><circle cx="4" cy="7" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="4" cy="17" r="1.5"/><circle cx="9" cy="2" r="1.5"/><circle cx="9" cy="7" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="17" r="1.5"/></svg>
+      </div>
+      <div class="vod-row-fields">
+        <div class="vod-field vod-field--title">
+          <label class="vod-field-label">VOD Title</label>
+          <input class="vod-input vod-input--scrollable" type="text" value="${escAttr(vod.vod_title || '')}"
+            placeholder="Paste the exact YouTube title"
+            onchange="updateVodField(${index},'vod_title',this.value)">
+        </div>
+        <div class="vod-row-lower">
+          <div class="vod-field vod-field--streamer">
+            <label class="vod-field-label">Streamer</label>
+            <select class="vod-select" onchange="updateVodField(${index},'streamer',this.value)">
+              ${noPartnersNote}${streamerOptions}
+            </select>
+          </div>
+          <div class="vod-field vod-field--videoid">
+            <label class="vod-field-label">Video ID</label>
+            <input class="vod-input" type="text" value="${escAttr(vod.video_id || '')}"
+              placeholder="e.g. dQw4w9WgXcQ"
+              onchange="updateVodField(${index},'video_id',this.value)">
+          </div>
+          <div class="vod-field vod-field--ts">
+            <label class="vod-field-label">Start</label>
+            ${buildHmsInput(`vod-start-${index}`, startHms, `onVodHmsChange(${index},'start')`)}
+          </div>
+          <div class="vod-field vod-field--ts">
+            <label class="vod-field-label">End</label>
+            ${buildHmsInput(`vod-end-${index}`, endHms, `onVodHmsChange(${index},'end')`)}
+          </div>
+        </div>
+      </div>
+      <button class="vod-remove-btn" onclick="removeVodRow(${index})" title="Remove VOD">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  `;
+}
+
+function buildHmsInput(id, hms, onchangeCall) {
+  return `<div class="hms-input" id="${id}">
+    <input class="hms-field" type="text" maxlength="2" placeholder="HH" value="${hms.h}"
+      oninput="this.value=this.value.replace(/\\D/g,'');if(this.value.length===2)this.nextElementSibling.nextElementSibling.focus();${onchangeCall}"
+      onkeydown="if(event.key==='Backspace'&&this.value===''){}" >
+    <span class="hms-sep">:</span>
+    <input class="hms-field" type="text" maxlength="2" placeholder="MM" value="${hms.m}"
+      oninput="this.value=this.value.replace(/\\D/g,'');if(this.value.length===2)this.nextElementSibling.nextElementSibling.focus();${onchangeCall}"
+      onkeydown="if(event.key==='Backspace'&&this.value==='')this.previousElementSibling.previousElementSibling.focus()">
+    <span class="hms-sep">:</span>
+    <input class="hms-field" type="text" maxlength="2" placeholder="SS" value="${hms.s}"
+      oninput="this.value=this.value.replace(/\\D/g,'');${onchangeCall}"
+      onkeydown="if(event.key==='Backspace'&&this.value==='')this.previousElementSibling.previousElementSibling.focus()">
+  </div>`;
+}
+
+function updateVodField(index, field, value) {
+  if (editorVods[index]) editorVods[index][field] = value;
+}
+
+function onVodHmsChange(index, side) {
+  const prefix = `vod-${side}-${index}`;
+  const secs   = hmsInputToSecs(prefix);
+  if (side === 'start') editorVods[index].timestamp_seconds     = secs;
+  else                  editorVods[index].timestamp_end_seconds = secs;
+}
+
+function hmsInputToSecs(prefix) {
+  const el = document.getElementById(prefix);
+  if (!el) return null;
+  const inputs = el.querySelectorAll('.hms-field');
+  const hh = parseInt(inputs[0]?.value || '0', 10) || 0;
+  const mm = parseInt(inputs[1]?.value || '0', 10) || 0;
+  const ss = parseInt(inputs[2]?.value || '0', 10) || 0;
+  const allBlank = !inputs[0]?.value && !inputs[1]?.value && !inputs[2]?.value;
+  return allBlank ? null : hh * 3600 + mm * 60 + ss;
+}
+
+function secsToHms(secs) {
+  if (secs == null) return { h: '', m: '', s: '' };
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  return {
+    h: h > 0 ? String(h).padStart(2, '0') : '',
+    m: (h > 0 || m > 0) ? String(m).padStart(2, '0') : '',
+    s: String(s).padStart(2, '0'),
+  };
+}
+
+function addVodRow() {
+  const partners = getEditorTags('collab_partners');
+  editorVods.push({
+    vod_title:            '',
+    streamer:             partners[0] || '',
+    video_id:             '',
+    timestamp_seconds:    null,
+    timestamp_end_seconds: null,
+  });
+  renderVodList();
+}
+
+function removeVodRow(index) {
+  editorVods.splice(index, 1);
+  // Fix any timestamp vod_index references that pointed at removed/shifted vods
+  editorTimestamps = editorTimestamps.map(t => {
+    if (t.vod_index === index) return { ...t, vod_index: Math.max(0, index - 1) };
+    if (t.vod_index > index)  return { ...t, vod_index: t.vod_index - 1 };
+    return t;
+  });
+  renderVodList();
+  renderTimestampList();
+}
+
+function refreshVodStreamerOptions() {
+  // When collab partners change, re-render the vod list so streamer dropdowns update
+  renderVodList();
+}
+
+// ── Timestamps tab ────────────────────────────────────────────
+function populateEditorTimestamps() {
+  renderTimestampList();
+  bindDragList(
+    document.getElementById('editor-timestamps-list'),
+    editorTimestamps,
+    () => renderTimestampList()
+  );
+}
+
+function renderTimestampList() {
+  const container = document.getElementById('editor-timestamps-list');
+  if (!editorTimestamps.length) {
+    container.innerHTML = `<p class="editor-empty-hint">No timestamps yet. Add one below.</p>`;
+    return;
+  }
+  container.innerHTML = editorTimestamps.map((ts, i) => buildTimestampRow(ts, i)).join('');
+}
+
+function buildTimestampRow(ts, index) {
+  const hms = secsToHms(ts.timestamp_seconds);
+  // VOD index dropdown: options 0..N-1 based on current editorVods length
+  const vodCount   = Math.max(1, editorVods.length);
+  const vodOptions = Array.from({ length: vodCount }, (_, i) =>
+    `<option value="${i}" ${ts.vod_index === i ? 'selected' : ''}>${i}</option>`
+  ).join('');
+
+  return `
+    <div class="ts-row" data-drag-index="${index}">
+      <div class="ts-drag-handle drag-handle" draggable="true" title="Drag to reorder">
+        <svg width="12" height="20" viewBox="0 0 12 20" fill="currentColor"><circle cx="4" cy="2" r="1.5"/><circle cx="4" cy="7" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="4" cy="17" r="1.5"/><circle cx="9" cy="2" r="1.5"/><circle cx="9" cy="7" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="17" r="1.5"/></svg>
+      </div>
+      <div class="ts-field ts-field--title">
+        <label class="vod-field-label">Title</label>
+        <input class="vod-input vod-input--scrollable" type="text" value="${escAttr(ts.title || '')}"
+          placeholder="e.g. That's the eject button, Layna."
+          onchange="updateTsField(${index},'title',this.value)">
+      </div>
+      <div class="ts-field ts-field--time">
+        <label class="vod-field-label">Timestamp</label>
+        ${buildHmsInput(`ts-time-${index}`, hms, `onTsHmsChange(${index})`)}
+      </div>
+      <div class="ts-field ts-field--vod">
+        <label class="vod-field-label">VOD #</label>
+        <select class="vod-select ts-vod-select" onchange="updateTsField(${index},'vod_index',parseInt(this.value))">
+          ${vodOptions}
+        </select>
+      </div>
+      <button class="vod-remove-btn" onclick="removeTsRow(${index})" title="Remove timestamp">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  `;
+}
+
+function updateTsField(index, field, value) {
+  if (editorTimestamps[index]) editorTimestamps[index][field] = value;
+}
+
+function onTsHmsChange(index) {
+  const secs = hmsInputToSecs(`ts-time-${index}`);
+  if (editorTimestamps[index]) editorTimestamps[index].timestamp_seconds = secs;
+}
+
+function addTimestampRow() {
+  editorTimestamps.push({ title: '', timestamp_seconds: null, vod_index: 0 });
+  renderTimestampList();
+}
+
+function removeTsRow(index) {
+  editorTimestamps.splice(index, 1);
+  renderTimestampList();
+}
+
+function syncTimestampVodDropdowns() {
+  // After vod reorder/add/remove, re-render the timestamps tab so VOD dropdowns update
+  renderTimestampList();
+}
+
+// ── Other tab ─────────────────────────────────────────────────
+function populateEditorOther(entry) {
+  document.getElementById('editor-summary').value = entry.summary || '';
+}
+
+// ── Read current form state into an entry object ──────────────
+function readEditorForm() {
+  // Commit any pending HMS changes from VODs
+  editorVods.forEach((_, i) => {
+    editorVods[i].timestamp_seconds     = hmsInputToSecs(`vod-start-${i}`);
+    editorVods[i].timestamp_end_seconds = hmsInputToSecs(`vod-end-${i}`);
+    const titleInput     = document.querySelector(`[data-drag-index="${i}"].vod-row .vod-input--scrollable`);
+    const videoIdInput   = document.querySelector(`[data-drag-index="${i}"].vod-row .vod-input:not(.vod-input--scrollable)`);
+    const streamerSelect = document.querySelector(`[data-drag-index="${i}"].vod-row .vod-select`);
+    if (titleInput)     editorVods[i].vod_title = titleInput.value;
+    if (videoIdInput)   editorVods[i].video_id  = videoIdInput.value;
+    if (streamerSelect) editorVods[i].streamer   = streamerSelect.value;
+  });
+  editorTimestamps.forEach((_, i) => {
+    editorTimestamps[i].timestamp_seconds = hmsInputToSecs(`ts-time-${i}`);
+    const titleInput  = document.querySelector(`[data-drag-index="${i}"].ts-row .vod-input--scrollable`);
+    const vodSelect   = document.querySelector(`[data-drag-index="${i}"].ts-row .ts-vod-select`);
+    if (titleInput) editorTimestamps[i].title     = titleInput.value;
+    if (vodSelect)  editorTimestamps[i].vod_index = parseInt(vodSelect.value, 10) || 0;
+  });
+
+  const activeWeight = document.querySelector('.weight-option.active');
+
+  return {
+    id:                document.getElementById('editor-id').value.trim(),
+    title:             document.getElementById('editor-title').value.trim() || null,
+    date:              document.getElementById('editor-date').value.trim() || null,
+    activities:        getEditorTags('activities'),
+    collab_partners:   getEditorTags('collab_partners'),
+    games:             getEditorTags('games'),
+    appearance_weight: activeWeight ? activeWeight.dataset.weight : 'Full',
+    safari:            document.getElementById('editor-safari').checked,
+    summary:           document.getElementById('editor-summary').value.trim() || null,
+    vods:              editorVods,
+    timestamps:        editorTimestamps.length ? editorTimestamps : null,
+  };
+}
+
+// ── Save ──────────────────────────────────────────────────────
+function saveEditorEntry() {
+  const entry = readEditorForm();
+
+  // Validate ID
+  if (!validateEditorId(entry.id)) {
+    switchEditorTab('general');
+    document.getElementById('editor-id').focus();
+    return;
+  }
+
+  // Validate at least one VOD
+  if (!entry.vods.length) {
+    switchEditorTab('vods');
+    alert('An entry needs at least one VOD.');
+    return;
+  }
+
+  // Apply to local layer
+  if (editorIsRemote) {
+    editorLocal.modified[entry.id] = entry;
+    // If the ID changed, also update the modified key and remove the old one
+    if (entry.id !== editorEntryId) {
+      editorLocal.modified[entry.id] = entry;
+      delete editorLocal.modified[editorEntryId];
+    }
+  } else {
+    // Local-only: find and replace in added array
+    const idx = editorLocal.added.findIndex(e => e.id === editorEntryId);
+    if (idx !== -1) editorLocal.added[idx] = entry;
+    else            editorLocal.added.push(entry);
+  }
+
+  saveEditorLocal();
+  applyEditorLayer();
+
+  // Close without asking for discard confirmation
+  document.getElementById('entry-editor-modal').style.display = 'none';
+  document.getElementById('editor-backdrop').style.display = 'none';
+  document.body.style.overflow = '';
+  editorEntryId = null;
+}
+
+// ── Delete / revert ───────────────────────────────────────────
+function editorDeleteOrToggle() {
+  if (editorIsRemote) {
+    const alreadyDeleted = editorLocal.deleted.has(editorEntryId);
+    if (alreadyDeleted) {
+      editorLocal.deleted.delete(editorEntryId);
+    } else {
+      editorLocal.deleted.add(editorEntryId);
+    }
+    saveEditorLocal();
+    applyEditorLayer();
+    // Close without discard warning since delete is a deliberate action
+    document.getElementById('entry-editor-modal').style.display = 'none';
+    document.getElementById('editor-backdrop').style.display = 'none';
+    document.body.style.overflow = '';
+    editorEntryId = null;
+  } else {
+    // Local-only: actually delete it
+    if (!confirm('Permanently delete this local entry? This cannot be undone.')) return;
+    editorLocal.added = editorLocal.added.filter(e => e.id !== editorEntryId);
+    saveEditorLocal();
+    applyEditorLayer();
+    document.getElementById('entry-editor-modal').style.display = 'none';
+    document.getElementById('editor-backdrop').style.display = 'none';
+    document.body.style.overflow = '';
+    editorEntryId = null;
+  }
+}
+
+function editorRevertToOriginal() {
+  if (!editorIsRemote) return;
+  if (!confirm('Revert all changes to this entry? Your edits will be permanently discarded.')) return;
+  delete editorLocal.modified[editorEntryId];
+  saveEditorLocal();
+  applyEditorLayer();
+  closeEntryEditor(true);
+}
+
+function selectWeight(btn) {
+  document.querySelectorAll('.weight-option').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Initialise the editor date flatpickr once (lazily, on first open)
+let _editorFlatpickr = null;
+function ensureEditorFlatpickr() {
+  if (_editorFlatpickr) return;
+  _editorFlatpickr = flatpickr(document.getElementById('editor-cal-btn'), {
+    disableMobile: true,
+    clickOpens: false,
+    allowInput: false,
+    dateFormat: 'Y-m-d',
+    minDate: '2023-01-01',
+    onChange: (selectedDates, dateStr) => {
+      document.getElementById('editor-date').value = dateStr;
+    },
+  });
+  document.getElementById('editor-cal-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    _editorFlatpickr.toggle();
+  });
+}
+
+function initEditorOnOpen(entryId) {
+  const entry = appearancesById.get(entryId);
+  if (entry) {
+    document.getElementById('editor-modal-title').textContent = getCardTitle(entry);
+  }
+  ensureEditorFlatpickr();
+  if (_editorFlatpickr) {
+    const dateVal = document.getElementById('editor-date').value;
+    if (dateVal) _editorFlatpickr.setDate(dateVal, false);
+    else _editorFlatpickr.clear();
+  }
+}
