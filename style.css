@@ -607,14 +607,26 @@ span.flatpickr-weekday { background: transparent !important; }
   }
 }
 
-/* Card with New badge */
+/* Card with New badge (30-day recent) */
 .card--new {
   border-color: rgba(255, 255, 255, 0.45);
 }
 @media (hover: hover) and (pointer: fine) {
-  .card--new:hover {
-    border-color: rgba(255, 255, 255, 0.75);
-  }
+  .card--new:hover { border-color: rgba(255, 255, 255, 0.75); }
+}
+
+/* Card created locally via the editor — yellow outline */
+.card--editor-new {
+  border-color: rgba(250, 204, 21, 0.6);
+}
+@media (hover: hover) and (pointer: fine) {
+  .card--editor-new:hover { border-color: rgba(250, 204, 21, 0.9); }
+}
+.card-list-item--editor-new {
+  border-color: rgba(250, 204, 21, 0.6);
+}
+@media (hover: hover) and (pointer: fine) {
+  .card-list-item--editor-new:hover { border-color: rgba(250, 204, 21, 0.9); }
 }
 
 /* Card with local modifications (editor layer) */
@@ -1671,6 +1683,7 @@ span.flatpickr-weekday { background: transparent !important; }
   box-sizing: border-box;
   overflow: hidden;
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  position: relative; /* needed for hatch pseudo-element on deleted items */
 }
 
 .card-list-item--new {
@@ -1786,6 +1799,36 @@ span.flatpickr-weekday { background: transparent !important; }
     color: var(--green);
   }
 }
+
+/* ── New Entry button ─────────────────────────────────────────── */
+.new-entry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(250, 204, 21, 0.4);
+  color: rgba(250, 204, 21, 0.9);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  background: rgba(250, 204, 21, 0.08);
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+  white-space: nowrap;
+}
+@media (hover: hover) and (pointer: fine) {
+  .new-entry-btn:hover {
+    background: rgba(250, 204, 21, 0.15);
+    border-color: rgba(250, 204, 21, 0.7);
+    color: rgba(250, 204, 21, 1);
+  }
+}
+/* On mobile, hide the label and show just the + icon */
+@media (max-width: 600px) {
+  .new-entry-btn-label { display: none; }
+  .new-entry-btn { padding: 5px 8px; }
+}
+
 /* ============================================================
    ENTRY EDITOR
    Large editor modal with tabs for editing sighting entries.
@@ -2011,6 +2054,27 @@ span.flatpickr-weekday { background: transparent !important; }
 }
 .editor-id-indicator--ok    { color: var(--green); }
 .editor-id-indicator--error { color: #f87171; }
+
+/* Required field asterisk */
+.editor-required { color: #f87171; font-weight: 700; }
+
+/* Error highlight on fields */
+.editor-field--error.editor-tag-field,
+.editor-field--error.editor-date-part {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 2px rgba(248,113,113,0.2) !important;
+}
+.vod-input--error {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 2px rgba(248,113,113,0.2) !important;
+}
+.vod-select--error {
+  border-color: #f87171 !important;
+}
+.hms-input.editor-field--error {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 2px rgba(248,113,113,0.2) !important;
+}
 
 /* --- Date field --- */
 .editor-date-wrap {
@@ -2308,35 +2372,9 @@ span.flatpickr-weekday { background: transparent !important; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding-top: 18px;
-  cursor: grab;
-  color: var(--text-muted);
+  gap: 2px;
   flex-shrink: 0;
-  user-select: none;
-  transition: color var(--transition);
 }
-@media (hover: hover) and (pointer: fine) {
-  .vod-row-handle:hover { color: var(--text-secondary); }
-}
-.vod-row-handle:active { cursor: grabbing; }
-/* Timestamp drag handle */
-.ts-drag-handle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 4px;
-  cursor: grab;
-  color: var(--text-muted);
-  flex-shrink: 0;
-  user-select: none;
-  align-self: stretch;
-  transition: color var(--transition);
-}
-@media (hover: hover) and (pointer: fine) {
-  .ts-drag-handle:hover { color: var(--text-secondary); }
-}
-.ts-drag-handle:active { cursor: grabbing; }
 .vod-index-badge {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -2473,13 +2511,25 @@ span.flatpickr-weekday { background: transparent !important; }
 /* --- Timestamps rows --- */
 .ts-row {
   display: flex;
-  align-items: flex-end;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
   background: var(--bg-card);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
   padding: 12px;
   transition: border-color var(--transition), box-shadow var(--transition);
+}
+.ts-row-fields {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
+}
+/* ts-row-lower is only used on mobile — no-op on desktop */
+.ts-row-lower {
+  display: contents; /* children participate directly in ts-row-fields row */
 }
 .ts-field { display: flex; flex-direction: column; gap: 4px; }
 .ts-field--title { flex: 1; min-width: 0; }
@@ -2521,6 +2571,21 @@ span.flatpickr-weekday { background: transparent !important; }
   border-top: 1px solid var(--border);
   flex-shrink: 0;
   background: var(--bg-surface);
+  flex-wrap: wrap;
+}
+.editor-required-legend {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-right: auto; /* pushes buttons to the right */
+}
+.editor-save-error {
+  font-size: 12px;
+  color: #f87171;
+  font-family: var(--font-sans);
+  flex-basis: 100%; /* own line when it appears */
+  order: -1;        /* appears above the buttons row */
+  padding-bottom: 2px;
 }
 .editor-cancel-btn {
   padding: 8px 18px;
@@ -2626,11 +2691,7 @@ span.flatpickr-weekday { background: transparent !important; }
   .editor-field--id,
   .editor-field--date,
   .editor-field--weight { flex: unset; width: 100%; }
-  .vod-row-lower { flex-direction: column; }
-  .vod-field--streamer,
-  .vod-field--videoid,
-  .vod-field--ts { flex: unset; width: 100%; }
-  .weight-options { flex-direction: column; }
+  /* weight-options stay on one row on mobile — no flex-direction: column */
   .entry-editor-modal {
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     top: auto;
@@ -2642,12 +2703,97 @@ span.flatpickr-weekday { background: transparent !important; }
     max-height: 92vh;
     animation: slideUp 220ms cubic-bezier(0.34, 1.15, 0.64, 1);
   }
-  .ts-row { flex-wrap: wrap; }
-  .ts-field--title { width: 100%; }
+  /* VOD rows: title full width, then streamer+videoid row, then start+end row */
+  .vod-row-lower { flex-wrap: wrap; }
+  .vod-field--streamer { flex: 1 1 120px; }
+  .vod-field--videoid  { flex: 1 1 100px; }
+  .vod-field--ts       { flex: 1 1 auto; }
+  /* Timestamp rows on mobile: stack into two rows */
+  .ts-row-fields { flex-direction: column; align-items: stretch; }
+  .ts-row-lower  { display: flex; align-items: flex-end; gap: 8px; }
+  .ts-field--title { flex: unset; width: 100%; }
 }
-@keyframes slideUp {
-  from { transform: translateY(40px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
+
+/* --- Editor segmented date inputs --- */
+.editor-date-part {
+  background: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 7px 6px;
+  outline: none;
+  text-align: center;
+  width: 44px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.editor-date-part--year { width: 62px; }
+.editor-date-part:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-glow);
+}
+.editor-date-part::placeholder { color: var(--text-muted); }
+.editor-date-sep {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: bold;
+  padding: 0 1px;
+}
+
+/* --- Up/down move buttons --- */
+.row-move-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  transition: color var(--transition), background var(--transition), border-color var(--transition);
+}
+@media (hover: hover) and (pointer: fine) {
+  .row-move-btn:hover:not(:disabled) {
+    color: var(--text-primary);
+    background: var(--bg-raised);
+    border-color: var(--border-strong);
+  }
+}
+/* Bigger tap targets on touch screens */
+@media (hover: none) {
+  .row-move-btn { height: 40px; }
+  .row-move-btn--sm { height: 28px; }
+}
+.row-move-btn--sm {
+  height: 22px;
+}
+.row-move-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+/* vod-row-handle already exists; just ensure it fits the new buttons */
+.vod-row-handle {
+  padding-top: 0;
+  justify-content: center;
+  gap: 2px;
+}
+
+/* Timestamp move buttons container */
+.ts-move-btns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  align-self: center;
+}
+.ts-remove-btn {
+  flex-shrink: 0;
+  align-self: center;
+  margin-left: auto;
+  margin-top: 0;
 }
 
 /* ── Settings modal ──────────────────────────────────────────── */

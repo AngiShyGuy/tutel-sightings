@@ -564,11 +564,12 @@ function getCardData(entry) {
 
 function renderCard(entry) {
   const d = getCardData(entry);
-  const isDeleted = editorMode && editorLocal.deleted.has(entry.id);
-  const isModified = editorMode && !isDeleted && !!editorLocal.modified[entry.id];
-  const isNew      = isNewEntry(entry);
-  // Class priority: deleted > modified > new
-  const stateClass = isDeleted ? ' card--deleted' : isModified ? ' card--modified' : isNew ? ' card--new' : '';
+  const isDeleted   = editorMode && editorLocal.deleted.has(entry.id);
+  const isModified  = editorMode && !isDeleted && !!editorLocal.modified[entry.id];
+  const isEditorNew = editorMode && editorLocal.added.some(e => e.id === entry.id);
+  const isNew       = isNewEntry(entry);
+  // Priority: deleted > editor-new (local) > modified > recently-added (30-day new)
+  const stateClass  = isDeleted ? ' card--deleted' : isEditorNew ? ' card--editor-new' : isModified ? ' card--modified' : isNew ? ' card--new' : '';
 
   return `
     <article class="card${stateClass}" data-id="${entry.id}">
@@ -609,10 +610,11 @@ function renderCardList(entry) {
   const d = getCardData(entry);
   const sqThumb = d.thumbUrl ? d.thumbUrl.replace(/\/(maxresdefault|hqdefault)\.jpg/, '/sddefault.jpg') : null;
   const suffix = entryMeta[entry.id].badgeLabel ?? '';
-  const isDeleted = editorMode && editorLocal.deleted.has(entry.id);
-  const isModified = editorMode && !isDeleted && !!editorLocal.modified[entry.id];
-  const isNew      = isNewEntry(entry);
-  const stateClass = isDeleted ? ' card--deleted' : isModified ? ' card--modified' : isNew ? ' card-list-item--new' : '';
+  const isDeleted   = editorMode && editorLocal.deleted.has(entry.id);
+  const isModified  = editorMode && !isDeleted && !!editorLocal.modified[entry.id];
+  const isEditorNew = editorMode && editorLocal.added.some(e => e.id === entry.id);
+  const isNew       = isNewEntry(entry);
+  const stateClass  = isDeleted ? ' card--deleted' : isEditorNew ? ' card-list-item--editor-new' : isModified ? ' card-list-item--modified' : isNew ? ' card-list-item--new' : '';
 
   return `
     <article class="card-list-item${stateClass}" data-id="${entry.id}">
@@ -624,7 +626,6 @@ function renderCardList(entry) {
         ${d.progressHtml}
       </div>
       <div class="list-body">
-        ${isDeleted ? `<div class="list-deleted-label"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Marked for deletion</div>` : ''}
         <div class="list-chips">${renderChips(entry)}</div>
         <div class="list-title-row" ${d.titleClick}>
           <span class="list-title-text">${escHtml(d.title)}</span>
@@ -698,6 +699,12 @@ function render() {
     </div>
   `;
 
+  const newEntryBtn = editorMode ? `
+    <button class="new-entry-btn" onclick="openNewEntry()" title="Create a new entry">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span class="new-entry-btn-label">New Entry</span>
+    </button>` : '';
+
   resultsBar.innerHTML = `
     <div class="results-text">${resultsText}${durationText}</div>
     <div class="results-actions">
@@ -705,6 +712,7 @@ function render() {
       <button class="random-btn" onclick="playRandomSighting()" ${results.length === 0 ? 'disabled' : ''} title="Play a random stream from this list">
         ${diceSvg} Random
       </button>
+      ${newEntryBtn}
       ${desktopViewToggle}
     </div>
   `;
@@ -953,12 +961,14 @@ function openCardMenu(event, entryId) {
   const editIcon      = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
   const restoreIcon   = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.45"/></svg>`;
 
-  const isDeleted = editorLocal.deleted.has(entryId);
+  const isDeleted  = editorLocal.deleted.has(entryId);
+  const isLocalEntry = editorLocal.added.some(e => e.id === entryId);
 
   const watched    = isWatched(entry);
   const divider    = `<div class="card-menu-divider"></div>`;
-  const watchItem  = `<button class="card-menu-item" onclick="toggleWatched('${entry.id}')">${watched ? eyeOffIcon : eyeIcon} ${watched ? 'Mark as unwatched' : 'Mark as watched'}</button>`;
-  const progItem   = watched ? '' : `<button class="card-menu-item" onclick="openProgressPopup('${escAttr(entry.id)}')">${progressIcon} Set Progress</button>`;
+  // Local-only entries have no valid save-data ID — suppress watch/progress items
+  const watchItem  = isLocalEntry ? '' : `<button class="card-menu-item" onclick="toggleWatched('${entry.id}')">${watched ? eyeOffIcon : eyeIcon} ${watched ? 'Mark as unwatched' : 'Mark as watched'}</button>`;
+  const progItem   = isLocalEntry || watched ? '' : `<button class="card-menu-item" onclick="openProgressPopup('${escAttr(entry.id)}')">${progressIcon} Set Progress</button>`;
   const tsItem     = (entry.timestamps && entry.timestamps.length > 0) ? `<button class="card-menu-item" onclick="openTimestamps('${escAttr(entry.id)}')">${timestampIcon} Timestamps</button>` : '';
   const summItem   = entry.summary ? `<button class="card-menu-item" onclick="openSummary('${escAttr(entry.id)}')">${summaryIcon} Summary</button>` : '';
 
@@ -1790,10 +1800,10 @@ function applyEditorLayer() {
   // 1. Remote entries (apply modifications; deleted entries stay in the array
   //    so they remain visible in the grid — they're just visually marked)
   const merged = remote
-    .map(e => editorLocal.modified[e.id] ? editorLocal.modified[e.id] : e);
+    .map(e => (editorMode && editorLocal.modified[e.id]) ? editorLocal.modified[e.id] : e);
 
-  // 2. Append locally-added entries
-  editorLocal.added.forEach(e => merged.push(e));
+  // 2. Append locally-added entries (only shown in editor mode)
+  if (editorMode) editorLocal.added.forEach(e => merged.push(e));
 
   allAppearances = merged;
   buildEntryMeta(allAppearances);
@@ -1833,6 +1843,52 @@ let editorTimestamps = [];    // array of timestamp draft objects
 
 // Drag state for VOD reordering
 let dragSrcIndex = null;
+
+// ── Open blank editor for a new entry ────────────────────────
+function openNewEntry() {
+  if (!editorMode) return;
+  closeCardMenu();
+
+  // Build a blank stub and add it to editorLocal.added temporarily
+  // with a unique placeholder ID so the editor can open it
+  const placeholderId = "";
+  const stub = {
+    id: placeholderId,
+    title: null,
+    date: null,
+    activities: [],
+    collab_partners: [],
+    games: [],
+    appearance_weight: 'Full',
+    safari: false,
+    summary: null,
+    vods: [],
+    timestamps: null,
+  };
+  editorLocal.added.push(stub);
+  // Don't call applyEditorLayer yet — we don't want the blank card visible
+  // until the user saves. Just open the editor directly.
+  appearancesById.set(placeholderId, stub);
+
+  editorEntryId   = placeholderId;
+  editorIsRemote  = false;
+  editorActiveTab = 'general';
+  editorVods      = [];
+  editorTimestamps = [];
+
+  populateEditorGeneral(stub);
+  populateEditorVods();
+  populateEditorTimestamps();
+  populateEditorOther(stub);
+  switchEditorTab('general');
+
+  document.getElementById('entry-editor-modal').style.display = '';
+  document.getElementById('editor-backdrop').style.display = '';
+  document.body.style.overflow = 'hidden';
+  document.getElementById('editor-modal-title').textContent = 'New Entry';
+  ensureEditorFlatpickr();
+  if (_editorFlatpickr) _editorFlatpickr.clear();
+}
 
 // ── Open editor ───────────────────────────────────────────────
 function openEntryEditor(entryId) {
@@ -1894,7 +1950,10 @@ function switchEditorTab(tab) {
 function populateEditorGeneral(entry) {
   document.getElementById('editor-id').value      = entry.id || '';
   document.getElementById('editor-title').value   = entry.title || '';
-  document.getElementById('editor-date').value    = entry.date || '';
+  const [ey = '', em = '', ed = ''] = (entry.date || '').split('-');
+  document.getElementById('editor-date-yyyy').value = ey;
+  document.getElementById('editor-date-mm').value   = em;
+  document.getElementById('editor-date-dd').value   = ed;
   document.getElementById('editor-safari').checked = !!entry.safari;
 
   // Weight
@@ -1972,6 +2031,8 @@ function handleTagInput(event, fieldKey) {
       if (first) {
         event.preventDefault();
         first.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+        // Re-show suggestions for the next tag after a short tick
+        setTimeout(() => showTagSuggestions(fieldKey, ''), 0);
         return;
       }
     }
@@ -1986,7 +2047,8 @@ function handleTagInput(event, fieldKey) {
       addEditorTag(fieldKey, typed);
       input.value = '';
     }
-    hideTagSuggestions();
+    // Re-show full suggestion list so user can keep picking without re-clicking
+    setTimeout(() => showTagSuggestions(fieldKey, ''), 0);
     return;
   }
 
@@ -2131,72 +2193,33 @@ function validateEditorId(value) {
 // ── Shared drag-to-reorder engine ────────────────────────────
 // Works for any list: pass the container, the data array to mutate, and a callback to re-render after a successful drop.
 // Rows must have [draggable="true"] on their handle child (.drag-handle),
-function bindDragList(container, dataArray, onReorder) {
-  let srcIndex = null;
-
-  function clearOver() {
-    container.querySelectorAll('.drag-row--over').forEach(r => r.classList.remove('drag-row--over'));
-  }
-
-  container.addEventListener('dragstart', e => {
-    const handle = e.target.closest('.drag-handle');
-    if (!handle) return;
-    const row = handle.closest('[data-drag-index]');
-    if (!row) return;
-    srcIndex = parseInt(row.dataset.dragIndex, 10);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', String(srcIndex));
-    e.dataTransfer.setDragImage(row, 20, row.offsetHeight / 2);
-    requestAnimationFrame(() => row.classList.add('vod-row--dragging'));
+function moveVodRow(index, direction) {
+  const newIndex = index + direction;
+  if (newIndex < 0 || newIndex >= editorVods.length) return;
+  const moved = editorVods.splice(index, 1)[0];
+  editorVods.splice(newIndex, 0, moved);
+  // Fix timestamp vod_index references
+  editorTimestamps = editorTimestamps.map(t => {
+    if (t.vod_index === index)    return { ...t, vod_index: newIndex };
+    if (direction === -1 && t.vod_index === newIndex) return { ...t, vod_index: index };
+    if (direction ===  1 && t.vod_index === newIndex) return { ...t, vod_index: index };
+    return t;
   });
+  renderVodList();
+  syncTimestampVodDropdowns();
+}
 
-  container.addEventListener('dragend', () => {
-    srcIndex = null;
-    container.querySelectorAll('.vod-row--dragging').forEach(r => r.classList.remove('vod-row--dragging'));
-    clearOver();
-  });
-
-  container.addEventListener('dragover', e => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    const row = e.target.closest('[data-drag-index]');
-    if (!row || !container.contains(row)) { clearOver(); return; }
-    const overIndex = parseInt(row.dataset.dragIndex, 10);
-    if (overIndex === srcIndex) { clearOver(); return; }
-    clearOver();
-    row.classList.add('drag-row--over');
-  });
-
-  container.addEventListener('dragleave', e => {
-    if (!container.contains(e.relatedTarget)) clearOver();
-  });
-
-  container.addEventListener('drop', e => {
-    e.preventDefault();
-    clearOver();
-    if (srcIndex === null) return;
-    const row = e.target.closest('[data-drag-index]');
-    if (!row) return;
-    const targetIndex = parseInt(row.dataset.dragIndex, 10);
-    if (targetIndex === srcIndex) { srcIndex = null; return; }
-    const moved = dataArray.splice(srcIndex, 1)[0];
-    const insertAt = targetIndex > srcIndex ? targetIndex - 1 : targetIndex;
-    dataArray.splice(insertAt, 0, moved);
-    srcIndex = null;
-    onReorder();
-  });
+function moveTsRow(index, direction) {
+  const newIndex = index + direction;
+  if (newIndex < 0 || newIndex >= editorTimestamps.length) return;
+  const moved = editorTimestamps.splice(index, 1)[0];
+  editorTimestamps.splice(newIndex, 0, moved);
+  renderTimestampList();
 }
 
 // ── VODs tab ──────────────────────────────────────────────────
 function populateEditorVods() {
   renderVodList();
-  // Bind drag once on the container — survives innerHTML re-renders because
-  // all handlers use event delegation (e.target.closest).
-  bindDragList(
-    document.getElementById('editor-vods-list'),
-    editorVods,
-    () => { renderVodList(); syncTimestampVodDropdowns(); }
-  );
 }
 
 function renderVodList() {
@@ -2225,9 +2248,14 @@ function buildVodRow(vod, index) {
 
   return `
     <div class="vod-row" data-drag-index="${index}">
-      <div class="vod-row-handle drag-handle" draggable="true" title="Drag to reorder">
+      <div class="vod-row-handle">
         <span class="vod-index-badge">${index}</span>
-        <svg width="12" height="20" viewBox="0 0 12 20" fill="currentColor"><circle cx="4" cy="2" r="1.5"/><circle cx="4" cy="7" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="4" cy="17" r="1.5"/><circle cx="9" cy="2" r="1.5"/><circle cx="9" cy="7" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="17" r="1.5"/></svg>
+        <button class="row-move-btn" onclick="moveVodRow(${index},-1)" title="Move up" ${index === 0 ? 'disabled' : ''}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+        <button class="row-move-btn" onclick="moveVodRow(${index},1)" title="Move down" ${index === editorVods.length - 1 ? 'disabled' : ''}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
       </div>
       <div class="vod-row-fields">
         <div class="vod-field vod-field--title">
@@ -2348,11 +2376,6 @@ function refreshVodStreamerOptions() {
 // ── Timestamps tab ────────────────────────────────────────────
 function populateEditorTimestamps() {
   renderTimestampList();
-  bindDragList(
-    document.getElementById('editor-timestamps-list'),
-    editorTimestamps,
-    () => renderTimestampList()
-  );
 }
 
 function renderTimestampList() {
@@ -2374,26 +2397,35 @@ function buildTimestampRow(ts, index) {
 
   return `
     <div class="ts-row" data-drag-index="${index}">
-      <div class="ts-drag-handle drag-handle" draggable="true" title="Drag to reorder">
-        <svg width="12" height="20" viewBox="0 0 12 20" fill="currentColor"><circle cx="4" cy="2" r="1.5"/><circle cx="4" cy="7" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="4" cy="17" r="1.5"/><circle cx="9" cy="2" r="1.5"/><circle cx="9" cy="7" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="17" r="1.5"/></svg>
+      <div class="ts-move-btns">
+        <button class="row-move-btn" onclick="moveTsRow(${index},-1)" title="Move up" ${index === 0 ? 'disabled' : ''}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+        <button class="row-move-btn" onclick="moveTsRow(${index},1)" title="Move down" ${index === editorTimestamps.length - 1 ? 'disabled' : ''}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
       </div>
-      <div class="ts-field ts-field--title">
-        <label class="vod-field-label">Title</label>
-        <input class="vod-input vod-input--scrollable" type="text" value="${escAttr(ts.title || '')}"
-          placeholder="e.g. That's the eject button, Layna."
-          onchange="updateTsField(${index},'title',this.value)">
+      <div class="ts-row-fields">
+        <div class="ts-field ts-field--title">
+          <label class="vod-field-label">Title</label>
+          <input class="vod-input vod-input--scrollable" type="text" value="${escAttr(ts.title || '')}"
+            placeholder="e.g. That's the eject button, Layna."
+            onchange="updateTsField(${index},'title',this.value)">
+        </div>
+        <div class="ts-row-lower">
+          <div class="ts-field ts-field--time">
+            <label class="vod-field-label">Timestamp</label>
+            ${buildHmsInput(`ts-time-${index}`, hms, `onTsHmsChange(${index})`)}
+          </div>
+          <div class="ts-field ts-field--vod">
+            <label class="vod-field-label">VOD #</label>
+            <select class="vod-select ts-vod-select" onchange="updateTsField(${index},'vod_index',parseInt(this.value))">
+              ${vodOptions}
+            </select>
+          </div>
+        </div>
       </div>
-      <div class="ts-field ts-field--time">
-        <label class="vod-field-label">Timestamp</label>
-        ${buildHmsInput(`ts-time-${index}`, hms, `onTsHmsChange(${index})`)}
-      </div>
-      <div class="ts-field ts-field--vod">
-        <label class="vod-field-label">VOD #</label>
-        <select class="vod-select ts-vod-select" onchange="updateTsField(${index},'vod_index',parseInt(this.value))">
-          ${vodOptions}
-        </select>
-      </div>
-      <button class="vod-remove-btn" onclick="removeTsRow(${index})" title="Remove timestamp">
+      <button class="vod-remove-btn ts-remove-btn" onclick="removeTsRow(${index})" title="Remove timestamp">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -2455,7 +2487,7 @@ function readEditorForm() {
   return {
     id:                document.getElementById('editor-id').value.trim(),
     title:             document.getElementById('editor-title').value.trim() || null,
-    date:              document.getElementById('editor-date').value.trim() || null,
+    date:              readEditorDate(),
     activities:        getEditorTags('activities'),
     collab_partners:   getEditorTags('collab_partners'),
     games:             getEditorTags('games'),
@@ -2467,32 +2499,108 @@ function readEditorForm() {
   };
 }
 
-// ── Save ──────────────────────────────────────────────────────
-function saveEditorEntry() {
-  const entry = readEditorForm();
+// ── Validation ────────────────────────────────────────────────
+function clearEditorValidationErrors() {
+  document.querySelectorAll('.editor-field--error').forEach(el => el.classList.remove('editor-field--error'));
+  document.querySelectorAll('.vod-input--error, .vod-select--error').forEach(el => el.classList.remove('vod-input--error', 'vod-select--error'));
+  const errEl = document.getElementById('editor-save-error');
+  if (errEl) errEl.style.display = 'none';
+}
 
-  // Validate ID
+function showEditorSaveError(msg) {
+  const errEl = document.getElementById('editor-save-error');
+  if (!errEl) return;
+  errEl.textContent = msg;
+  errEl.style.display = '';
+}
+
+function validateEditorForm(entry) {
+  const errors = []; // { tab, message, focusId? }
+
+  // ID
   if (!validateEditorId(entry.id)) {
-    switchEditorTab('general');
-    document.getElementById('editor-id').focus();
-    return;
+    errors.push({ tab: 'general', message: 'Entry ID is missing or invalid.', focusId: 'editor-id' });
   }
 
-  // Validate at least one VOD
+  // Date — year is the minimum requirement
+  if (!document.getElementById('editor-date-yyyy').value.trim()) {
+    document.getElementById('editor-date-yyyy').classList.add('editor-field--error');
+    errors.push({ tab: 'general', message: 'Date is required (at least a year).' });
+  }
+
+  // Appearance weight — one must be active
+  if (!document.querySelector('.weight-option.active')) {
+    errors.push({ tab: 'general', message: 'Appearance Weight must be selected.' });
+  }
+
+  // At least one activity tag
+  if (!getEditorTags('activities').length) {
+    document.getElementById('editor-tagfield-activities').classList.add('editor-field--error');
+    errors.push({ tab: 'general', message: 'At least one Activity tag is required.' });
+  }
+
+  // At least one collab partner
+  if (!getEditorTags('collab_partners').length) {
+    document.getElementById('editor-tagfield-collab_partners').classList.add('editor-field--error');
+    errors.push({ tab: 'general', message: 'At least one Collab Partner is required.' });
+  }
+
+  // VODs
   if (!entry.vods.length) {
-    switchEditorTab('vods');
-    alert('An entry needs at least one VOD.');
+    errors.push({ tab: 'vods', message: 'At least one VOD is required.' });
+  } else {
+    entry.vods.forEach((vod, i) => {
+      // Streamer
+      if (!vod.streamer) {
+        const sel = document.querySelector(`[data-drag-index="${i}"].vod-row .vod-select`);
+        if (sel) sel.classList.add('vod-select--error');
+        errors.push({ tab: 'vods', message: `VOD ${i}: Streamer must be selected.` });
+      }
+      // Video ID
+      if (!vod.video_id || !vod.video_id.trim()) {
+        const inp = document.querySelector(`[data-drag-index="${i}"].vod-row .vod-field--videoid .vod-input`);
+        if (inp) inp.classList.add('vod-input--error');
+        errors.push({ tab: 'vods', message: `VOD ${i}: Video ID is required.` });
+      }
+      // Start time
+      if (vod.timestamp_seconds == null) {
+        const startEl = document.getElementById(`vod-start-${i}`);
+        if (startEl) startEl.classList.add('editor-field--error');
+        errors.push({ tab: 'vods', message: `VOD ${i}: Start time is required.` });
+      }
+      // End time
+      if (vod.timestamp_end_seconds == null) {
+        const endEl = document.getElementById(`vod-end-${i}`);
+        if (endEl) endEl.classList.add('editor-field--error');
+        errors.push({ tab: 'vods', message: `VOD ${i}: End time is required.` });
+      }
+    });
+  }
+
+  return errors;
+}
+
+// ── Save ──────────────────────────────────────────────────────
+function saveEditorEntry() {
+  clearEditorValidationErrors();
+  const entry = readEditorForm();
+  const errors = validateEditorForm(entry);
+
+  if (errors.length) {
+    // Switch to the tab of the first error
+    switchEditorTab(errors[0].tab);
+    if (errors[0].focusId) document.getElementById(errors[0].focusId)?.focus();
+    // Show summary message in footer
+    showEditorSaveError(`Not all required (*) fields are filled. ${errors[0].message}`);
     return;
   }
 
   // Apply to local layer
   if (editorIsRemote) {
-    editorLocal.modified[entry.id] = entry;
-    // If the ID changed, also update the modified key and remove the old one
-    if (entry.id !== editorEntryId) {
-      editorLocal.modified[entry.id] = entry;
-      delete editorLocal.modified[editorEntryId];
-    }
+    // Always key by the original ID so applyEditorLayer can find and replace
+    // the correct remote entry. The entry object itself may have a new .id
+    // set by the user, but the lookup must match the remote entry's original id.
+    editorLocal.modified[editorEntryId] = entry;
   } else {
     // Local-only: find and replace in added array
     const idx = editorLocal.added.findIndex(e => e.id === editorEntryId);
@@ -2548,6 +2656,16 @@ function editorRevertToOriginal() {
   closeEntryEditor(true);
 }
 
+function readEditorDate() {
+  const y = document.getElementById('editor-date-yyyy').value.trim();
+  const m = document.getElementById('editor-date-mm').value.trim();
+  const d = document.getElementById('editor-date-dd').value.trim();
+  if (!y) return null;
+  const mm = m ? m.padStart(2, '0') : '01';
+  const dd = d ? d.padStart(2, '0') : '01';
+  return `${y}-${mm}-${dd}`;
+}
+
 function selectWeight(btn) {
   document.querySelectorAll('.weight-option').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -2564,7 +2682,10 @@ function ensureEditorFlatpickr() {
     dateFormat: 'Y-m-d',
     minDate: '2023-01-01',
     onChange: (selectedDates, dateStr) => {
-      document.getElementById('editor-date').value = dateStr;
+      const [y, m, d] = dateStr.split('-');
+      document.getElementById('editor-date-yyyy').value = y || '';
+      document.getElementById('editor-date-mm').value   = m || '';
+      document.getElementById('editor-date-dd').value   = d || '';
     },
   });
   document.getElementById('editor-cal-btn').addEventListener('click', e => {
@@ -2580,7 +2701,7 @@ function initEditorOnOpen(entryId) {
   }
   ensureEditorFlatpickr();
   if (_editorFlatpickr) {
-    const dateVal = document.getElementById('editor-date').value;
+    const dateVal = readEditorDate();
     if (dateVal) _editorFlatpickr.setDate(dateVal, false);
     else _editorFlatpickr.clear();
   }
