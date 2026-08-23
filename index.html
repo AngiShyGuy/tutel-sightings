@@ -170,6 +170,11 @@
         </button>
       </div>
 
+      <div class="sidebar-meta-btns">
+        <button class="sidebar-meta-btn" onclick="openSettings()">Settings</button>
+        <button class="sidebar-meta-btn" onclick="openModal()">About</button>
+      </div>
+
     </aside>
 
     <section class="content-area">
@@ -207,10 +212,6 @@
   <footer class="site-footer">
     <div class="footer-inner">
       <span class="footer-credit">Made with ❤️ by AngiShyGuy</span>
-      <div class="footer-actions">
-        <button class="footer-about-btn" onclick="openSettings()">Settings</button>
-        <button class="footer-about-btn" onclick="openModal()">About</button>
-      </div>
     </div>
   </footer>
 
@@ -441,9 +442,6 @@
         <span class="summary-popup-label">Edit Entry</span>
         <span class="entry-editor-title" id="editor-modal-title">Sighting</span>
       </div>
-      <button class="modal-close" onclick="closeEntryEditor()" aria-label="Close editor">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
     </div>
 
     <!-- Tabs -->
@@ -464,9 +462,9 @@
             <input class="editor-input editor-input--mono" id="editor-id" type="text"
               placeholder="unique-kebab-case-id"
               oninput="validateEditorId(this.value)">
-            <span class="editor-id-indicator" id="editor-id-indicator"></span>
             <button class="editor-autoid-btn" onclick="autoGenerateId()" title="Auto-generate ID from title/partners">Auto</button>
           </div>
+          <span class="editor-id-indicator" id="editor-id-indicator"></span>
         </div>
         <div class="editor-field editor-field--title">
           <label class="editor-label" for="editor-title">Title <span class="editor-label-note">(override — leave blank to use VOD title)</span></label>
@@ -607,7 +605,7 @@
     <div class="entry-editor-footer">
       <span class="editor-required-legend"><span class="editor-required">*</span> Required</span>
       <span class="editor-save-error" id="editor-save-error" style="display:none"></span>
-      <button class="editor-cancel-btn" onclick="closeEntryEditor()">Cancel</button>
+      <button class="editor-cancel-btn" id="editor-cancel-btn" data-confirming="false" onclick="closeEntryEditor()">Cancel</button>
       <button class="editor-save-btn" onclick="saveEditorEntry()">Save Entry</button>
     </div>
 

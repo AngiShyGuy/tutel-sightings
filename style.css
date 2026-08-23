@@ -581,6 +581,37 @@ span.flatpickr-weekday { background: transparent !important; }
 @media (hover: hover) and (pointer: fine) {
   .clear-all-btn:hover { color: var(--text-primary); background: var(--bg-raised); }
 }
+
+/* Sidebar Settings / About buttons */
+.sidebar-meta-btns {
+  display: flex;
+  gap: 6px;
+  padding: 12px 0 4px;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+.sidebar-meta-btn {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  text-align: center;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sidebar-meta-btn:hover {
+    background: var(--bg-raised);
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+  }
+}
+
 /* --- Card Grid --- */
 .card-grid {
   display: grid;
@@ -2045,12 +2076,13 @@ span.flatpickr-weekday { background: transparent !important; }
   .editor-autoid-btn:hover { background: var(--bg-card); color: var(--text-primary); }
 }
 .editor-id-indicator {
-  font-size: 12px;
+  font-size: 11px;
   font-family: var(--font-mono);
-  font-weight: 600;
-  line-height: 1;
-  flex-shrink: 0;
-  /* sits between the input and the Auto button inside .editor-id-wrap */
+  font-weight: 500;
+  line-height: 1.4;
+  min-height: 16px;
+  display: block;
+  margin-top: 3px;
 }
 .editor-id-indicator--ok    { color: var(--green); }
 .editor-id-indicator--error { color: #f87171; }

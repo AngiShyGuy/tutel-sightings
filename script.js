@@ -386,7 +386,7 @@ function renderStats() {
 // ── Card rendering ────────────────────────────────────────────
 function getCardTitle(entry) {
   if (entry.title) return entry.title;
-  if (entry.vods.length === 1 && entry.vods[0].vod_title) return entry.vods[0].vod_title;
+  if (entry.vods.length && entry.vods[0].vod_title) return entry.vods[0].vod_title;
   return entry.id;
 }
 
@@ -1740,8 +1740,17 @@ function toggleEditorMode() {
 }
 
 function exportAppearancesJson() {
-  // Build the full merged array sorted by date (nulls last)
-  const merged = [...allAppearances].sort((a, b) => {
+  // Build the export array: remote data with modifications applied, deleted entries
+  // removed, and locally-added entries appended — sorted by date (nulls last).
+  const remote = applyEditorLayer._remote || [];
+  const merged = [
+    // Remote entries: apply modifications, skip deleted
+    ...remote
+      .filter(e => !editorLocal.deleted.has(e.id))
+      .map(e => editorLocal.modified[e.id] ?? e),
+    // Locally-added entries
+    ...editorLocal.added,
+  ].sort((a, b) => {
     if (!a.date && !b.date) return 0;
     if (!a.date) return 1;
     if (!b.date) return -1;
@@ -1923,9 +1932,23 @@ function openEntryEditor(entryId) {
 }
 
 function closeEntryEditor(force = false) {
-  if (!force && editorHasUnsavedChanges()) {
-    if (!confirm('Close the editor? Any unsaved changes will be lost.')) return;
+  if (!force) {
+    const btn = document.getElementById('editor-cancel-btn');
+    if (btn && btn.dataset.confirming !== 'true') {
+      btn.textContent = 'Are you sure?';
+      btn.dataset.confirming = 'true';
+      setTimeout(() => {
+        if (btn.dataset.confirming === 'true') {
+          btn.textContent = 'Cancel';
+          btn.dataset.confirming = 'false';
+        }
+      }, 3000);
+      return;
+    }
   }
+  // Actually close
+  const btn = document.getElementById('editor-cancel-btn');
+  if (btn) { btn.textContent = 'Cancel'; btn.dataset.confirming = 'false'; }
   document.getElementById('entry-editor-modal').style.display = 'none';
   document.getElementById('editor-backdrop').style.display = 'none';
   document.body.style.overflow = '';
