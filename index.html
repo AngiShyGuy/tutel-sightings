@@ -32,7 +32,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/themes/dark.min.css" />
-  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-picker@2.12.3/dist/vanilla-picker.min.css">
+
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐢</text></svg>">
   <link rel="manifest" href="manifest.json" />
 
@@ -174,6 +175,9 @@
         <button class="sidebar-meta-btn" onclick="openSettings()">Settings</button>
         <button class="sidebar-meta-btn" onclick="openModal()">About</button>
       </div>
+      <div class="sidebar-meta-btns sidebar-editor-btns" id="sidebar-editor-btns" style="display:none">
+        <button class="sidebar-meta-btn sidebar-meta-btn--editor" onclick="openColorsEditor()" style="width:100%">Edit Colors</button>
+      </div>
 
     </aside>
 
@@ -253,7 +257,7 @@
         <div class="settings-toggle-row">
           <div>
             <p class="modal-text" style="margin:0">Enable Editor Mode</p>
-            <p class="modal-text" style="margin:4px 0 0; opacity:0.6; font-size:12px">Adds an Edit Entry option to every stream card's ··· menu and a New Entry button at the top. Changes are saved locally in your browser until exported.</p>
+            <p class="modal-text" style="margin:4px 0 0; opacity:0.6; font-size:12px">Adds an Edit Entry option to every stream card's ··· menu and a New Entry button at the top. Changes are saved locally in your browser until exported. Disabling Editor Mode will hide all local changes.</p>
           </div>
           <button class="settings-toggle" id="editor-mode-toggle" role="switch" aria-checked="false" onclick="toggleEditorMode()">
             <span class="settings-toggle-thumb"></span>
@@ -266,6 +270,10 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Export appearances.json
           </button>
+          <button class="settings-action-btn" onclick="exportColorsJson()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export colors.json
+          </button>
         </div>
         <p class="modal-section-label" style="margin-top:16px">Clear editor data</p>
         <p class="modal-text">Permanently delete all local edits — new entries, modifications, and deletions. This cannot be undone.</p>
@@ -274,6 +282,55 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
             Clear all editor data
           </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+    <!-- Colors Editor backdrop -->
+  <div id="colors-editor-backdrop" style="display:none" class="editor-backdrop"></div>
+
+  <!-- Colors Editor Modal -->
+  <div id="colors-editor-modal" style="display:none" class="colors-editor-modal" role="dialog" aria-modal="true">
+    <div class="colors-editor-header">
+      <div class="entry-editor-header-left">
+        <span class="summary-popup-label">Editor Mode</span>
+        <span class="entry-editor-title">Edit Colors</span>
+      </div>
+      <button class="modal-close" onclick="closeColorsEditor()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="colors-editor-body">
+
+      <!-- Left: tag browser -->
+      <div class="colors-tag-browser" id="colors-tag-browser">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Right: color picker -->
+      <div class="colors-picker-panel" id="colors-picker-panel">
+        <div class="colors-no-selection" id="colors-no-selection">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.3"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+          <p>Select a tag to edit its color</p>
+        </div>
+        <div class="colors-picker-active" id="colors-picker-active" style="display:none">
+          <div class="colors-picker-tag-preview" id="colors-picker-tag-preview"></div>
+          <div id="colors-picker-mount"></div>
+          <div class="colors-hex-row">
+            <label class="vod-field-label">Hex</label>
+            <div style="display:flex;gap:6px;align-items:center">
+              <span class="colors-original-swatch" id="colors-original-swatch" title="Original color"></span>
+              <input class="colors-hex-input editor-input editor-input--mono" id="colors-hex-input" type="text" maxlength="7" placeholder="#rrggbb" oninput="onColorsHexInput(this.value)">
+              <button class="editor-save-btn" style="padding:7px 14px;font-size:12px" onclick="applyColorChange()">Apply</button>
+            </div>
+          </div>
+          <div class="colors-picker-actions">
+            <button class="editor-revert-btn" id="colors-revert-btn" onclick="revertColorChange()">Revert to original</button>
+            <button class="editor-danger-btn" id="colors-delete-btn" onclick="toggleColorDeletion()">Mark for deletion</button>
+          </div>
         </div>
       </div>
 
@@ -612,6 +669,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-picker@2.12.3/dist/vanilla-picker.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

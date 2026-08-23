@@ -50,6 +50,8 @@ async function init() {
     applyEditorLayer._remote = [...allAppearances];
     // Guard against colors.json being accidentally wrapped in an outer array
     colors = Array.isArray(colorData) ? colorData[0] : colorData;
+    // Store pristine remote snapshot for the colors editor (revert/export)
+    _remoteColors = JSON.parse(JSON.stringify(colors));
     loadStateFromURL();
   } catch (e) {
     console.error('Failed to load data:', e);
@@ -192,6 +194,12 @@ function buildEntryMeta(entries) {
 
 // ── Color helpers ─────────────────────────────────────────────
 function getColor(category, key) {
+  if (editorMode) {
+    const localKey = `${category}::${key}`;
+    if (colorsLocal.deleted.includes(localKey)) return colors.fallback || '#4B5563';
+    if (colorsLocal.modified[localKey]) return colorsLocal.modified[localKey];
+    if (colorsLocal.added[localKey])    return colorsLocal.added[localKey];
+  }
   return (colors[category] && colors[category][key]) || colors.fallback || '#4B5563';
 }
 
@@ -1734,6 +1742,9 @@ function toggleEditorMode() {
   const toggle = document.getElementById('editor-mode-toggle');
   toggle.classList.toggle('settings-toggle--on', editorMode);
   toggle.setAttribute('aria-checked', String(editorMode));
+  // Show/hide the Edit Colors sidebar button
+  const editorBtns = document.getElementById('sidebar-editor-btns');
+  if (editorBtns) editorBtns.style.display = editorMode ? '' : 'none';
   // Re-merge and re-render so editor visual markers (deleted/modified/new)
   // appear or disappear without closing the settings popup
   applyEditorLayer();
@@ -1770,7 +1781,13 @@ function clearEditorData() {
     editorLocal.modified = {};
     editorLocal.deleted  = new Set();
     saveEditorLocal();
+    colorsLocal.modified = {};
+    colorsLocal.added    = {};
+    colorsLocal.deleted  = [];
+    saveColorsLocal();
     applyEditorLayer();
+    buildFilterSidebar();
+    render();
     btn.textContent        = 'Clear all editor data';
     btn.dataset.confirming = 'false';
     btn.classList.remove('confirming');
@@ -1787,9 +1804,6 @@ function clearEditorData() {
     }, 3000);
   }
 }
-
-// ── Go ────────────────────────────────────────────────────────
-init();
 
 // ═══════════════════════════════════════════════════════════════
 //  ENTRY EDITOR — full modal logic
@@ -2729,3 +2743,386 @@ function initEditorOnOpen(entryId) {
     else _editorFlatpickr.clear();
   }
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  COLORS EDITOR
+// ═══════════════════════════════════════════════════════════════
+
+// ── Colors local storage layer ────────────────────────────────
+const COLORS_STORAGE_KEY = 'tutel-colors-local';
+
+function loadColorsLocal() {
+  try {
+    const raw = localStorage.getItem(COLORS_STORAGE_KEY);
+    if (!raw) return { modified: {}, added: {}, deleted: [] };
+    const p = JSON.parse(raw);
+    return {
+      modified: p.modified && typeof p.modified === 'object' ? p.modified : {},
+      added:    p.added    && typeof p.added    === 'object' ? p.added    : {},
+      deleted:  Array.isArray(p.deleted) ? p.deleted : [],
+    };
+  } catch { return { modified: {}, added: {}, deleted: [] }; }
+}
+
+function saveColorsLocal() {
+  localStorage.setItem(COLORS_STORAGE_KEY, JSON.stringify(colorsLocal));
+}
+
+const colorsLocal = loadColorsLocal();
+
+// Store the remote colors snapshot for revert/export (set during init)
+let _remoteColors = null;
+
+function getRemoteColor(category, key) {
+  if (!_remoteColors) return null;
+  return (_remoteColors[category] && _remoteColors[category][key]) || null;
+}
+
+// ── Colors export ─────────────────────────────────────────────
+function exportColorsJson() {
+  if (!_remoteColors) return;
+  // Deep-clone remote, apply local layer
+  const out = JSON.parse(JSON.stringify(_remoteColors));
+  const EXCLUDED = new Set(['fallback', 'appearance_weight']);
+
+  // Apply modifications and additions
+  Object.entries(colorsLocal.modified).forEach(([k, hex]) => {
+    const [cat, tag] = k.split('::');
+    if (EXCLUDED.has(cat)) return;
+    if (!out[cat]) out[cat] = {};
+    out[cat][tag] = hex;
+  });
+  Object.entries(colorsLocal.added).forEach(([k, hex]) => {
+    const [cat, tag] = k.split('::');
+    if (EXCLUDED.has(cat)) return;
+    if (!out[cat]) out[cat] = {};
+    out[cat][tag] = hex;
+  });
+  // Remove deletions
+  colorsLocal.deleted.forEach(k => {
+    const [cat, tag] = k.split('::');
+    if (out[cat]) delete out[cat][tag];
+  });
+  // Sort each category alphabetically
+  const CATS = ['activities', 'games', 'collab_partners'];
+  CATS.forEach(cat => {
+    if (out[cat]) {
+      out[cat] = Object.fromEntries(
+        Object.entries(out[cat]).sort(([a], [b]) => a.toLowerCase().localeCompare(b.toLowerCase()))
+      );
+    }
+  });
+
+  const data = JSON.stringify(out, null, 2);
+  const url = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+  const a = Object.assign(document.createElement('a'), { href: url, download: 'colors.json' });
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── Colors editor modal state ─────────────────────────────────
+const COLORS_CATEGORIES = [
+  { key: 'activities',      label: 'Activities' },
+  { key: 'games',           label: 'Games' },
+  { key: 'collab_partners', label: 'Collab Partners' },
+];
+const COLORS_COLLAPSED = new Set(); // category keys that are collapsed
+
+let selectedColorKey = null; // "category::tag" or null
+let _colorPicker     = null; // vanilla-picker instance
+let _pickerSuppressCallback = false;
+
+function openColorsEditor() {
+  renderColorsBrowser();
+  colorsShowBrowser();
+  document.getElementById('colors-editor-modal').style.display = '';
+  document.getElementById('colors-editor-backdrop').style.display = '';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeColorsEditor() {
+  document.getElementById('colors-editor-modal').style.display = 'none';
+  document.getElementById('colors-editor-backdrop').style.display = 'none';
+  document.body.style.overflow = '';
+  selectedColorKey = null;
+}
+
+// ── Tag browser ───────────────────────────────────────────────
+function renderColorsBrowser() {
+  const container = document.getElementById('colors-tag-browser');
+  container.innerHTML = COLORS_CATEGORIES.map(cat => {
+    const collapsed = COLORS_COLLAPSED.has(cat.key);
+    // Gather tags: remote tags + locally added
+    const remoteTags = _remoteColors && _remoteColors[cat.key]
+      ? Object.keys(_remoteColors[cat.key])
+      : [];
+    const addedTags = Object.keys(colorsLocal.added)
+      .filter(k => k.startsWith(cat.key + '::'))
+      .map(k => k.slice(cat.key.length + 2));
+    const allTags = [...new Set([...remoteTags, ...addedTags])]
+      .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+
+    const tagItems = allTags.map(tag => {
+      const localKey = `${cat.key}::${tag}`;
+      const isDeleted  = colorsLocal.deleted.includes(localKey);
+      const isModified = !isDeleted && !!colorsLocal.modified[localKey];
+      const isNew      = !!colorsLocal.added[localKey];
+      const currentColor = getColor(cat.key, tag);
+      const isSelected = selectedColorKey === localKey;
+
+      let indicators = '';
+      if (isNew)      indicators += `<span class="ctag-indicator ctag-indicator--new" title="New tag"></span>`;
+      else if (isModified) indicators += `<span class="ctag-indicator ctag-indicator--modified" title="Modified"></span>`;
+      if (isDeleted)  indicators += `<span class="ctag-indicator ctag-indicator--deleted" title="Marked for deletion"></span>`;
+
+      return `<button class="ctag-item${isSelected ? ' ctag-item--active' : ''}${isDeleted ? ' ctag-item--deleted' : ''}"
+        onclick="selectColorTag('${escAttr(localKey)}')" title="${escAttr(tag)}">
+        <span class="ctag-dot" style="background:${currentColor}"></span>
+        <span class="ctag-name">${escHtml(tag)}</span>
+        ${indicators}
+      </button>`;
+    }).join('');
+
+    return `
+      <div class="ctag-section">
+        <button class="ctag-section-header" onclick="toggleColorsSection('${cat.key}')">
+          <svg class="ctag-chevron${collapsed ? ' ctag-chevron--collapsed' : ''}" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          ${escHtml(cat.label)}
+          <span class="ctag-section-count">${allTags.length}</span>
+        </button>
+        <div class="ctag-list${collapsed ? ' ctag-list--collapsed' : ''}">
+          ${tagItems}
+          <button class="ctag-add-btn" onclick="promptAddColorTag('${escAttr(cat.key)}')">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add tag
+          </button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleColorsSection(catKey) {
+  if (COLORS_COLLAPSED.has(catKey)) COLORS_COLLAPSED.delete(catKey);
+  else COLORS_COLLAPSED.add(catKey);
+  renderColorsBrowser();
+}
+
+function selectColorTag(localKey) {
+  selectedColorKey = localKey;
+  renderColorsBrowser();
+  showColorsPickerForKey(localKey);
+  // On mobile, switch to picker view
+  if (window.innerWidth <= 650) colorsShowPicker();
+}
+
+function promptAddColorTag(catKey) {
+  const name = prompt(`New tag name for "${COLORS_CATEGORIES.find(c=>c.key===catKey)?.label}":`);
+  if (!name || !name.trim()) return;
+  const tag = name.trim();
+  const localKey = `${catKey}::${tag}`;
+  if (colorsLocal.added[localKey] || (
+    _remoteColors && _remoteColors[catKey] && _remoteColors[catKey][tag]
+  )) {
+    alert('That tag already exists.');
+    return;
+  }
+  // Add with a neutral default color
+  colorsLocal.added[localKey] = colors.fallback || '#838c9e';
+  saveColorsLocal();
+  selectedColorKey = localKey;
+  renderColorsBrowser();
+  showColorsPickerForKey(localKey);
+  refreshAfterColorChange();
+}
+
+// ── Color picker panel ────────────────────────────────────────
+function showColorsPickerForKey(localKey) {
+  const [cat, tag] = localKey.split('::');
+  const currentColor = getColor(cat, tag);
+  const remoteColor  = getRemoteColor(cat, tag);
+  const isDeleted    = colorsLocal.deleted.includes(localKey);
+  const isModified   = !!colorsLocal.modified[localKey];
+  const isNew        = !!colorsLocal.added[localKey];
+
+  document.getElementById('colors-no-selection').style.display = 'none';
+  document.getElementById('colors-picker-active').style.display = '';
+
+  // Tag preview chip
+  const chipColor = currentColor;
+  document.getElementById('colors-picker-tag-preview').innerHTML =
+    `<span class="editor-tag-chip" style="background:${chipColor}22;color:${chipColor};border:1px solid ${chipColor}44;font-size:13px;padding:4px 12px;border-radius:999px">${escHtml(tag)}</span>`;
+
+  // Original swatch
+  const swatchEl = document.getElementById('colors-original-swatch');
+  if (remoteColor && (isModified)) {
+    swatchEl.style.background = remoteColor;
+    swatchEl.style.display = 'inline-block';
+    swatchEl.title = `Original: ${remoteColor}`;
+  } else {
+    swatchEl.style.display = 'none';
+  }
+
+  // Hex input
+  document.getElementById('colors-hex-input').value = currentColor.toUpperCase();
+
+  // Revert button — only shown for remote tags that have local modifications
+  const revertBtn = document.getElementById('colors-revert-btn');
+  revertBtn.style.display = (isModified && remoteColor) ? '' : 'none';
+  revertBtn.disabled = false;
+
+  // Delete button
+  const deleteBtn = document.getElementById('colors-delete-btn');
+  if (isNew) {
+    // New tags get a hard delete (removes from added entirely)
+    deleteBtn.style.display = '';
+    deleteBtn.textContent = 'Delete tag';
+    deleteBtn.onclick = deleteNewColorTag;
+  } else {
+    // Remote tags get soft delete (marks for deletion, reversible)
+    deleteBtn.style.display = '';
+    deleteBtn.textContent = isDeleted ? 'Unmark for deletion' : 'Mark for deletion';
+    deleteBtn.onclick = toggleColorDeletion;
+  }
+
+  // Init or update vanilla-picker
+  initOrUpdatePicker(currentColor);
+}
+
+function initOrUpdatePicker(hexColor) {
+  const mount = document.getElementById('colors-picker-mount');
+  if (_colorPicker) {
+    _colorPicker.destroy();
+    _colorPicker = null;
+    mount.innerHTML = '';
+  }
+  _colorPicker = new Picker({
+    parent:  mount,
+    popup:   false,
+    alpha:   false,
+    editor:  false,
+    color:   hexColor,
+    onChange: (color) => {
+      if (_pickerSuppressCallback) return;
+      const hex = color.hex.slice(0, 7).toUpperCase();
+      document.getElementById('colors-hex-input').value = hex;
+      updatePickerPreview(hex);
+    },
+  });
+  // Strip out the built-in UI elements we've replaced with our own: editor input, sample swatch, OK button, alpha slider
+  ['.picker_editor', '.picker_sample', '.picker_done', '.picker_alpha'].forEach(sel => {
+    mount.querySelector(sel)?.remove();
+  });
+}
+
+function onColorsHexInput(val) {
+  if (!val.startsWith('#')) val = '#' + val;
+  if (!/^#[0-9a-fA-F]{6}$/.test(val)) return; // wait until complete
+  // Update picker without triggering onChange loop
+  _pickerSuppressCallback = true;
+  if (_colorPicker) _colorPicker.setColor(val, false);
+  _pickerSuppressCallback = false;
+  updatePickerPreview(val);
+}
+
+function updatePickerPreview(hex) {
+  // Update tag preview chip live
+  const [, tag] = (selectedColorKey || '::').split('::');
+  document.getElementById('colors-picker-tag-preview').innerHTML =
+    `<span class="editor-tag-chip" style="background:${hex}22;color:${hex};border:1px solid ${hex}44;font-size:13px;padding:4px 12px;border-radius:999px">${escHtml(tag)}</span>`;
+}
+
+function applyColorChange() {
+  if (!selectedColorKey) return;
+  const hex = document.getElementById('colors-hex-input').value.trim().toUpperCase();
+  if (!/^#[0-9a-fA-F]{6}$/.test(hex)) return;
+  const [cat, tag] = selectedColorKey.split('::');
+  const isNew = !!colorsLocal.added[selectedColorKey];
+
+  if (isNew) {
+    colorsLocal.added[selectedColorKey] = hex;
+  } else {
+    colorsLocal.modified[selectedColorKey] = hex;
+  }
+  saveColorsLocal();
+  refreshAfterColorChange();
+  renderColorsBrowser();
+  showColorsPickerForKey(selectedColorKey); // refresh revert/delete button states
+}
+
+function revertColorChange() {
+  if (!selectedColorKey) return;
+  const isNew = !!colorsLocal.added[selectedColorKey];
+  if (isNew) {
+    // Revert a new tag = delete it entirely
+    if (!confirm('Remove this new tag entirely?')) return;
+    delete colorsLocal.added[selectedColorKey];
+    saveColorsLocal();
+    selectedColorKey = null;
+    document.getElementById('colors-no-selection').style.display = '';
+    document.getElementById('colors-picker-active').style.display = 'none';
+  } else {
+    delete colorsLocal.modified[selectedColorKey];
+    saveColorsLocal();
+    showColorsPickerForKey(selectedColorKey);
+  }
+  refreshAfterColorChange();
+  renderColorsBrowser();
+}
+
+function deleteNewColorTag() {
+  if (!selectedColorKey) return;
+  if (!confirm('Permanently remove this new tag? This cannot be undone.')) return;
+  delete colorsLocal.added[selectedColorKey];
+  saveColorsLocal();
+  selectedColorKey = null;
+  document.getElementById('colors-no-selection').style.display = '';
+  document.getElementById('colors-picker-active').style.display = 'none';
+  refreshAfterColorChange();
+  renderColorsBrowser();
+}
+
+function toggleColorDeletion() {
+  if (!selectedColorKey) return;
+  const idx = colorsLocal.deleted.indexOf(selectedColorKey);
+  if (idx === -1) colorsLocal.deleted.push(selectedColorKey);
+  else colorsLocal.deleted.splice(idx, 1);
+  saveColorsLocal();
+  refreshAfterColorChange();
+  renderColorsBrowser();
+  showColorsPickerForKey(selectedColorKey);
+}
+
+function refreshAfterColorChange() {
+  // Re-render cards and sidebar so all chips pick up the new color via getColor()
+  buildFilterSidebar();
+  render();
+}
+
+// ── Mobile panel switching ────────────────────────────────────
+function colorsShowBrowser() {
+  document.getElementById('colors-tag-browser').style.display = '';
+  const panel = document.getElementById('colors-picker-panel');
+  panel.style.display = '';
+  // Remove back button if present
+  panel.querySelector('.colors-back-btn')?.remove();
+  if (window.innerWidth <= 650) {
+    panel.style.display = 'none';
+  }
+}
+
+function colorsShowPicker() {
+  document.getElementById('colors-tag-browser').style.display = 'none';
+  const panel = document.getElementById('colors-picker-panel');
+  panel.style.display = '';
+  // Inject back button at the top of the picker panel if not already there
+  if (!panel.querySelector('.colors-back-btn')) {
+    const btn = document.createElement('button');
+    btn.className = 'colors-back-btn';
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back to tags`;
+    btn.onclick = colorsShowBrowser;
+    panel.insertBefore(btn, panel.firstChild);
+  }
+}
+
+// ── Go ────────────────────────────────────────────────────────
+init();
