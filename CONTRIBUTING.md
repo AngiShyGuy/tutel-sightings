@@ -2,15 +2,26 @@
 
 Thanks for helping out! This document covers everything you need to know to add or edit entries in `data/appearances.json`.
 
-If you're not comfortable editing JSON directly, [Jsonite](https://www.jsonite.it/) is a free grid-based JSON editor that makes it much easier to work with.
-
 ---
 
-## Data Schema
+## Contributing via Editor Mode
+
+Editor Mode can be enabled via the Settings menu located in the sidebar.
+It enables the use a WYSIWYG editor for adding, modifying, and deleting entries in `data/appearances.json`, which can be accessed by either clicking the "Edit Entry" button in an entry's `...` menu, or by clicking the "New Entry" button above the video grid.
+
+### Exporting Your Changes
+
+After making your changes, click the "Export appearances.json" button in the settings to download a copy of `data/appearances.json` which can then be pushed to GitHub.
+
+## Contributing via JSON
+
+For those who are used to editing JSON files, it is still a valid way of doing things.
+
+### Data Schema
 
 All appearance data lives in `data/appearances.json` as an array of entry objects.
 
-### Entry fields
+#### Entry fields
 
 | Field | Type | Description |
 |---|---|---|
@@ -28,13 +39,13 @@ All appearance data lives in `data/appearances.json` as an array of entry object
 
 ---
 
-### Title logic
+#### Title logic
 
 Set `title` to a custom string when:
-- The entry has **multiple VODs** (required - there's no single title to fall back to)
+- The entry has multiple VODs (this is so you can make some kind of hybrid title for the entry)
 - The real VOD title gives no useful context
 
-Otherwise, leave `title` as `null` and the site will use the VOD's own title automatically.
+Otherwise, leave `title` as `null` and the site will use the title of the first VOD in the list.
 
 ```json
 // Let the VOD title speak for itself
@@ -48,7 +59,7 @@ Otherwise, leave `title` as `null` and the site will use the VOD's own title aut
 
 ---
 
-### Activity tags
+#### Activity tags
 
 Below are the currently established activity tags, but more can be added later. Adding new ones requires updating `data/colors.json` too.
 
@@ -72,7 +83,7 @@ Entries can have multiple tags, for example a stream that's both a `Subathon` an
 
 ---
 
-### Appearance weight
+#### Appearance weight
 
 | Value | Meaning |
 |---|---|
@@ -82,7 +93,7 @@ Entries can have multiple tags, for example a stream that's both a `Subathon` an
 
 ---
 
-### VOD object
+#### VOD object
 
 | Field | Type | Description |
 |---|---|---|
@@ -138,7 +149,7 @@ Entries can have multiple tags, for example a stream that's both a `Subathon` an
 
 ---
 
-### Timestamps
+#### Timestamps
 
 A list of notable timestamps within the stream. These appear in a popup accessible from the stream card.
 
@@ -167,7 +178,7 @@ Set to `null` if there are no timestamps.
 
 ---
 
-## Colors
+### Colors
 
 If you add a game, activity, or collab partner that doesn't already have a colour, add it to `data/colors.json` under the appropriate category. Use a soft, readable hex colour that contrasts well against a dark background.
 
