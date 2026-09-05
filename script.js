@@ -1822,8 +1822,17 @@ function applyEditorLayer() {
   // Build merged array:
   // 1. Remote entries (apply modifications; deleted entries stay in the array
   //    so they remain visible in the grid — they're just visually marked)
-  const merged = remote
-    .map(e => (editorMode && editorLocal.modified[e.id]) ? editorLocal.modified[e.id] : e);
+  const merged = remote.map(e => {
+    const mod = editorMode && editorLocal.modified[e.id];
+    if (!mod) return e;
+    // Merge the modification onto the remote entry, but always keep the real
+    // original id. Any id the user typed in the editor is stored as _pendingId
+    // and only materialises in the exported JSON — it must never replace e.id
+    // here, because everything (card data-id, appearancesById, deleted set, etc.)
+    // keys off the real id throughout the session.
+    const pendingId = mod.id !== e.id ? mod.id : undefined;
+    return { ...mod, id: e.id, ...(pendingId ? { _pendingId: pendingId } : {}) };
+  });
 
   // 2. Append locally-added entries (only shown in editor mode)
   if (editorMode) editorLocal.added.forEach(e => merged.push(e));
@@ -1868,15 +1877,18 @@ let editorTimestamps = [];    // array of timestamp draft objects
 let dragSrcIndex = null;
 
 // ── Open blank editor for a new entry ────────────────────────
+// Holds the in-progress draft for a brand-new entry that hasn't been saved yet.
+// Kept separate from editorLocal.added so that cancelling leaves no trace anywhere.
+let _newEntryDraft = null;
+
 function openNewEntry() {
   if (!editorMode) return;
   closeCardMenu();
 
-  // Build a blank stub and add it to editorLocal.added temporarily
-  // with a unique placeholder ID so the editor can open it
-  const placeholderId = "";
-  const stub = {
-    id: placeholderId,
+  // Build a blank draft — NOT pushed to editorLocal.added yet.
+  // It only gets committed there when the user actually hits Save.
+  _newEntryDraft = {
+    id: '',
     title: null,
     date: null,
     activities: [],
@@ -1888,21 +1900,18 @@ function openNewEntry() {
     vods: [],
     timestamps: null,
   };
-  editorLocal.added.push(stub);
-  // Don't call applyEditorLayer yet — we don't want the blank card visible
-  // until the user saves. Just open the editor directly.
-  appearancesById.set(placeholderId, stub);
 
-  editorEntryId   = placeholderId;
+  // null signals "this is a new entry with no real id yet"
+  editorEntryId   = null;
   editorIsRemote  = false;
   editorActiveTab = 'general';
   editorVods      = [];
   editorTimestamps = [];
 
-  populateEditorGeneral(stub);
+  populateEditorGeneral(_newEntryDraft);
   populateEditorVods();
   populateEditorTimestamps();
-  populateEditorOther(stub);
+  populateEditorOther(_newEntryDraft);
   switchEditorTab('general');
 
   document.getElementById('entry-editor-modal').style.display = '';
@@ -1985,7 +1994,9 @@ function switchEditorTab(tab) {
 
 // ── General tab ───────────────────────────────────────────────
 function populateEditorGeneral(entry) {
-  document.getElementById('editor-id').value      = entry.id || '';
+  // For remote entries with a pending rename, show the proposed new id in the
+  // field — not the real id — so the user can keep editing their draft rename.
+  document.getElementById('editor-id').value      = entry._pendingId ?? entry.id ?? '';
   document.getElementById('editor-title').value   = entry.title || '';
   const [ey = '', em = '', ed = ''] = (entry.date || '').split('-');
   document.getElementById('editor-date-yyyy').value = ey;
@@ -2215,8 +2226,13 @@ function validateEditorId(value) {
     indicator.className = 'editor-id-indicator editor-id-indicator--error';
     return false;
   }
-  // Check uniqueness — allow current entry's own ID
-  const isDuplicate = allAppearances.some(e => e.id === value && e.id !== editorEntryId);
+  // Check uniqueness — allow the current entry's own real id and its own pending rename.
+  // We check both e.id (real ids in allAppearances) and e._pendingId (other entries'
+  // pending renames) so we catch collisions in both directions.
+  const isDuplicate = allAppearances.some(e => {
+    if (e.id === editorEntryId) return false; // this is the entry being edited — skip it
+    return e.id === value || e._pendingId === value;
+  });
   if (isDuplicate) {
     indicator.textContent = 'ID already in use';
     indicator.className = 'editor-id-indicator editor-id-indicator--error';
@@ -2634,15 +2650,21 @@ function saveEditorEntry() {
 
   // Apply to local layer
   if (editorIsRemote) {
-    // Always key by the original ID so applyEditorLayer can find and replace
-    // the correct remote entry. The entry object itself may have a new .id
-    // set by the user, but the lookup must match the remote entry's original id.
+    // Always key by the real original ID so applyEditorLayer can find and replace
+    // the correct remote entry. The entry object stores whatever id the user typed
+    // (which may differ from editorEntryId), but applyEditorLayer will keep the
+    // real id on the merged entry and stash any rename in _pendingId.
     editorLocal.modified[editorEntryId] = entry;
+  } else if (editorEntryId === null) {
+    // Brand-new entry being saved for the first time — push it into added and
+    // clear the temporary draft. From here on it lives in editorLocal.added.
+    editorLocal.added.push(entry);
+    _newEntryDraft = null;
   } else {
-    // Local-only: find and replace in added array
+    // Re-edit of an existing local entry — find by its current id and replace.
     const idx = editorLocal.added.findIndex(e => e.id === editorEntryId);
     if (idx !== -1) editorLocal.added[idx] = entry;
-    else            editorLocal.added.push(entry);
+    else            editorLocal.added.push(entry); // shouldn't happen, but safe fallback
   }
 
   saveEditorLocal();
@@ -2672,7 +2694,18 @@ function editorDeleteOrToggle() {
     document.body.style.overflow = '';
     editorEntryId = null;
   } else {
-    // Local-only: actually delete it
+    // Local-only entry.
+    if (editorEntryId === null) {
+      // This is an unsaved new-entry draft — nothing has been committed yet,
+      // so just discard the draft and close without any confirmation needed.
+      _newEntryDraft = null;
+      document.getElementById('entry-editor-modal').style.display = 'none';
+      document.getElementById('editor-backdrop').style.display = 'none';
+      document.body.style.overflow = '';
+      editorEntryId = null;
+      return;
+    }
+    // Saved local entry — actually remove it from added.
     if (!confirm('Permanently delete this local entry? This cannot be undone.')) return;
     editorLocal.added = editorLocal.added.filter(e => e.id !== editorEntryId);
     saveEditorLocal();
