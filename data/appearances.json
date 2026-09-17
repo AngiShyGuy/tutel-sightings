@@ -3590,5 +3590,31 @@
       }
     ],
     "timestamps": null
+  },
+  {
+    "id": "slur-call-camila",
+    "title": "Camila's Pre-Ban Prank Call",
+    "date": "2026-09-18",
+    "activities": [
+      "Just Chatting",
+      "Prank Call"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Camila"
+    ],
+    "appearance_weight": "Cameo",
+    "summary": "Camila calls Vedal to have him try and guess what slur she accidentally said the day before.",
+    "safari": false,
+    "vods": [
+      {
+        "vod_title": "Unknown VOD Title",
+        "streamer": "Camila",
+        "video_id": "qF8C0S5RBCE",
+        "timestamp_seconds": 0,
+        "timestamp_end_seconds": 266
+      }
+    ],
+    "timestamps": null
   }
 ]
