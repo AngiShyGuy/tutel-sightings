@@ -267,7 +267,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   gap: 3px;
 }
 .gap-arrow {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 13px;
   text-align: center;
   flex-shrink: 0;
