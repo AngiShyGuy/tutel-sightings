@@ -57,6 +57,31 @@ function pct(n, total) {
   return Math.round((n / total) * 100);
 }
 
+function makePseudoTitle(entry) {
+  const CAP = 5;
+  function joinList(arr) {
+    if (arr.length <= CAP) {
+      if (arr.length === 1) return arr[0];
+      return arr.slice(0, -1).join(', ') + ' & ' + arr[arr.length - 1];
+    }
+    return arr.slice(0, CAP).join(', ') + ` & ${arr.length - CAP} more`;
+  }
+
+  const partners = joinList(entry.collab_partners);
+  const games    = entry.games || [];
+  const acts     = (entry.activities || []).filter(a => a !== 'Gaming');
+
+  let left;
+  if (games.length > 0) {
+    left = joinList(games);
+    if (acts.length > 0) left += ` (+ ${joinList(acts)})`;
+  } else {
+    left = acts.length > 0 ? joinList(acts) : 'Just Chatting';
+  }
+
+  return `${left} w/ ${partners}`;
+}
+
 // ── Chart factories ───────────────────────────────────────────
 const gridColor = 'rgba(255,255,255,0.06)';
 const tickColor = '#8b92a8';
@@ -233,6 +258,41 @@ async function init() {
     if (gaps.length) byYearGap[year] = parseFloat((gaps.reduce((a, b) => a + b, 0) / gaps.length).toFixed(1));
   });
 
+  // ── Longest gaps between consecutive sightings (top 5) ─────
+  const datedEntries = data
+    .filter(e => e.date)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const allGaps = [];
+  for (let i = 1; i < datedEntries.length; i++) {
+    const prev = datedEntries[i - 1];
+    const curr = datedEntries[i];
+    const days = (new Date(curr.date) - new Date(prev.date)) / 86400000;
+    if (days > 0) allGaps.push({ days, from: prev, to: curr });
+  }
+  allGaps.sort((a, b) => b.days - a.days);
+  const topGapsRaw = allGaps.slice(0, 5);
+
+  const lastSightingDate = datedEntries.length
+    ? new Date(datedEntries[datedEntries.length - 1].date)
+    : null;
+  const daysSinceLastSighting = lastSightingDate
+    ? Math.floor((Date.now() - lastSightingDate) / 86400000)
+    : null;
+
+  function fmtDate(dateStr) {
+    // Adding T12:00:00 avoids timezone-related off-by-one day issues
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
+      year: 'numeric', month: 'long', day: 'numeric'
+    });
+  }
+
+  function fmtDateShort(dateStr) {
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
+      year: 'numeric', month: 'short', day: 'numeric'
+    });
+  }
+
   // ── Derived values ─────────────────────────────────────────
   const totalEntries   = data.length;
   const totalHours     = fmtHours(totalSecs);
@@ -312,6 +372,44 @@ async function init() {
         <div class="chart-wrap"><canvas id="c-year-gap"></canvas></div>
       </div>
 
+    </div>
+
+    <div class="gap-card">
+      <div class="gap-card-header">
+        <div>
+          <div class="chart-title">Longest gaps between sightings</div>
+          <div class="chart-subtitle">Last sighting was ${daysSinceLastSighting !== null ? `${daysSinceLastSighting} day${daysSinceLastSighting === 1 ? '' : 's'} ago` : 'unknown'}</div>
+        </div>
+      </div>
+      <div class="gap-list">
+        ${topGapsRaw.map((g, i) => `
+          <div class="gap-row">
+            <div class="gap-rank">${i + 1}</div>
+            <div class="gap-days">${g.days}<span class="gap-days-label">d</span></div>
+            <div class="gap-dates-mobile">
+              <div class="gap-date-block">
+                <div class="gap-date-inner">
+                  <span class="gap-date">
+                    <span class="date-long">${fmtDate(g.from.date)}</span>
+                    <span class="date-short">${fmtDateShort(g.from.date)}</span>
+                  </span>
+                  <span class="gap-pseudo mobile-hide">${makePseudoTitle(g.from)}</span>
+                </div>
+              </div>
+              <div class="gap-arrow">→</div>
+              <div class="gap-date-block">
+                <div class="gap-date-inner">
+                  <span class="gap-date">
+                    <span class="date-long">${fmtDate(g.to.date)}</span>
+                    <span class="date-short">${fmtDateShort(g.to.date)}</span>
+                  </span>
+                  <span class="gap-pseudo mobile-hide">${makePseudoTitle(g.to)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
     </div>
 
     <div class="chart-group">

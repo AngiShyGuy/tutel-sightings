@@ -204,6 +204,89 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   height: 240px;
 }
 
+/* ── Longest gaps card ───────────────────────────────────── */
+.gap-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 22px 24px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.gap-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.gap-row {
+  display: grid;
+  grid-template-columns: 28px 80px 1fr;
+  align-items: center;
+  gap: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+.gap-rank {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 0 4px;
+}
+.gap-days {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--green);
+  line-height: 1;
+  white-space: nowrap;
+  padding: 0 12px 0 4px;
+}
+.gap-days-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-left: 2px;
+}
+.gap-dates-mobile {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0 12px;
+  min-width: 0;
+}
+.gap-date-block {
+  min-width: 0;
+}
+.gap-date-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.gap-arrow {
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.gap-date {
+  font-size: 13px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.gap-pseudo {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.date-short { display: none; }
+
 /* ── Loading / error state ───────────────────────────────── */
 .state-msg {
   text-align: center;
@@ -224,6 +307,15 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .header-subtitle { display: none; }
   .home-link { font-size: 11px; padding: 5px 8px; }
   .chart-group { flex-direction: column; }
+  .mobile-hide { display: none; }
+  .date-long  { display: none; }
+  .date-short { display: inline; }
+  .gap-list       { display: flex; flex-direction: column; gap: 4px; }
+  .gap-row    { grid-template-columns: 22px 56px 1fr; gap: 8px; }
+  .gap-dates-mobile { display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .gap-date-block { display: flex; flex-direction: column; }  .gap-rank, .gap-days, .gap-date-block, .gap-arrow { border: none; background: none; padding: 0; border-radius: 0; }
+  .gap-date-block:last-child { border: none; border-radius: 0; padding: 0; }
+  .gap-arrow      { display: flex; align-items: center; }
 }
 @media (max-width: 540px) {
   .header-inner { padding: 12px 16px; }
