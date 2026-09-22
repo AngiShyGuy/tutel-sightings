@@ -1490,7 +1490,10 @@ function escHtml(str) {
 }
 function escAttr(str) {
   if (!str) return '';
-  return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  // Only double-quotes need escaping inside value="..." HTML attributes.
+  // Single quotes are safe as-is — escaping them to \' corrupts the value
+  // when it's read back from the DOM (the backslash becomes part of the string).
+  return str.replace(/"/g, '&quot;');
 }
 
 // ── Sync UI Controls from Loaded State ────────────────────────
@@ -1767,7 +1770,26 @@ function exportAppearancesJson() {
     if (!b.date) return -1;
     return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
   });
-  const data = JSON.stringify(merged, null, 2);
+
+  // Rebuild every entry with keys in the canonical schema order.
+  // JSON.stringify preserves insertion order, so this guarantees consistent
+  // output regardless of what order keys arrived in from the original fetch
+  // or from readEditorForm on a modified entry.
+  const canonicalise = e => ({
+    id:                e.id,
+    title:             e.title             ?? null,
+    date:              e.date              ?? null,
+    activities:        e.activities        ?? [],
+    games:             e.games             ?? [],
+    collab_partners:   e.collab_partners   ?? [],
+    appearance_weight: e.appearance_weight ?? 'Full',
+    summary:           e.summary           ?? null,
+    safari:            e.safari            ?? false,
+    vods:              e.vods              ?? [],
+    timestamps:        e.timestamps        ?? null,
+  });
+
+  const data = JSON.stringify(merged.map(canonicalise), null, 2);
   const url  = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
   const a    = Object.assign(document.createElement('a'), { href: url, download: 'appearances.json' });
   a.click();
@@ -2537,16 +2559,18 @@ function readEditorForm() {
 
   const activeWeight = document.querySelector('.weight-option.active');
 
+  // Key order matches the canonical schema in appearances.json exactly.
+  // JSON.stringify preserves insertion order, so this determines export order.
   return {
     id:                document.getElementById('editor-id').value.trim(),
     title:             document.getElementById('editor-title').value.trim() || null,
     date:              readEditorDate(),
     activities:        getEditorTags('activities'),
-    collab_partners:   getEditorTags('collab_partners'),
     games:             getEditorTags('games'),
+    collab_partners:   getEditorTags('collab_partners'),
     appearance_weight: activeWeight ? activeWeight.dataset.weight : 'Full',
-    safari:            document.getElementById('editor-safari').checked,
     summary:           document.getElementById('editor-summary').value.trim() || null,
+    safari:            document.getElementById('editor-safari').checked,
     vods:              editorVods,
     timestamps:        editorTimestamps.length ? editorTimestamps : null,
   };
