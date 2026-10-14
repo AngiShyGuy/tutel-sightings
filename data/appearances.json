@@ -3616,5 +3616,33 @@
       }
     ],
     "timestamps": null
+  },
+  {
+    "id": "dnd-drinking-recording",
+    "title": null,
+    "date": "2026-10-13",
+    "activities": [
+      "Drinking",
+      "Roleplay"
+    ],
+    "games": [],
+    "collab_partners": [
+      "Magic The Noah",
+      "Failboat",
+      "Cottontail"
+    ],
+    "appearance_weight": "Full",
+    "summary": "Magic The Noah invites Vedal, Cottontail and Failboat on a special D&D campaign where you have to drink alcohol every time you take damage. Or whenever you feel like it, really.",
+    "safari": false,
+    "vods": [
+      {
+        "vod_title": "Tall man drinks \"water\" for a Magic The Noah recording",
+        "streamer": "Failboat",
+        "video_id": "iPofFh9PVdU",
+        "timestamp_seconds": 373,
+        "timestamp_end_seconds": 12402
+      }
+    ],
+    "timestamps": null
   }
 ]
