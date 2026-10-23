@@ -1487,7 +1487,7 @@
     "date": "2023-11-28",
     "activities": [
       "Just Chatting",
-      "Baking"
+      "Cooking"
     ],
     "games": [],
     "collab_partners": [
@@ -3643,6 +3643,587 @@
         "timestamp_end_seconds": 12402
       }
     ],
-    "timestamps": null
+    "timestamps": [
+      {
+        "title": "Failboat appears on stream",
+        "timestamp_seconds": 122,
+        "vod_index": 0
+      },
+      {
+        "title": "Going on call and meeting Noah, Vedal and Cottontail",
+        "timestamp_seconds": 368,
+        "vod_index": 0
+      },
+      {
+        "title": "Pre-game cheers",
+        "timestamp_seconds": 500,
+        "vod_index": 0
+      },
+      {
+        "title": "Start of D&D Campaign",
+        "timestamp_seconds": 878,
+        "vod_index": 0
+      },
+      {
+        "title": "1st cheers with everyone",
+        "timestamp_seconds": 955,
+        "vod_index": 0
+      },
+      {
+        "title": "2nd cheers with everyone (Vedal's Damage Sharing)",
+        "timestamp_seconds": 1010,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat cheers by himself",
+        "timestamp_seconds": 1052,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat takes damage, drinks",
+        "timestamp_seconds": 1090,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal gets stabbed, drinks and shares with Noah",
+        "timestamp_seconds": 1135,
+        "vod_index": 0
+      },
+      {
+        "title": "3rd cheers to beating the boss",
+        "timestamp_seconds": 1260,
+        "vod_index": 0
+      },
+      {
+        "title": "4th cheers to Noah",
+        "timestamp_seconds": 1283,
+        "vod_index": 0
+      },
+      {
+        "title": "5th cheers to finding a coin",
+        "timestamp_seconds": 1370,
+        "vod_index": 0
+      },
+      {
+        "title": "6th cheers to looking around the map",
+        "timestamp_seconds": 1409,
+        "vod_index": 0
+      },
+      {
+        "title": "1st Encounter Starts",
+        "timestamp_seconds": 1450,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal drowns, drinks and shares with Noah again",
+        "timestamp_seconds": 1204,
+        "vod_index": 0
+      },
+      {
+        "title": "7th cheers to still feeling sober",
+        "timestamp_seconds": 1860,
+        "vod_index": 0
+      },
+      {
+        "title": "8th cheers to having a clever thumbnail",
+        "timestamp_seconds": 2072,
+        "vod_index": 0
+      },
+      {
+        "title": "9th cheers to being an accommodating host",
+        "timestamp_seconds": 2260,
+        "vod_index": 0
+      },
+      {
+        "title": "10th cheers to bringing everyone here",
+        "timestamp_seconds": 2280,
+        "vod_index": 0
+      },
+      {
+        "title": "Swearing in Magic the Noah videos",
+        "timestamp_seconds": 2338,
+        "vod_index": 0
+      },
+      {
+        "title": "11th cheers to having no swear counter",
+        "timestamp_seconds": 2370,
+        "vod_index": 0
+      },
+      {
+        "title": "Noah tried messaging Vedal about his Alpha Male Podcast, Vedal made fun of Noah for not having a yacht",
+        "timestamp_seconds": 2404,
+        "vod_index": 0
+      },
+      {
+        "title": "12th cheers to Failboat drinking a mana potion",
+        "timestamp_seconds": 2488,
+        "vod_index": 0
+      },
+      {
+        "title": "13th cheers to beating the boss",
+        "timestamp_seconds": 2543,
+        "vod_index": 0
+      },
+      {
+        "title": "1st break: The Magic the Noah cinematic universe + what was the first video you made?",
+        "timestamp_seconds": 2610,
+        "vod_index": 0
+      },
+      {
+        "title": "14th cheers to starting content creation",
+        "timestamp_seconds": 2802,
+        "vod_index": 0
+      },
+      {
+        "title": "15th cheers to voicing hentai",
+        "timestamp_seconds": 2815,
+        "vod_index": 0
+      },
+      {
+        "title": "16th cheers to Noah having a bachelors in computer science",
+        "timestamp_seconds": 2930,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal tries and fails to talk about Abandoned Archive",
+        "timestamp_seconds": 2942,
+        "vod_index": 0
+      },
+      {
+        "title": "Noah asks \"WHO THE HELL IS THAT?\" about a cameo in Pattern Recognition who looks like him",
+        "timestamp_seconds": 2955,
+        "vod_index": 0
+      },
+      {
+        "title": "2nd Encounter Starts",
+        "timestamp_seconds": 3020,
+        "vod_index": 0
+      },
+      {
+        "title": "17th cheers to failing the puzzle (Only Failboat drinks, others resist damage)",
+        "timestamp_seconds": 3164,
+        "vod_index": 0
+      },
+      {
+        "title": "18th cheers to solving the puzzle",
+        "timestamp_seconds": 3360,
+        "vod_index": 0
+      },
+      {
+        "title": "2nd break: What is your favourite video that you have made? (Vedal's Answer)",
+        "timestamp_seconds": 3452,
+        "vod_index": 0
+      },
+      {
+        "title": "3rd Encounter Starts",
+        "timestamp_seconds": 3690,
+        "vod_index": 0
+      },
+      {
+        "title": "Cotton’s cat sending messages to the group chat",
+        "timestamp_seconds": 3700,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat drinks a mana potion, drinks IRL",
+        "timestamp_seconds": 3743,
+        "vod_index": 0
+      },
+      {
+        "title": "4th Encounter Starts",
+        "timestamp_seconds": 3855,
+        "vod_index": 0
+      },
+      {
+        "title": "Cannon Dwarf is summoned",
+        "timestamp_seconds": 3949,
+        "vod_index": 0
+      },
+      {
+        "title": "rat is GOATed",
+        "timestamp_seconds": 4112,
+        "vod_index": 0
+      },
+      {
+        "title": "19th cheers to rat for success",
+        "timestamp_seconds": 4160,
+        "vod_index": 0
+      },
+      {
+        "title": "5th Encounter Starts",
+        "timestamp_seconds": 4226,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal wants a new hat",
+        "timestamp_seconds": 4250,
+        "vod_index": 0
+      },
+      {
+        "title": "D&D but the last 45 minutes is just Slay the Spire 2",
+        "timestamp_seconds": 4449,
+        "vod_index": 0
+      },
+      {
+        "title": "Cotton drinks alcoholic potion, drinks IRL",
+        "timestamp_seconds": 4650,
+        "vod_index": 0
+      },
+      {
+        "title": "20th cheers to avoiding cube",
+        "timestamp_seconds": 4688,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal glazing (1)",
+        "timestamp_seconds": 4730,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal glazing (2)",
+        "timestamp_seconds": 4780,
+        "vod_index": 0
+      },
+      {
+        "title": "Cotton is homophobic",
+        "timestamp_seconds": 4815,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal glazing (3)",
+        "timestamp_seconds": 4912,
+        "vod_index": 0
+      },
+      {
+        "title": "Cotton commits hate crimes",
+        "timestamp_seconds": 4960,
+        "vod_index": 0
+      },
+      {
+        "title": "21st cheers to Gabe Newell, Valve, and Steam",
+        "timestamp_seconds": 5050,
+        "vod_index": 0
+      },
+      {
+        "title": "Uncheers to League of Legends",
+        "timestamp_seconds": 5080,
+        "vod_index": 0
+      },
+      {
+        "title": "Cotton commits hate crimes again",
+        "timestamp_seconds": 5134,
+        "vod_index": 0
+      },
+      {
+        "title": "Noah tried collabing with a company but they blew up",
+        "timestamp_seconds": 5295,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat gets eaten by cube, drinks",
+        "timestamp_seconds": 5375,
+        "vod_index": 0
+      },
+      {
+        "title": "22nd cheers to making it to 11 cheers (wait a minute...)",
+        "timestamp_seconds": 5385,
+        "vod_index": 0
+      },
+      {
+        "title": "23rd cheers to Noah’s DM for being alive",
+        "timestamp_seconds": 5480,
+        "vod_index": 0
+      },
+      {
+        "title": "3rd Break: Favourite video part 2 (Noah's Answer)",
+        "timestamp_seconds": 5523,
+        "vod_index": 0
+      },
+      {
+        "title": "TCNick3 glazing",
+        "timestamp_seconds": 5563,
+        "vod_index": 0
+      },
+      {
+        "title": "24th cheers to DougDoug",
+        "timestamp_seconds": 5662,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal glazing (4)",
+        "timestamp_seconds": 5746,
+        "vod_index": 0
+      },
+      {
+        "title": "6th Encounter Starts",
+        "timestamp_seconds": 5840,
+        "vod_index": 0
+      },
+      {
+        "title": "25th cheers to the goblin",
+        "timestamp_seconds": 5880,
+        "vod_index": 0
+      },
+      {
+        "title": "Noah glazing (5)",
+        "timestamp_seconds": 5905,
+        "vod_index": 0
+      },
+      {
+        "title": "26th cheers to Noah",
+        "timestamp_seconds": 6015,
+        "vod_index": 0
+      },
+      {
+        "title": "Noah started watching Crelly’s stream",
+        "timestamp_seconds": 6025,
+        "vod_index": 0
+      },
+      {
+        "title": "27th cheers to Failboat’s chat",
+        "timestamp_seconds": 6065,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal calls Failboat his GOAT",
+        "timestamp_seconds": 6143,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat drinks potion, drink",
+        "timestamp_seconds": 6153,
+        "vod_index": 0
+      },
+      {
+        "title": "28th cheers to Noah’s dad (Failboat laughed too much and forgot to drink)",
+        "timestamp_seconds": 6170,
+        "vod_index": 0
+      },
+      {
+        "title": "29th cheers to being who you want to be",
+        "timestamp_seconds": 6200,
+        "vod_index": 0
+      },
+      {
+        "title": "Cotton becomes a dinosaur",
+        "timestamp_seconds": 6375,
+        "vod_index": 0
+      },
+      {
+        "title": "30th cheers to completing the encounter",
+        "timestamp_seconds": 6462,
+        "vod_index": 0
+      },
+      {
+        "title": "4th Break: Alcohol talk + Favourite video part 3 (Cotton and Failboat's Answers)",
+        "timestamp_seconds": 6483,
+        "vod_index": 0
+      },
+      {
+        "title": "7th Encounter Starts",
+        "timestamp_seconds": 6956,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal glazing (6)",
+        "timestamp_seconds": 6998,
+        "vod_index": 0
+      },
+      {
+        "title": "31st cheer to good resist",
+        "timestamp_seconds": 7079,
+        "vod_index": 0
+      },
+      {
+        "title": "32nd cheer to autism",
+        "timestamp_seconds": 7270,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal glazing (7)",
+        "timestamp_seconds": 7470,
+        "vod_index": 0
+      },
+      {
+        "title": "33rd cheers to Vedal",
+        "timestamp_seconds": 7492,
+        "vod_index": 0
+      },
+      {
+        "title": "34th cheers to Vedal taking damage for Cotton and sharing it with everyone regardless",
+        "timestamp_seconds": 7550,
+        "vod_index": 0
+      },
+      {
+        "title": "DougDoug glazing",
+        "timestamp_seconds": 7696,
+        "vod_index": 0
+      },
+      {
+        "title": "35th cheers to Vedal taking damage for Cotton and sharing it with everyone regardless again",
+        "timestamp_seconds": 7785,
+        "vod_index": 0
+      },
+      {
+        "title": "The Long Drive Marathon update",
+        "timestamp_seconds": 7879,
+        "vod_index": 0
+      },
+      {
+        "title": "Cotton adds Vedal’s helmet to her pfp",
+        "timestamp_seconds": 7935,
+        "vod_index": 0
+      },
+      {
+        "title": "Noah leaves Discord + Failboat's future plans",
+        "timestamp_seconds": 8002,
+        "vod_index": 0
+      },
+      {
+        "title": "36th cheers to meeting each other",
+        "timestamp_seconds": 8140,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat learns about Crelly and the Marathon",
+        "timestamp_seconds": 8184,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal glazing (8)",
+        "timestamp_seconds": 8332,
+        "vod_index": 0
+      },
+      {
+        "title": "37th cheers to fibonacci heaps",
+        "timestamp_seconds": 8635,
+        "vod_index": 0
+      },
+      {
+        "title": "8th Encounter",
+        "timestamp_seconds": 8666,
+        "vod_index": 0
+      },
+      {
+        "title": "This is Noah’s therapy show",
+        "timestamp_seconds": 8673,
+        "vod_index": 0
+      },
+      {
+        "title": "38th cheers to Vedal taking damage for Failboat and sharing it with everyone",
+        "timestamp_seconds": 8846,
+        "vod_index": 0
+      },
+      {
+        "title": "Noah skiied the Vasaloppet in Sweeden",
+        "timestamp_seconds": 8967,
+        "vod_index": 0
+      },
+      {
+        "title": "39th cheers to the guy that skied away on the Vasaloppet.",
+        "timestamp_seconds": 9112,
+        "vod_index": 0
+      },
+      {
+        "title": "Cotton gets the key on the first try",
+        "timestamp_seconds": 9206,
+        "vod_index": 0
+      },
+      {
+        "title": "Cotton glazing",
+        "timestamp_seconds": 9242,
+        "vod_index": 0
+      },
+      {
+        "title": "Final Encounter Starts",
+        "timestamp_seconds": 9300,
+        "vod_index": 0
+      },
+      {
+        "title": "Cotton tries to summon rats",
+        "timestamp_seconds": 9450,
+        "vod_index": 0
+      },
+      {
+        "title": "Noah doesn’t have a yacht, everyone point and laugh",
+        "timestamp_seconds": 9504,
+        "vod_index": 0
+      },
+      {
+        "title": "Final Break: What’s your first IRL convention?",
+        "timestamp_seconds": 9603,
+        "vod_index": 0
+      },
+      {
+        "title": "VTuber Yacht convention scandal",
+        "timestamp_seconds": 9685,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat goes to Vancouver for the first time and Canada is mostly uninhabited",
+        "timestamp_seconds": 9835,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat's thoughts on Twitchcon and parties",
+        "timestamp_seconds": 10016,
+        "vod_index": 0
+      },
+      {
+        "title": "The only time Failboat got blackout drunk",
+        "timestamp_seconds": 10200,
+        "vod_index": 0
+      },
+      {
+        "title": "Final Fantasy and cafes",
+        "timestamp_seconds": 10355,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat’s introduction to Vedal was through DougDoug",
+        "timestamp_seconds": 10655,
+        "vod_index": 0
+      },
+      {
+        "title": "Concern for Noah (the mouse moved a few minutes prior) ",
+        "timestamp_seconds": 10825,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat explains where his username comes from",
+        "timestamp_seconds": 10855,
+        "vod_index": 0
+      },
+      {
+        "title": "Cottontail explains where her name comes from and what got her into content creation",
+        "timestamp_seconds": 10990,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal explains his first streams and where Neuro-sama's name comes from",
+        "timestamp_seconds": 11275,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat was a purple sheep vtuber in Minecraft (Purple Shep)",
+        "timestamp_seconds": 11423,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat on creativity, content creation, and gaming",
+        "timestamp_seconds": 11680,
+        "vod_index": 0
+      },
+      {
+        "title": "Failboat on Neuro-sama and gives wisdom",
+        "timestamp_seconds": 11955,
+        "vod_index": 0
+      },
+      {
+        "title": "Vedal on working on the Neuro-sama project",
+        "timestamp_seconds": 12072,
+        "vod_index": 0
+      }
+    ]
   }
 ]
